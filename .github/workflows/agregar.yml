@@ -6,6 +6,10 @@ on:
       url:
         description: Link del producto
         required: true
+      para:
+        description: Id de la saga a la que pertenece el libro (opcional)
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -32,13 +36,14 @@ jobs:
       - name: Leer el link y guardar la lámina
         env:
           URL_PRODUCTO: ${{ inputs.url || '--steam' }}
+          PARA: ${{ inputs.para }}
         run: |
           git config user.name "album-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for intento in 1 2 3; do
             git fetch origin main
             git reset --hard origin/main
-            node herramientas/agregar.js "$URL_PRODUCTO"
+            node herramientas/agregar.js "$URL_PRODUCTO" "--para=$PARA"
             git add datos.js fotos
             if git diff --cached --quiet; then echo "Nada nuevo que guardar"; exit 0; fi
             git commit -m "Actualizar álbum desde un link o Steam"

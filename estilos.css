@@ -124,6 +124,11 @@ main { padding-block: 10px 40px; }
 .lomos { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 .lomo { width: 22px; height: 36px; border: 1.5px solid var(--tinta); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2px; font: 600 11px var(--f-dato); }
 .lomo.tengo { background: var(--suave); border-color: var(--suave); color: var(--gris); }
+a.lomo { text-decoration: none; color: var(--tinta); }
+a.lomo:hover { background: var(--tinta); color: var(--lamina); }
+a.lomo.otra { border-style: dashed; }
+.siguiente { font: 500 12px var(--f-dato); color: var(--tinta) !important; }
+.siguiente em { color: var(--gris); }
 
 footer { border-top: 1.5px solid var(--borde); }
 footer .ancho { padding-block: 18px 34px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 500 12px var(--f-dato); letter-spacing: .06em; text-transform: uppercase; color: var(--gris); }

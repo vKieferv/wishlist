@@ -226,6 +226,19 @@ async function ponerFoto(p, fuente) {
 // ---------- agregar ----------
 async function agregarDesdeLink(url) {
   $("btnLink").disabled = true;
+  if (/buscalibre\.[a-z.]+\/libro-/i.test(url)) {
+    aviso("Buscando los tomos de esa línea en Buscalibre… (puede tardar un minuto)");
+    try {
+      clearTimeout(temporizador);
+      const r = await api("/api/libro", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
+      D = await api("/api/datos");
+      pintar();
+      aviso(`«${r.saga}»: ${r.tomos ? "tomos " + r.encontrados.join(", ") : "libro agregado"}${r.nueva ? " (saga nueva)" : ""}.`, "ok");
+      $("link").value = "";
+    } catch (e) { aviso(e.message, "mal"); }
+    $("btnLink").disabled = false;
+    return;
+  }
   if (/steam(powered|community)\.com\/wishlist\//i.test(url)) {
     aviso("Leyendo tu lista de deseados de Steam…");
     try {

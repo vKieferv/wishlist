@@ -28,8 +28,21 @@
 
   // ---------- precios ----------
   var CLP = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
-  function sinPrecio(p) { return p.precio === null || p.precio === "" || p.precio === undefined; }
+  // Sagas con tomos de Buscalibre: la lámina muestra el siguiente tomo que falta.
+  function siguienteTomo(p) {
+    if (!p.tomos || !p.serie) return null;
+    var tengo = p.serie.tengo || [], total = Math.max(1, parseInt(p.serie.total, 10) || 1);
+    for (var n = 1; n <= total; n++) if (tengo.indexOf(n) < 0 && p.tomos[n]) return { n: n, t: p.tomos[n] };
+    return null;
+  }
+  function efectivo(p) {
+    var s = siguienteTomo(p);
+    if (!s) return p;
+    return Object.assign({}, p, { foto: s.t.foto || p.foto, precio: s.t.precio, moneda: "CLP", link: s.t.link, tienda: "buscalibre.cl", _sig: s });
+  }
+  function sinPrecio(p) { p = efectivo(p); return p.precio === null || p.precio === "" || p.precio === undefined; }
   function enPesos(p) {
+    p = efectivo(p);
     if (sinPrecio(p)) return null;
     var n = Number(p.precio);
     if (!isFinite(n)) return null;
@@ -39,6 +52,7 @@
     return null;
   }
   function precioHtml(p) {
+    p = efectivo(p);
     var v = enPesos(p), m = String(p.moneda || "CLP").toUpperCase();
     if (sinPrecio(p)) return '<span class="precio sin">Sin precio</span>';
     if (m === "CLP") return '<span class="precio">' + CLP.format(Number(p.precio)) + "</span>";
@@ -95,16 +109,26 @@
     var t = g.map(function (r) { return r[0] === r[1] ? "el " + r[0] : "del " + r[0] + " al " + r[1]; });
     return t.length > 1 ? t.slice(0, -1).join(", ") + " y " + t[t.length - 1] : t[0];
   }
-  function serieHtml(s) {
+  function serieHtml(p) {
+    var s = p.serie, tomos = p.tomos || {};
     var total = Math.max(1, parseInt(s.total, 10) || 1), tengo = {}, t = [], f = [], lomos = "";
     (s.tengo || []).forEach(function (k) { tengo[k] = true; });
     for (var i = 1; i <= total; i++) {
       (tengo[i] ? t : f).push(i);
-      lomos += '<span class="lomo' + (tengo[i] ? " tengo" : "") + '">' + i + "</span>";
+      var tomo = !tengo[i] && tomos[i];
+      lomos += tomo
+        ? '<a class="lomo' + (tomo.otraEdicion ? " otra" : "") + '" href="' + esc(urlSegura(tomo.link)) + '" target="_blank" rel="noopener" title="' +
+          esc("Tomo " + i + ": " + (tomo.nombre || "") + (tomo.precio ? " · " + CLP.format(tomo.precio) : "") + (tomo.editorial ? " · " + tomo.editorial : "")) + '">' + i + "</a>"
+        : '<span class="lomo' + (tengo[i] ? " tengo" : "") + '">' + i + "</span>";
     }
     var txt = !t.length ? "No tengo ninguno." : !f.length ? "Saga completa." :
       "Tengo " + rangos(t) + ". Me falta" + (f.length > 1 ? "n " : " ") + rangos(f) + ".";
-    return "<p>" + esc(txt) + '</p><div class="lomos" aria-label="' + esc(txt) + '">' + lomos + "</div>";
+    var sig = siguienteTomo(p), extra = "";
+    if (sig) {
+      extra = '<p class="siguiente">Siguiente: tomo ' + sig.n + (sig.t.editorial ? " · " + esc(sig.t.editorial) : "") +
+        (sig.t.otraEdicion ? " <em>(otra edición)</em>" : "") + "</p>";
+    }
+    return "<p>" + esc(txt) + '</p><div class="lomos" aria-label="' + esc(txt) + '">' + lomos + "</div>" + extra;
   }
 
   // ---------- lámina ----------
@@ -114,7 +138,8 @@
     if (f && edit.activo && GH && /^fotos\//.test(f)) return "https://raw.githubusercontent.com/" + GH.dueno + "/" + GH.repo + "/main/" + f;
     return f;
   }
-  function lamina(p, sinDestacar) {
+  function lamina(original, sinDestacar) {
+    var p = efectivo(original);
     var foto = fotoUrl(p.foto), link = urlSegura(p.link), num = numero[p.id] || 0;
     var destacada = p.destacado && !sinDestacar;
     return '<article class="lamina' + (destacada ? " destacada" : "") + '">' +
@@ -124,10 +149,10 @@
             : '<div class="lamina-foto sin-foto" aria-hidden="true"><span>' + num + "</span></div>") +
       '<div class="lamina-cuerpo"><h3>' + esc(p.nombre) + "</h3>" +
       (p.descripcion ? "<p>" + esc(p.descripcion) + "</p>" : "") +
-      (p.serie ? serieHtml(p.serie) : "") +
+      (p.serie ? serieHtml(original) : "") +
       (p.nota ? '<div class="nota">' + esc(p.nota) + "</div>" : "") + "</div>" +
       '<div class="lamina-pie">' + precioHtml(p) +
-      (link ? '<a class="ir" href="' + esc(link) + '" target="_blank" rel="noopener" title="' + esc(p.tienda || link) + '">Dónde comprar ↗</a>' : "") +
+      (link ? '<a class="ir" href="' + esc(link) + '" target="_blank" rel="noopener" title="' + esc(p.tienda || link) + '">' + (p._sig ? "Tomo " + p._sig.n + " ↗" : "Dónde comprar ↗") + "</a>" : "") +
       "</div></article>";
   }
 
@@ -359,21 +384,27 @@
   function salirEdicion() { edit.activo = false; edit.mensaje = ""; pintarTodo(); }
 
   // ---------- agregar ----------
-  function agregarLink(url) {
+  function agregarLink(url, para) {
     url = url.trim();
     if (!/^https?:\/\//i.test(url)) url = "https://" + url;
-    var pend = { url: url, desde: Date.now() };
+    var pend = { url: url, desde: Date.now(), steam: /steam(powered|community)\.com\/wishlist\//i.test(url) };
     edit.pendientes.push(pend);
-    mensaje("Pedí a GitHub que lea el link. Aparece aquí en 1 a 2 minutos.");
+    mensaje(pend.steam ? "Pedí a GitHub que lea tu lista de Steam. Los juegos aparecen en 1 a 2 minutos."
+      : "Pedí a GitHub que lea el link. Aparece aquí en 1 a 2 minutos.");
     pintarTodo();
-    gh("/actions/workflows/agregar.yml/dispatches", "POST", { ref: "main", inputs: { url: url } })
+    gh("/actions/workflows/agregar.yml/dispatches", "POST", { ref: "main", inputs: { url: url, para: para || "" } })
       .then(function () { esperar(pend); })
       .catch(function (e) { pend.fallo = true; mensaje(explicarError(e)); pintarTodo(); });
   }
   function esperar(pend) {
     setTimeout(function () {
       leerRemoto().then(function (r) {
-        var p = r.datos.productos.filter(function (x) { return x.origen === pend.url || x.link === pend.url; })[0];
+        var p = r.datos.productos.filter(function (x) {
+          return x.origen === pend.url || x.link === pend.url || (x.linea && x.linea.origen === pend.url);
+        })[0];
+        if (pend.steam && r.datos.actualizado && new Date(r.datos.actualizado).getTime() > pend.desde && r.datos.steam) {
+          p = { nombre: "tu lista de Steam (" + r.datos.productos.filter(function (x) { return x.fuente === "steam"; }).length + " juegos)" };
+        }
         if (p) {
           D = r.datos;
           edit.pendientes = edit.pendientes.filter(function (x) { return x !== pend; });
@@ -417,7 +448,9 @@
       '<label class="check"><input id="fDest" type="checkbox"' + (p.destacado ? " checked" : "") + "> Destacada (lámina doble)</label>" +
       '<label class="check"><input id="fSerie" type="checkbox"' + (p.serie ? " checked" : "") + "> Es una saga de libros</label>" +
       '<div id="cajaSerie"' + (p.serie ? "" : " hidden") + '><label for="fTotal">Cuántos libros son</label><input id="fTotal" type="number" min="1" value="' + esc(serie.total) + '">' +
-      '<label for="fTengo">Cuáles tengo (números separados por coma)</label><input id="fTengo" type="text" value="' + esc((serie.tengo || []).join(", ")) + '"></div>' +
+      '<label for="fTengo">Cuáles tengo (números separados por coma)</label><input id="fTengo" type="text" value="' + esc((serie.tengo || []).join(", ")) + '">' +
+      '<label for="fBl">Link de un tomo en Buscalibre, de tu edición</label><input id="fBl" type="url" placeholder="https://www.buscalibre.cl/libro-…" value="' + esc(p.linea ? p.linea.origen : "") + '">' +
+      '<p class="dlg-nota">Con ese link busco los demás tomos de la misma línea y editorial, con portada y precio.</p></div>' +
       "</div></div>" +
       '<p id="errProd" class="dlg-error" role="alert"></p>' +
       '<div class="dlg-botones">' + (esNuevo ? "" : '<button type="button" id="borrarProd" class="peligro">Borrar</button><span class="espacio"></span>') +
@@ -483,6 +516,8 @@
             d.close();
             mensaje("Guardado: " + cambios.nombre + ". La página pública se actualiza en 1 a 2 minutos.");
             pintarTodo();
+            var bl = conSerie ? q("#fBl").value.trim() : "";
+            if (bl && bl !== (p.linea ? p.linea.origen : "")) agregarLink(bl, p.id);
           }).catch(function (e) { boton.disabled = false; q("#errProd").textContent = explicarError(e); });
         });
       });

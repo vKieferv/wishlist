@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { extraer, traer } = require("../servidor.js");
 const steam = require("./steam.js");
+const buscalibre = require("./buscalibre.js");
 
 const RAIZ = path.join(__dirname, "..");
 const ARCHIVO = path.join(RAIZ, "datos.js");
@@ -66,6 +67,15 @@ async function bajarFoto(url, nombre) {
   }
 
   if (!/^https?:\/\/\S+$/i.test(url)) { console.error("Link inválido:", url); process.exit(1); }
+
+  // Libro de Buscalibre: busca los demás tomos de la misma línea y editorial.
+  if (buscalibre.esLinkBuscalibre(url)) {
+    const para = (process.argv.find((a) => a.startsWith("--para=")) || "").slice(7) || null;
+    const r = await buscalibre.agregarLibro(d, url, para);
+    escribir(d);
+    console.log(`Buscalibre: «${r.saga}», tomos encontrados: ${(r.encontrados || []).join(", ") || "ninguno"}.`);
+    return;
+  }
   if (d.productos.some((p) => p.origen === url || p.link === url)) { console.log("Ese link ya está en el álbum."); return; }
 
   let info = {};

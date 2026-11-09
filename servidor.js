@@ -189,6 +189,17 @@ async function api(req, res, u) {
       return responder(res, 200, r);
     } catch (e) { return responder(res, 502, { error: "No pude leer la lista de Steam: " + e.message }); }
   }
+  if (u.pathname === "/api/libro" && req.method === "POST") {
+    const buscalibre = require("./herramientas/buscalibre.js");
+    const { url, para } = JSON.parse((await leerCuerpo(req)).toString("utf8"));
+    if (!buscalibre.esLinkBuscalibre(url)) return responder(res, 400, { error: "Ese no es un link de libro de Buscalibre" });
+    try {
+      const d = leerDatos();
+      const r = await buscalibre.agregarLibro(d, url, para || null);
+      escribirDatos(d);
+      return responder(res, 200, r);
+    } catch (e) { return responder(res, 502, { error: "No pude leer Buscalibre: " + e.message }); }
+  }
   if (u.pathname === "/api/imagen" && req.method === "GET") {
     const destino = u.searchParams.get("url") || "";
     if (!/^https?:\/\//i.test(destino)) return responder(res, 400, { error: "URL inválida" });
