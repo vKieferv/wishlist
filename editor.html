@@ -57,6 +57,18 @@
   .ayuda-ml ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--tinta); }
   .marcador { display: inline-block; background: var(--tinta); color: var(--panel); padding: 4px 10px; font-weight: 700; text-decoration: none; cursor: grab; }
   #aviso { margin-top: 10px; font: 500 13px var(--f-dato); }
+  .zona-captura { margin-top: 14px; padding: 14px 16px; border: 2px dashed var(--tinta); font-size: 14px; display: block; }
+  .zona-captura b:first-child { display: block; margin-bottom: 4px; }
+  .zona-captura.encima, .zona-captura:focus { background: var(--campo); outline: none; }
+  .boton-chico { display: inline-block; margin-top: 8px; border: 1.5px solid var(--tinta); padding: 4px 10px; font-weight: 600; cursor: pointer; }
+  .dlg-captura { width: min(1100px, calc(100vw - 24px)); max-height: calc(100vh - 24px); border: 1.5px solid var(--tinta); background: var(--panel); color: var(--tinta); padding: 18px; }
+  .dlg-captura::backdrop { background: rgba(0, 0, 0, .6); }
+  .dlg-captura h2 { margin: 0 0 4px; font: 900 30px/1 var(--f-display); text-transform: uppercase; }
+  .captura-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(240px, 1fr); gap: 18px; margin: 10px 0 14px; }
+  @media (max-width: 760px) { .captura-grid { grid-template-columns: 1fr; } }
+  #lienzoCaptura { width: 100%; height: auto; border: 1px solid var(--suave); cursor: crosshair; display: block; }
+  .captura-campos { display: grid; gap: 8px; align-content: start; }
+  .captura-vista { width: 100%; max-height: 220px; object-fit: contain; background: #fff; border: 1px solid var(--suave); }
   #aviso.mal { color: var(--mal); } #aviso.ok { color: var(--ok); }
   #publicacion { white-space: pre-wrap; font: 12px var(--f-dato); background: var(--campo); padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto; }
 
@@ -126,8 +138,14 @@
       <button class="lleno" id="btnLink" type="submit">Agregar</button>
       <button id="btnManual" type="button">Agregar sin link</button>
     </form>
+    <div class="zona-captura" id="zonaCaptura" tabindex="0">
+      <b>¿Mercado Libre u otra tienda que no deja leer el link?</b>
+      Saca un pantallazo de la página del producto (tecla <b>Impr Pant</b> o <b>Win + Shift + S</b>) y pégalo aquí con <b>Ctrl + V</b>.
+      Leo el nombre, el precio y cuándo llega, y recorto la foto.
+      <label class="boton-chico">O elige una imagen<input id="archivoCaptura" type="file" accept="image/*" hidden></label>
+    </div>
     <details class="ayuda-ml">
-      <summary>¿La tienda no me deja leer el link? (Mercado Libre, Falabella…)</summary>
+      <summary>Otra forma: botón de marcadores</summary>
       <p>Algunas tiendas bloquean las lecturas automáticas. Para esas, usa este botón:</p>
       <ol>
         <li>Muestra la barra de marcadores de tu navegador (Ctrl + Shift + B).</li>
@@ -152,6 +170,32 @@
     <div class="cuerpo-panel" id="portada"></div>
   </details>
 </main>
+
+<dialog id="dlgCaptura" class="dlg-captura">
+  <form method="dialog" id="formCaptura">
+    <h2>Desde un pantallazo</h2>
+    <p class="ayuda" id="estadoCaptura">Leyendo el pantallazo…</p>
+    <div class="captura-grid">
+      <div>
+        <p class="ayuda">El recuadro es la foto que voy a usar. Si no está bien, dibuja otro arrastrando con el mouse.</p>
+        <canvas id="lienzoCaptura"></canvas>
+      </div>
+      <div class="captura-campos">
+        <label class="c"><span>Nombre</span><input id="cNombre" type="text" required></label>
+        <label class="c"><span>Precio en pesos</span><input id="cPrecio" type="number" min="0" placeholder="Sin precio"></label>
+        <label class="c"><span>Cuándo llega</span><input id="cEntrega" type="text" placeholder="Ej: entre el miércoles y el jueves"></label>
+        <label class="c"><span>Link (si no lo encontré, pégalo)</span><input id="cLink" type="url" placeholder="https://articulo.mercadolibre.cl/…"></label>
+        <label class="c"><span>Categoría</span><select id="cCat"></select></label>
+        <img id="cVista" alt="Foto recortada" class="captura-vista">
+      </div>
+    </div>
+    <div class="acciones">
+      <button type="button" id="cCancelar">Cancelar</button>
+      <span style="flex:1"></span>
+      <button type="submit" class="lleno" id="cAgregar" disabled>Agregar al álbum</button>
+    </div>
+  </form>
+</dialog>
 
 <script>
 "use strict";
@@ -362,11 +406,368 @@ const MARCADOR = "javascript:(function(){var d=document,q=function(s){var e=d.qu
 
 // En el editor: Ctrl+V en cualquier parte recibe lo que copió el botón.
 document.addEventListener("paste", (e) => {
+  if (e.defaultPrevented || !D) return;
+  // Un pantallazo pegado fuera de la foto de una lámina: lo escaneo.
+  const img = [...((e.clipboardData && e.clipboardData.files) || [])].find((f) => f.type.startsWith("image/"));
+  if (img && !e.target.closest(".foto-col")) { e.preventDefault(); escanear(img); return; }
   const t = (e.clipboardData && e.clipboardData.getData("text")) || "";
-  if (!t.startsWith("ALBUM:") || !D) return;
+  if (!t.startsWith("ALBUM:")) return;
   e.preventDefault();
   try { agregarDesdeNavegador(JSON.parse(t.slice(6))); } catch (x) { aviso("No entendí lo que copió el botón de marcadores.", "mal"); }
 });
+
+// ---------- pantallazos ----------
+// Lee el texto con Tesseract (corre en este navegador) y busca la foto por los píxeles.
+const TESSERACT = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+let captura = null;   // { lienzo de la imagen completa, rect de la foto }
+
+function cargarScript(src) {
+  return new Promise((ok, mal) => {
+    if (window.Tesseract) return ok();
+    const s = document.createElement("script");
+    s.src = src; s.onload = ok; s.onerror = () => mal(new Error("No pude cargar el lector de texto (¿sin internet?)"));
+    document.head.appendChild(s);
+  });
+}
+
+function leerPrecio(t) {
+  const m = /(?:^|[\s(])[$S5]\s?(\d{1,3}(?:[.,]\d{3})+|\d{3,7})(?![\d.,]*%)/.exec(t);
+  return m ? Number(m[1].replace(/[.,]/g, "")) : null;
+}
+const RUIDO = /vendid|nuevo\s*\||envío|envio|llega|retira|color|stock|cantidad|comprar|agregar|cashback|medios de pago|mercado|opciones|interesar|favoritos|cupones|ofertas|categor|vender|ayuda|calificaci|opiniones|devoluci|garant|vendido por|\bmeli\b|ver m[aá]s|suscriptores|exclusivo|sumá|super\b/i;
+
+// La hoja de la página: la zona clara más grande del pantallazo. Así no confundo el fondo de pantalla
+// ni otras ventanas con el producto.
+function buscarHoja(lienzo) {
+  const W = lienzo.width, H = lienzo.height;
+  const c = Math.max(8, Math.round(Math.max(W, H) / 160)), cols = Math.ceil(W / c), filas = Math.ceil(H / c);
+  const d = lienzo.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, W, H).data;
+  const claro = new Uint8Array(cols * filas);
+  for (let y = 0; y < filas; y++) for (let x = 0; x < cols; x++) {
+    let s = 0, n = 0;
+    for (let py = y * c; py < Math.min(H, (y + 1) * c); py += 2) for (let px = x * c; px < Math.min(W, (x + 1) * c); px += 2) {
+      const i = (py * W + px) * 4; s += (d[i] + d[i + 1] + d[i + 2]) / 3; n++;
+    }
+    if (s / n > 200) claro[y * cols + x] = 1;
+  }
+  // Grupos de celdas claras, saltando huecos de hasta 3 celdas (texto, fotos). Me quedo con el más grande.
+  const visto = new Uint8Array(cols * filas);
+  let mejor = null;
+  for (let i = 0; i < claro.length; i++) {
+    if (!claro[i] || visto[i]) continue;
+    const pila = [i]; visto[i] = 1;
+    let x0 = cols, y0 = filas, x1 = 0, y1 = 0, n = 0;
+    while (pila.length) {
+      const k = pila.pop(), x = k % cols, y = (k - x) / cols;
+      n++; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
+        const X = x + dx, Y = y + dy;
+        if (X < 0 || Y < 0 || X >= cols || Y >= filas) continue;
+        const j = Y * cols + X;
+        if (claro[j] && !visto[j]) { visto[j] = 1; pila.push(j); }
+      }
+    }
+    if (!mejor || n > mejor.n) mejor = { n, x0, y0, x1, y1 };
+  }
+  if (!mejor || mejor.n < cols * filas * 0.12) return { x0: 0, y0: 0, x1: W, y1: H };
+  return { x0: mejor.x0 * c, y0: mejor.y0 * c, x1: Math.min(W, (mejor.x1 + 1) * c), y1: Math.min(H, (mejor.y1 + 1) * c) };
+}
+const dentro = (b, h) => b.x0 >= h.x0 - 2 && b.x1 <= h.x1 + 2 && b.y0 >= h.y0 - 2 && b.y1 <= h.y1 + 2;
+
+// Junta palabras de la misma altura que están cerca una de la otra (una columna a la vez).
+function armarLineas(palabras) {
+  const lineas = [];
+  for (const p of palabras.slice().sort((a, b) => a.bbox.x0 - b.bbox.x0)) {
+    const h = p.bbox.y1 - p.bbox.y0;
+    // Se compara con la última palabra de cada línea: misma base (y1) o que se monten en altura, y poco espacio entre medio.
+    const l = lineas.find((x) => {
+      const u = x.partes[x.partes.length - 1].bbox, uh = u.y1 - u.y0, alto = Math.max(uh, h);
+      const montan = Math.min(u.y1, p.bbox.y1) - Math.max(u.y0, p.bbox.y0) > Math.min(uh, h) * 0.5;
+      return (montan || Math.abs(u.y1 - p.bbox.y1) < alto * 0.35) && p.bbox.x0 - u.x1 < alto * 2.5 && p.bbox.x0 - u.x1 > -alto;
+    });
+    if (l) {
+      l.partes.push(p);
+      l.bbox = { x0: Math.min(l.bbox.x0, p.bbox.x0), y0: Math.min(l.bbox.y0, p.bbox.y0), x1: Math.max(l.bbox.x1, p.bbox.x1), y1: Math.max(l.bbox.y1, p.bbox.y1) };
+    } else lineas.push({ partes: [p], bbox: { ...p.bbox } });
+  }
+  const mediana = (v) => { const s = v.slice().sort((a, b) => a - b); return s[Math.floor(s.length / 2)]; };
+  // Segunda pasada: une trozos del mismo renglón (pasa cuando la imagen es chica y las cajas salen raras).
+  const centro = (l) => mediana(l.partes.map((p) => (p.bbox.y0 + p.bbox.y1) / 2));
+  const alto = (l) => Math.max(6, mediana(l.partes.map((p) => p.bbox.y1 - p.bbox.y0)));
+  lineas.sort((a, b) => a.bbox.x0 - b.bbox.x0);
+  for (let i = 0; i < lineas.length; i++) {
+    for (let j = i + 1; j < lineas.length; j++) {
+      const a = lineas[i], b = lineas[j], h = Math.max(alto(a), alto(b));
+      const hueco = b.bbox.x0 - a.bbox.x1;
+      if (Math.abs(centro(a) - centro(b)) < h * 0.7 && hueco > -h && hueco < h * 2.5) {
+        a.partes.push(...b.partes);
+        a.bbox = { x0: Math.min(a.bbox.x0, b.bbox.x0), y0: Math.min(a.bbox.y0, b.bbox.y0), x1: Math.max(a.bbox.x1, b.bbox.x1), y1: Math.max(a.bbox.y1, b.bbox.y1) };
+        lineas.splice(j, 1); j = i;
+      }
+    }
+  }
+  return lineas.map((l) => ({
+    text: l.partes.map((p) => p.text.trim()).join(" "),
+    confidence: l.partes.reduce((s, p) => s + p.confidence, 0) / l.partes.length,
+    bbox: l.bbox,
+    // Altura y centro típicos: algunas palabras traen cajas más altas de lo real.
+    hm: mediana(l.partes.map((p) => p.bbox.y1 - p.bbox.y0)),
+    cy: mediana(l.partes.map((p) => (p.bbox.y0 + p.bbox.y1) / 2)),
+  }));
+}
+
+function buscarPrecio(lineas) {
+  let precio = null;
+  for (const l of lineas) {
+    const t = l.text.replace(/\s+/g, " ").trim(), h = l.hm || l.bbox.y1 - l.bbox.y0, v = leerPrecio(t);
+    if (v && v >= 100 && !/cashback|hasta|cuotas|antes|ahorr|%/i.test(t) && (!precio || h > precio.h)) precio = { v, h, b: l.bbox, cy: l.cy || (l.bbox.y0 + l.bbox.y1) / 2 };
+  }
+  return precio;
+}
+
+function analizarTexto(lineas, hoja, precio) {
+  const L = lineas.map((l) => ({ t: l.text.replace(/\s+/g, " ").trim(), b: l.bbox, h: l.hm || l.bbox.y1 - l.bbox.y0,
+    cy: l.cy || (l.bbox.y0 + l.bbox.y1) / 2, conf: l.confidence })).filter((l) => l.t && dentro(l.b, hoja));
+  // Nombre: la línea más grande y legible de la hoja, por encima del precio, que no sea texto de la tienda.
+  const letras = (t) => (t.match(/[a-záéíóúñü]/gi) || []).length / t.replace(/\s/g, "").length;
+  // En Mercado Libre el nombre va alineado a la izquierda con el precio (en el computador y en el celular).
+  const candidatos = L.filter((l) => l.t.length >= 8 && l.conf >= 55 && letras(l.t) >= 0.6 && /[a-záéíóúñ]{3}/i.test(l.t) &&
+    !leerPrecio(l.t) && !RUIDO.test(l.t) && !/^.{0,2}ega\b/i.test(l.t) &&
+    (!precio || (l.cy < precio.cy - precio.h * 0.5 && Math.abs(l.b.x0 - precio.b.x0) < Math.max(24, precio.h * 2.5))));
+  const puntos = (l) => l.h * (l.conf / 100) * Math.min(1, l.t.length / 20);
+  let titulo = candidatos.sort((a, b) => puntos(b) - puntos(a))[0];
+  let nombre = titulo ? titulo.t : "";
+  if (titulo) {
+    // El nombre puede ocupar varias líneas: junto las de arriba y abajo que empiezan en el mismo lugar y tienen letra parecida.
+    const pegada = (a, b) => b !== a && !leerPrecio(b.t) && !RUIDO.test(b.t) && b.conf >= 50 &&
+      Math.abs(b.b.x0 - a.b.x0) < Math.max(a.h, 8) * 1.5 && Math.abs(b.h - a.h) <= Math.max(a.h, b.h) * 0.45;
+    let arriba = titulo, abajo = titulo;
+    const partes = [titulo];
+    const debajo = (a, l) => l.cy > a.cy + a.h * 0.5 && l.cy - a.cy < a.h * 2.3 && (!precio || l.cy < precio.cy - precio.h * 0.5);
+    for (let i = 0; i < 3; i++) {
+      const s = L.find((l) => pegada(abajo, l) && debajo(abajo, l));
+      if (!s) break; partes.push(s); abajo = s;
+    }
+    for (let i = 0; i < 3; i++) {
+      const s = L.find((l) => pegada(arriba, l) && debajo(l, arriba));
+      if (!s) break; partes.unshift(s); arriba = s;
+    }
+    nombre = partes.map((l) => l.t).join(" ");
+    titulo = { ...titulo, b: { x0: Math.min(...partes.map((l) => l.b.x0)), y0: arriba.b.y0, x1: Math.max(...partes.map((l) => l.b.x1)), y1: abajo.b.y1 } };
+  }
+  const llega = L.find((l) => /^.{0,2}ega\s+(mañana|hoy|el|entre|gratis|ma)/i.test(l.t));
+  const todo = L.map((l) => l.t).join(" ");
+  let link = "";
+  const id = /(\/p\/)?\b(MLC)-?(\d{6,})/i.exec(todo.replace(/\s/g, ""));
+  if (id) link = id[1] ? "https://www.mercadolibre.cl/p/MLC" + id[3] : "https://articulo.mercadolibre.cl/MLC-" + id[3];
+  return {
+    nombre: nombre.replace(/[|_~]+/g, " ").replace(/\s+/g, " ").trim(),
+    precio: precio ? precio.v : null,
+    entrega: llega ? llega.t.replace(/^.{0,2}ega\s+/i, "").replace(/\s*(más detalles|mas detalles).*$/i, "").trim() : "",
+    link,
+    zonaTexto: titulo && precio ? { x0: Math.min(titulo.b.x0, precio.b.x0), y0: titulo.b.y0, x1: Math.max(titulo.b.x1, precio.b.x1), y1: precio.b.y1 } : null,
+  };
+}
+
+// La foto del producto: la zona más grande con "imagen" (muchos bordes y colores) que no sea texto.
+function buscarFoto(lienzo, palabras, zonaTexto, hoja) {
+  const W = lienzo.width, H = lienzo.height, c = Math.max(8, Math.round(Math.max(W, H) / 160));
+  const cols = Math.floor(W / c), filas = Math.floor(H / c);
+  const d = lienzo.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, W, H).data;
+  const texto = new Uint8Array(cols * filas);
+  for (const w of palabras) {
+    if (w.confidence < 60 || !/[a-z0-9áéíóúñ$]{2}/i.test(w.text)) continue;
+    for (let y = Math.floor(w.bbox.y0 / c); y <= Math.min(filas - 1, Math.floor(w.bbox.y1 / c)); y++)
+      for (let x = Math.floor(w.bbox.x0 / c); x <= Math.min(cols - 1, Math.floor(w.bbox.x1 / c)); x++) texto[y * cols + x] = 1;
+  }
+  const img = new Uint8Array(cols * filas);
+  for (let y = 0; y < filas; y++) for (let x = 0; x < cols; x++) {
+    if (texto[y * cols + x]) continue;
+    if (hoja && (x * c < hoja.x0 || (x + 1) * c > hoja.x1 || y * c < hoja.y0 || (y + 1) * c > hoja.y1)) continue;
+    let s = 0, s2 = 0, sat = 0, n = 0;
+    for (let py = y * c; py < (y + 1) * c; py += 3) for (let px = x * c; px < (x + 1) * c; px += 3) {
+      const i = (py * W + px) * 4, r = d[i], g = d[i + 1], b = d[i + 2], l = (r + g + b) / 3;
+      s += l; s2 += l * l; sat += Math.max(r, g, b) - Math.min(r, g, b); n++;
+    }
+    const varianza = s2 / n - (s / n) ** 2;
+    if (varianza > 260 || (sat / n > 40 && s / n < 235)) img[y * cols + x] = 1;
+  }
+  // Grupos conectados (dejo pasar huecos de una celda, porque las fotos tienen fondo blanco).
+  const visto = new Uint8Array(cols * filas);
+  let mejor = null;
+  for (let i = 0; i < img.length; i++) {
+    if (!img[i] || visto[i]) continue;
+    const pila = [i]; visto[i] = 1;
+    let x0 = cols, y0 = filas, x1 = 0, y1 = 0, n = 0;
+    while (pila.length) {
+      const k = pila.pop(), x = k % cols, y = (k - x) / cols;
+      n++; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const X = x + dx, Y = y + dy;
+        if (X < 0 || Y < 0 || X >= cols || Y >= filas) continue;
+        const j = Y * cols + X;
+        if (img[j] && !visto[j]) { visto[j] = 1; pila.push(j); }
+      }
+    }
+    if (n < 12) continue;
+    const ancho = x1 - x0 + 1, alto = y1 - y0 + 1;
+    if (ancho / alto > 4 || alto / ancho > 4) continue;   // barras, banners
+    if (hoja && ancho * c * alto * c > (hoja.x1 - hoja.x0) * (hoja.y1 - hoja.y0) * 0.45) continue;   // media página no es una foto
+    let puntos = n;
+    if (zonaTexto) {
+      // Premio a lo que está junto al nombre y precio; castigo a lo lejano (productos recomendados).
+      const cx = (x0 + x1 + 1) / 2 * c, cy = (y0 + y1 + 1) / 2 * c;
+      const tx = (zonaTexto.x0 + zonaTexto.x1) / 2, ty = (zonaTexto.y0 + zonaTexto.y1) / 2;
+      const dist = Math.hypot(cx - tx, cy - ty) / Math.max(W, H);
+      puntos *= Math.max(0.25, 1.4 - dist * 2.2);
+    }
+    if (!mejor || puntos > mejor.puntos) mejor = { puntos, x: x0 * c, y: y0 * c, w: ancho * c, h: alto * c };
+  }
+  if (!mejor) return { x: 0, y: 0, w: W, h: H };
+  const m = Math.round(c * 0.6);
+  const r = { x: Math.max(0, mejor.x - m), y: Math.max(0, mejor.y - m) };
+  r.w = Math.min(W - r.x, mejor.w + 2 * m); r.h = Math.min(H - r.y, mejor.h + 2 * m);
+  return r;
+}
+
+function recortar(lienzo, r) {
+  const c = el("canvas", { width: Math.max(1, Math.round(r.w)), height: Math.max(1, Math.round(r.h)) });
+  c.getContext("2d").drawImage(lienzo, r.x, r.y, r.w, r.h, 0, 0, c.width, c.height);
+  return c;
+}
+function dibujarCaptura() {
+  const { lienzo, rect } = captura, v = $("lienzoCaptura");
+  v.width = lienzo.width; v.height = lienzo.height;
+  const x = v.getContext("2d");
+  x.drawImage(lienzo, 0, 0);
+  x.fillStyle = "rgba(0,0,0,.45)";
+  x.fillRect(0, 0, v.width, rect.y); x.fillRect(0, rect.y + rect.h, v.width, v.height - rect.y - rect.h);
+  x.fillRect(0, rect.y, rect.x, rect.h); x.fillRect(rect.x + rect.w, rect.y, v.width - rect.x - rect.w, rect.h);
+  x.strokeStyle = "#ffcc00"; x.lineWidth = Math.max(3, v.width / 300); x.strokeRect(rect.x, rect.y, rect.w, rect.h);
+  recortar(lienzo, rect).toBlob((b) => { if (b) { const vista = $("cVista"); if (vista.src) URL.revokeObjectURL(vista.src); vista.src = URL.createObjectURL(b); } }, "image/png");
+}
+
+async function escanear(archivo) {
+  if (!archivo || !archivo.type.startsWith("image/")) return;
+  const dlg = $("dlgCaptura");
+  $("cNombre").value = ""; $("cPrecio").value = ""; $("cEntrega").value = ""; $("cLink").value = "";
+  $("cCat").replaceChildren(...D.categorias.map((c) => el("option", { value: c.id }, c.nombre)));
+  $("cAgregar").disabled = true;
+  $("estadoCaptura").textContent = "Leyendo el pantallazo… (la primera vez tarda un poco más)";
+  const bmp = await createImageBitmap(archivo);
+  const lienzo = el("canvas", { width: bmp.width, height: bmp.height });
+  lienzo.getContext("2d").drawImage(bmp, 0, 0);
+  captura = { lienzo, rect: { x: 0, y: 0, w: bmp.width, h: bmp.height } };
+  dibujarCaptura();
+  if (!dlg.open) dlg.showModal();
+  try {
+    await cargarScript(TESSERACT);
+    // Leo dos veces: a tamaño normal (la letra grande, como el precio) y al doble (la letra chica, como el nombre).
+    // Después junto las dos lecturas, quedándome con la más segura donde se pisan.
+    // Solo leo la hoja de la página, no el resto de la pantalla.
+    const hoja = buscarHoja(lienzo);
+    const hw = hoja.x1 - hoja.x0, hh = hoja.y1 - hoja.y0;
+    const w = await Tesseract.createWorker("spa");
+    const data = { lines: [], words: [] };
+    for (const k of Math.max(hw, hh) < 2200 ? [1, 2] : [1]) {
+      const img = el("canvas", { width: Math.round(hw * k), height: Math.round(hh * k) });
+      const g = img.getContext("2d"); g.imageSmoothingQuality = "high";
+      g.drawImage(lienzo, hoja.x0, hoja.y0, hw, hh, 0, 0, img.width, img.height);
+      const r = (await w.recognize(img)).data;
+      const escala = (b) => ({ x0: hoja.x0 + b.x0 / k, y0: hoja.y0 + b.y0 / k, x1: hoja.x0 + b.x1 / k, y1: hoja.y0 + b.y1 / k });
+      for (const l of r.lines || []) data.lines.push({ text: l.text, confidence: l.confidence, bbox: escala(l.bbox) });
+      for (const p of r.words || []) data.words.push({ text: p.text, confidence: p.confidence, bbox: escala(p.bbox) });
+    }
+    await w.terminate();
+    const area = (b) => Math.max(0, b.x1 - b.x0) * Math.max(0, b.y1 - b.y0);
+    const pisa = (a, b) => area({ x0: Math.max(a.x0, b.x0), y0: Math.max(a.y0, b.y0), x1: Math.min(a.x1, b.x1), y1: Math.min(a.y1, b.y1) }) > 0.5 * Math.min(area(a), area(b));
+    // Palabras de las dos lecturas sin repetir; después armo las líneas yo, para no mezclar columnas.
+    data.words = data.words.filter((p) => p.text.trim() && p.confidence >= 30)
+      .sort((a, b) => b.confidence - a.confidence).filter((p, i, todas) => !todas.slice(0, i).some((o) => pisa(o.bbox, p.bbox)));
+    data.lines = armarLineas(data.words);
+    const precio = buscarPrecio(data.lines || []);
+    const info = analizarTexto(data.lines || [], hoja, precio);
+    captura.lectura = { lineas: data.lines, palabras: data.words, hoja, precio, info };
+    // El link suele verse en la barra de direcciones, que queda fuera de la hoja: la leo aparte.
+    if (!info.link && hoja.y0 > 20) {
+      const barra = el("canvas", { width: Math.round(hw * 2), height: Math.round(Math.min(hoja.y0, 160) * 2) });
+      const g = barra.getContext("2d"); g.imageSmoothingQuality = "high";
+      g.drawImage(lienzo, hoja.x0, Math.max(0, hoja.y0 - 160), hw, Math.min(hoja.y0, 160), 0, 0, barra.width, barra.height);
+      const w2 = await Tesseract.createWorker("eng");
+      const t = (await w2.recognize(barra)).data.text.replace(/\s/g, "");
+      await w2.terminate();
+      const id = /(\/p\/)?(MLC)-?(\d{6,})/i.exec(t);
+      if (id) info.link = id[1] ? "https://www.mercadolibre.cl/p/MLC" + id[3] : "https://articulo.mercadolibre.cl/MLC-" + id[3];
+    }
+    captura.rect = buscarFoto(lienzo, data.words || [], info.zonaTexto, hoja);
+    dibujarCaptura();
+    $("cNombre").value = info.nombre;
+    if (info.precio) $("cPrecio").value = info.precio;
+    $("cEntrega").value = info.entrega;
+    $("cLink").value = info.link;
+    $("cCat").value = adivinarCategoria([info.nombre, info.link].join(" "));
+    $("estadoCaptura").textContent = "Revisa lo que leí y corrige lo que esté mal." + (info.precio ? "" : " No encontré el precio.") + (info.link ? "" : " El link no se veía en el pantallazo: pégalo si lo tienes.");
+  } catch (e) {
+    $("estadoCaptura").textContent = e.message + ". Completa los datos a mano y marca la foto con el mouse.";
+  }
+  $("cAgregar").disabled = false;
+  $("cNombre").focus();
+}
+
+// Dibujar el recuadro de la foto con el mouse.
+(() => {
+  const v = $("lienzoCaptura");
+  let inicio = null;
+  const punto = (e) => { const r = v.getBoundingClientRect(); return { x: (e.clientX - r.left) * v.width / r.width, y: (e.clientY - r.top) * v.height / r.height }; };
+  v.addEventListener("pointerdown", (e) => { if (!captura) return; inicio = punto(e); v.setPointerCapture(e.pointerId); });
+  v.addEventListener("pointermove", (e) => {
+    if (!inicio) return;
+    const p = punto(e);
+    captura.rect = { x: Math.min(inicio.x, p.x), y: Math.min(inicio.y, p.y), w: Math.abs(p.x - inicio.x), h: Math.abs(p.y - inicio.y) };
+    dibujarCaptura();
+  });
+  v.addEventListener("pointerup", () => {
+    if (inicio && captura.rect.w < 20 && captura.rect.h < 20) captura.rect = { x: 0, y: 0, w: v.width, h: v.height };
+    inicio = null; dibujarCaptura();
+  });
+})();
+
+$("cCancelar").onclick = () => $("dlgCaptura").close();
+$("formCaptura").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const b = $("cAgregar"); b.disabled = true; b.textContent = "Agregando…";
+  try {
+    const link = $("cLink").value.trim();
+    const nombre = $("cNombre").value.trim() || "Producto nuevo";
+    const precio = $("cPrecio").value === "" ? null : Number($("cPrecio").value);
+    const blob = await new Promise((ok) => recortar(captura.lienzo, captura.rect).toBlob(ok, "image/png"));
+    const foto = await subirFoto(blob, nombre);
+    let p = link && D.productos.find((x) => x.link && x.link.split("?")[0] === link.split("?")[0]);
+    const nuevo = !p;
+    if (!p) { p = { id: nuevoId(), descripcion: "", nota: "", moneda: "CLP" }; D.productos.unshift(p); }
+    Object.assign(p, { nombre, precio, moneda: "CLP", link, tienda: link ? host(link) : "mercadolibre.cl", foto, categoria: $("cCat").value });
+    if ($("cEntrega").value.trim()) p.entrega = $("cEntrega").value.trim();
+    abiertos.add(p.id);
+    rehacer();
+    $("dlgCaptura").close();
+    aviso((nuevo ? "Agregado: " : "Actualizado: ") + nombre + ".", "ok");
+    const nodo = document.querySelector('[data-id="' + p.id + '"]');
+    if (nodo) nodo.scrollIntoView({ behavior: "smooth", block: "center" });
+  } catch (x) { aviso("No pude agregarlo: " + x.message, "mal"); }
+  b.disabled = false; b.textContent = "Agregar al álbum";
+});
+
+(() => {
+  const z = $("zonaCaptura");
+  $("archivoCaptura").addEventListener("change", (e) => { const f = e.target.files[0]; e.target.value = ""; if (f) escanear(f); });
+  z.addEventListener("dragover", (e) => { e.preventDefault(); z.classList.add("encima"); });
+  z.addEventListener("dragleave", () => z.classList.remove("encima"));
+  z.addEventListener("drop", (e) => {
+    e.preventDefault(); z.classList.remove("encima");
+    const f = [...e.dataTransfer.files].find((x) => x.type.startsWith("image/"));
+    if (f) escanear(f);
+  });
+})();
 
 function numeroDe(v) {
   if (v === null || v === undefined || v === "") return null;
