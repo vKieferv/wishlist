@@ -223,6 +223,7 @@
       '<form id="formLink" class="edicion-form"><label for="nuevoLink">Agregar desde un link</label>' +
       '<div class="edicion-fila"><input id="nuevoLink" type="url" placeholder="https://tienda.cl/producto…" required autocomplete="off">' +
       '<button type="submit">Agregar</button><button type="button" id="nuevoManual" class="sec">Sin link</button>' +
+      '<button type="button" id="cambiarLlave" class="sec">Cambiar llave</button>' +
       '<button type="button" id="salirEdicion" class="sec">Salir</button></div></form>' +
       '<p id="estadoEdicion" role="status">' + esc(edit.mensaje || "Modo edición. Los cambios se guardan en GitHub y la página pública se actualiza en 1 a 2 minutos.") + "</p>" +
       (edit.pendientes.length ? '<ul class="pendientes">' + edit.pendientes.map(function (x) {
@@ -283,7 +284,7 @@
   }
   function explicarError(e) {
     if (e.status === 401) return "La llave no sirve o venció. Sal del modo edición y pon una nueva.";
-    if (e.status === 403 || e.status === 404) return "La llave no tiene permiso de escritura en el repo «" + GH.repo + "». En GitHub, edita la llave: Repository access → Only select repositories → " + GH.repo + "; Permissions → Contents y Actions en «Read and write». (GitHub dijo: " + e.message + ")";
+    if (e.status === 403 || e.status === 404) return "La llave no tiene permiso de escritura en el repo «" + GH.repo + "». Crea una nueva con Repository access → «Only select repositories» → " + GH.repo + ", y en Repository permissions: Contents y Actions en «Read and write». Después toca «Cambiar llave» y pégala. (GitHub dijo: " + e.message + ")";
     return e.message;
   }
   function leerRemoto() {
@@ -346,8 +347,8 @@
       "<p>Para editar desde aquí, la página necesita una llave tuya con permiso sobre el repo <b>" + esc(GH.dueno + "/" + GH.repo) + "</b>. Se crea una sola vez:</p>" +
       '<ol><li>Abre <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com → nueva llave ↗</a>.</li>' +
       "<li><b>Token name</b>: album. <b>Expiration</b>: la que quieras (por ejemplo, 1 año).</li>" +
-      "<li><b>Repository access</b>: Only select repositories → <b>" + esc(GH.repo) + "</b>.</li>" +
-      "<li><b>Permissions → Repository permissions</b>: <b>Contents</b> y <b>Actions</b> en <b>Read and write</b>.</li>" +
+      "<li><b>Repository access</b>: cambia «Public repositories» por <b>Only select repositories</b> y elige <b>" + esc(GH.repo) + "</b>. (Si queda en «Public repositories», la llave solo puede leer.)</li>" +
+      "<li>Abajo aparece <b>Permissions → Repositories → Add permissions</b>: agrega <b>Contents</b> y <b>Actions</b>, y deja ambos en <b>Read and write</b>.</li>" +
       "<li><b>Generate token</b>, cópiala y pégala aquí.</li></ol>" +
       '<label for="llave">Llave</label><input id="llave" type="password" autocomplete="off" required placeholder="github_pat_…">' +
       '<p class="dlg-nota">Queda guardada solo en este navegador. Úsala en tus equipos.</p>' +
@@ -533,6 +534,12 @@
       guardarEstado(); pintarFiltros(); pintarLaminas();
     } else if (b.id === "entrarEdicion") entrarEdicion();
     else if (b.id === "salirEdicion") salirEdicion();
+    else if (b.id === "cambiarLlave") {
+      try { localStorage.removeItem("album-llave"); } catch (x) {}
+      edit.llave = null;
+      salirEdicion();
+      entrarEdicion();
+    }
     else if (b.id === "nuevoManual") agregarManual();
     else if (b.hasAttribute("data-editar")) {
       var p = D.productos.filter(function (x) { return x.id === b.getAttribute("data-editar"); })[0];
