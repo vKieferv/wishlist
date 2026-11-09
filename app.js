@@ -35,7 +35,25 @@
     for (var n = 1; n <= total; n++) if (tengo.indexOf(n) < 0 && p.tomos[n]) return { n: n, t: p.tomos[n] };
     return null;
   }
+  // El pack de la saga manda cuando conviene: faltan 2 o más tomos, el pack cubre la saga
+  // y no sale más caro que comprar los tomos que faltan por separado.
+  function packPrincipal(p) {
+    if (!p.pack || p.pack.oculto || !p.serie || !p.pack.precio) return null;
+    var total = Math.max(1, parseInt(p.serie.total, 10) || 1), tengo = p.serie.tengo || [], faltan = [];
+    for (var n = 1; n <= total; n++) if (tengo.indexOf(n) < 0) faltan.push(n);
+    if (faltan.length < 2) return null;
+    if (!(total <= 4 || (p.pack.cubre && p.pack.cubre >= total))) return null;
+    var suma = 0, completo = true;
+    faltan.forEach(function (k) { var t = (p.tomos || {})[k]; if (t && t.precio) suma += t.precio; else completo = false; });
+    if (completo && p.pack.precio > suma) return null;
+    return { pack: p.pack, ahorro: completo ? suma - p.pack.precio : null, total: total };
+  }
   function efectivo(p) {
+    var k = packPrincipal(p);
+    if (k) {
+      return Object.assign({}, p, { foto: k.pack.foto || p.foto, precio: k.pack.precio, moneda: "CLP", link: k.pack.link, tienda: "buscalibre.cl",
+        entrega: k.pack.entrega || p.entrega, _pack: k });
+    }
     var s = siguienteTomo(p);
     if (!s) return p;
     return Object.assign({}, p, { foto: s.t.foto || p.foto, precio: s.t.precio, moneda: "CLP", link: s.t.link, tienda: "buscalibre.cl",
@@ -76,10 +94,10 @@
       var entero = Number(p.precio) % 1 === 0;
       det.push((m === "USD" ? "US$ " : m + " ") + Number(p.precio).toLocaleString("es-CL", { minimumFractionDigits: entero ? 0 : 2, maximumFractionDigits: 2 }));
     } else if (e) det.push(CLP.format(Number(p.precio)));
-    if (e === 0) det.push(p.tienda === "store.steampowered.com" ? "sin envío" : "envío gratis");
+    if (e === 0) { if (p.tienda !== "store.steampowered.com") det.push("envío gratis"); }
     else if (e) det.push("+ envío " + CLP.format(e));
     else det.push("+ envío");
-    return '<span class="precio">' + (m !== "CLP" && !e ? "≈ " : "") + CLP.format(total) + "<small>" + esc(det.join(" ")) + "</small></span>";
+    return '<span class="precio">' + (m !== "CLP" && !e ? "≈ " : "") + CLP.format(total) + (det.length ? "<small>" + esc(det.join(" ")) + "</small>" : "") + "</span>";
   }
   var RANGOS = [
     { id: "r1", nombre: "Hasta $15 mil", min: -1, max: 15000 },
@@ -109,12 +127,23 @@
   var cats = [], idsCat = [], numero = {}, nombreCat = {};
   function catDe(p) { return idsCat.indexOf(p.categoria) >= 0 ? p.categoria : "__otros"; }
   function deCategoria(id) {
-    return (D.productos || []).filter(function (p) { return catDe(p) === id; })
+    return visibles.filter(function (p) { return catDe(p) === id; })
       .sort(function (a, b) { return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0) || porPrecio(1)(a, b); });
+  }
+  // La lámina "cualquier juego de mi lista de Steam" sobra cuando los juegos ya están en el álbum:
+  // pasa a ser un link en el título de la sección.
+  var visibles = [];
+  function esAtajoSteam(p) { return /steam(powered|community)\.com\/wishlist\//i.test(p.link || ""); }
+  function tipoDe(p) {
+    if (p.fuente === "steam" || /steampowered\.com/.test(p.tienda || "")) return "juego";
+    if (p.serie || p.tomos || p.tienda === "buscalibre.cl" || p.categoria === "libros") return "libro";
+    return "cosa";
   }
   function preparar() {
     D.productos = D.productos || [];
     D.categorias = D.categorias || [];
+    var haySteam = D.productos.some(function (p) { return p.fuente === "steam"; });
+    visibles = D.productos.filter(function (p) { return !(haySteam && esAtajoSteam(p)); });
     cats = D.categorias.slice();
     idsCat = cats.map(function (c) { return c.id; });
     if (D.productos.some(function (p) { return idsCat.indexOf(p.categoria) < 0; })) cats.push({ id: "__otros", nombre: "Otros" });
@@ -144,8 +173,11 @@
     }
     var txt = !t.length ? "No tengo ninguno." : !f.length ? "Saga completa." :
       "Tengo " + rangos(t) + ". Me falta" + (f.length > 1 ? "n " : " ") + rangos(f) + ".";
-    var sig = siguienteTomo(p), extra = "";
-    if (sig) {
+    var sig = siguienteTomo(p), extra = "", k = packPrincipal(p);
+    if (k) {
+      extra = '<p class="siguiente">Pack con ' + (k.pack.cubre || k.total) + " tomos" + (k.pack.editorial ? " · " + esc(k.pack.editorial) : "") +
+        (k.ahorro > 0 ? " · " + CLP.format(k.ahorro) + " menos que por separado" : "") + ". Los números llevan a cada tomo.</p>";
+    } else if (sig) {
       extra = '<p class="siguiente">Siguiente: tomo ' + sig.n + (sig.t.editorial ? " · " + esc(sig.t.editorial) : "") +
         (sig.t.otraEdicion ? " <em>(otra edición)</em>" : "") + "</p>";
     }
@@ -159,22 +191,37 @@
     if (f && edit.activo && GH && /^fotos\//.test(f)) return "https://raw.githubusercontent.com/" + GH.dueno + "/" + GH.repo + "/main/" + f;
     return f;
   }
-  function lamina(original, sinDestacar) {
-    var p = efectivo(original);
-    var foto = fotoUrl(p.foto), link = urlSegura(p.link), num = numero[p.id] || 0;
-    var destacada = p.destacado && !sinDestacar;
-    return '<article class="lamina' + (destacada ? " destacada" : "") + '">' +
-      '<div class="lamina-sup"><b>Nº ' + pad(num) + "</b><span>" + esc(nombreCat[catDe(p)] || "") + "</span>" +
-      (edit.activo ? '<button type="button" class="editar-lamina" data-editar="' + esc(p.id) + '">Editar</button>' : "") + "</div>" +
-      (foto ? '<div class="lamina-foto"><img src="' + esc(foto) + '" alt="' + esc(p.nombre) + '" loading="lazy"></div>'
-            : '<div class="lamina-foto sin-foto" aria-hidden="true"><span>' + num + "</span></div>") +
-      '<div class="lamina-cuerpo"><h3>' + esc(p.nombre) + "</h3>" +
-      (p.descripcion ? "<p>" + esc(p.descripcion) + "</p>" : "") +
+  function tiendaCorta(p) {
+    var t = String(p.tienda || "");
+    if (!t) return "";
+    if (/steampowered/.test(t)) return "Steam";
+    return t.replace(/^(www|store|articulo|listado)\./, "").split(".")[0];
+  }
+  // Cada tipo tiene su carta: "juego" (cápsula apaisada de Steam), "libro" (portada vertical) y "cosa" (foto al tamaño que venga).
+  function lamina(original, plano) {
+    var p = efectivo(original), tipo = tipoDe(original);
+    var foto = fotoUrl(p.foto), link = urlSegura(p.link), num = numero[original.id] || 0;
+    var destacada = original.destacado && !plano;
+    var nota = p.nota && !(tipo === "juego" && /^se regala desde steam\.?$/i.test(p.nota)) ? p.nota : "";
+    var entrega = tipo === "juego" ? "" : entregaDe(p);
+    var boton = tipo === "juego" ? "Regalar en Steam" : p._pack ? "Ver el pack" : p._sig ? "Tomo " + p._sig.n : "Dónde comprar";
+    var etiqueta = estado.orden !== "categoria" ? nombreCat[catDe(original)] : tiendaCorta(p);
+    var imagen;
+    if (foto) imagen = '<div class="lamina-foto"><img src="' + esc(foto) + '" alt="' + esc(p.nombre) + '" loading="lazy"></div>';
+    else if (tipo === "libro") imagen = '<div class="lamina-foto"><div class="tapa-falsa" aria-hidden="true"><b>' + esc(p.nombre) + "</b><span>" + esc(String(p.descripcion || "").replace(/\.$/, "")) + "</span></div></div>";
+    else imagen = '<div class="lamina-foto sin-foto" aria-hidden="true"><span>' + num + "</span></div>";
+    return '<article class="lamina ' + tipo + (destacada ? " destacada" : "") + (foto ? "" : " sin-imagen") + '">' +
+      '<div class="lamina-num"><b>Nº ' + pad(num) + "</b>" + (destacada ? "<i>Brillante</i>" : "") +
+      (edit.activo ? '<button type="button" class="editar-lamina" data-editar="' + esc(original.id) + '">Editar</button>' : "") + "</div>" +
+      imagen +
+      '<div class="lamina-cuerpo">' + (etiqueta ? '<span class="lamina-tienda">' + esc(etiqueta) + "</span>" : "") +
+      "<h3>" + esc(p.nombre) + "</h3>" +
+      (p.descripcion ? '<p class="desc">' + esc(p.descripcion) + "</p>" : "") +
       (p.serie ? serieHtml(original) : "") +
-      (p.nota ? '<div class="nota">' + esc(p.nota) + "</div>" : "") +
-      (entregaDe(p) ? '<div class="entrega">Llega: ' + esc(entregaDe(p)) + "</div>" : "") + "</div>" +
+      (nota ? '<div class="nota">' + esc(nota) + "</div>" : "") +
+      (entrega ? '<div class="entrega">Llega: ' + esc(entrega) + "</div>" : "") + "</div>" +
       '<div class="lamina-pie">' + precioHtml(p) +
-      (link ? '<a class="ir" href="' + esc(link) + '" target="_blank" rel="noopener" title="' + esc(p.tienda || link) + '">' + (p._sig ? "Tomo " + p._sig.n + " ↗" : "Dónde comprar ↗") + "</a>" : "") +
+      (link ? '<a class="ir" href="' + esc(link) + '" target="_blank" rel="noopener" title="' + esc(p.tienda || link) + '">' + boton + " ↗</a>" : "") +
       "</div></article>";
   }
 
@@ -184,7 +231,7 @@
   function guardarEstado() { try { localStorage.setItem("album-filtros", JSON.stringify(estado)); } catch (e) {} }
 
   function filtrados() {
-    return D.productos.filter(function (p) {
+    return visibles.filter(function (p) {
       return (estado.cat === "todas" || catDe(p) === estado.cat) && enRango(p, estado.rango);
     });
   }
@@ -193,7 +240,7 @@
       esc(texto) + (cuenta != null ? "<i>" + cuenta + "</i>" : "") + "</button>";
   }
   function pintarFiltros() {
-    var todos = D.productos;
+    var todos = visibles;
     if (estado.cat !== "todas" && !todos.some(function (p) { return catDe(p) === estado.cat; })) estado.cat = "todas";
     var enCat = todos.filter(function (p) { return estado.cat === "todas" || catDe(p) === estado.cat; });
     var cCats = chip("cat", "todas", "Todas", todos.length) + cats.map(function (c) {
@@ -220,9 +267,17 @@
       cats.forEach(function (c) {
         var ps = deCategoria(c.id).filter(function (p) { return lista.indexOf(p) >= 0; });
         if (!ps.length) return;
+        var juegos = ps.every(function (p) { return tipoDe(p) === "juego"; });
+        var libros = ps.every(function (p) { return tipoDe(p) === "libro"; });
+        var carrusel = juegos && ps.length >= 4;
+        var atajo = D.productos.filter(function (p) { return catDe(p) === c.id && visibles.indexOf(p) < 0; })[0];
         html += '<section class="categoria" id="cat-' + esc(c.id) + '"><div class="categoria-cab"><h2>' + esc(c.nombre) +
-          "</h2><span>" + pad(ps.length, 2) + (ps.length === 1 ? " lámina" : " láminas") + "</span></div>" +
-          '<div class="grilla">' + ps.map(function (p) { return lamina(p); }).join("") + "</div></section>";
+          "</h2><span>" + pad(ps.length, 2) + (ps.length === 1 ? " lámina" : " láminas") + "</span>" +
+          (atajo ? '<a class="cab-link" href="' + esc(urlSegura(atajo.link)) + '" target="_blank" rel="noopener">Ver mi lista completa en Steam ↗</a>' : "") +
+          (carrusel ? '<span class="flechas"><button type="button" class="flecha" data-mover="-1" aria-label="Juegos anteriores">←</button>' +
+            '<button type="button" class="flecha" data-mover="1" aria-label="Juegos siguientes">→</button></span>' : "") + "</div>" +
+          '<div class="' + (carrusel ? "carrusel" : "grilla" + (libros ? " de-libros" : "")) + '"' + (carrusel ? ' tabindex="0"' : "") + ">" +
+          ps.map(function (p) { return lamina(p, carrusel); }).join("") + "</div></section>";
       });
     } else {
       var ord = lista.slice().sort(porPrecio(estado.orden === "caro" ? -1 : 1));
@@ -255,16 +310,17 @@
   }
   function pintarTodo() {
     preparar();
-    var conPrecio = D.productos.filter(function (p) { return enPesos(p) != null; }).length;
+    var precios = visibles.map(enPesos).filter(function (v) { return v != null; });
+    var desde = precios.length ? CLP.format(Math.min.apply(null, precios)) : "—";
     raiz.innerHTML =
       '<header class="portada"><div class="ancho">' +
       '<div class="portada-sup"><span>Álbum de cumpleaños</span><span>Temporada ' + esc(D.temporada) + "</span></div>" +
       '<span class="dorsal" aria-hidden="true">' + esc(D.numero) + "</span>" +
       "<h1><small>El álbum de</small>" + esc(D.nombre) + "</h1>" +
       '<div class="portada-inf"><p>' + esc(D.intro) + "</p>" +
-      '<div class="marcador"><div><b>' + pad(D.productos.length, 2) + "</b><span>Láminas</span></div>" +
+      '<div class="marcador"><div><b>' + pad(visibles.length, 2) + "</b><span>Láminas</span></div>" +
       "<div><b>" + pad(cats.length, 2) + "</b><span>Categorías</span></div>" +
-      "<div><b>" + pad(conPrecio, 2) + "</b><span>Con precio</span></div></div></div>" +
+      "<div><b>" + desde + "</b><span>Regalos desde</span></div></div></div>" +
       "</div></header>" +
       barraEdicion() +
       '<nav class="filtros" id="filtros" aria-label="Filtros"></nav>' +
@@ -554,6 +610,9 @@
       estado[b.getAttribute("data-grupo")] = b.getAttribute("data-id");
       if (b.getAttribute("data-grupo") === "cat") estado.rango = "todos";
       guardarEstado(); pintarFiltros(); pintarLaminas();
+    } else if (b.classList.contains("flecha")) {
+      var car = b.closest(".categoria").querySelector(".carrusel");
+      if (car) car.scrollBy({ left: Number(b.getAttribute("data-mover")) * car.clientWidth * 0.85, behavior: "smooth" });
     } else if (b.id === "entrarEdicion") entrarEdicion();
     else if (b.id === "salirEdicion") salirEdicion();
     else if (b.id === "cambiarLlave") {

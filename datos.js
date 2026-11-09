@@ -57,7 +57,7 @@ window.DATOS = {
       "moneda": "USD",
       "link": "https://factory-store8899.com/products/partido-de-visitante-del-colo-2003",
       "tienda": "factory-store8899.com",
-      "foto": "fotos/camiseta-visita-2003.png",
+      "foto": "fotos/camiseta-visita-2003-mw9v3nn2.jpg",
       "destacado": true
     },
     {
@@ -82,7 +82,7 @@ window.DATOS = {
       "moneda": "CLP",
       "link": "",
       "tienda": "",
-      "foto": "fotos/tazon-del-colo-colo-mw9si9e4.jpg"
+      "foto": "fotos/tazon-del-colo-colo-mw9v3npo.jpg"
     },
     {
       "id": "p04",
@@ -154,7 +154,7 @@ window.DATOS = {
       "precio": null,
       "moneda": "CLP",
       "link": "",
-      "tienda": "",
+      "tienda": "buscalibre.cl",
       "foto": "",
       "serie": {
         "total": 3,
@@ -162,7 +162,54 @@ window.DATOS = {
           2
         ]
       },
-      "destacado": false
+      "destacado": false,
+      "origen": "https://www.buscalibre.cl/libro-fundacion-foundation/9788497599245/p/1068198",
+      "entrega": "Mañana",
+      "linea": {
+        "nombre": "Trilogía de la Fundación",
+        "editorial": "Debolsillo",
+        "formato": "tapa blanda",
+        "origen": "https://www.buscalibre.cl/libro-fundacion-foundation/9788497599245/p/1068198"
+      },
+      "tomos": {
+        "1": {
+          "link": "https://www.buscalibre.cl/libro-fundacion-foundation/9788497599245/p/1068198",
+          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/01/f0/01f07382be96d18737844132fe5bb70f.jpg",
+          "precio": 9800,
+          "isbn": "9788497599245",
+          "nombre": "Fundación / Foundation",
+          "editorial": "Debolsillo",
+          "entrega": "Mañana"
+        },
+        "2": {
+          "link": "https://www.buscalibre.cl/libro-fundacion-e-imperio-foundation-and-empire/9788497595018/p/1038576",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/de/d5/ded59c5e8fb93650a8baafce7d7502e1.jpg",
+          "precio": 20500,
+          "isbn": "9788497595018",
+          "nombre": "Fundación E Imperio / Foundation and Empire",
+          "editorial": "Debolsillo",
+          "entrega": "entre el 27 Nov y el 10 Dic"
+        },
+        "3": {
+          "link": "https://www.buscalibre.cl/libro-segunda-fundacion-second-foundation/9788497596763/p/1068193",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/35/e2/35e289fe5b4f62708d39905f21c7136d.jpg",
+          "precio": 14910,
+          "isbn": "9788497596763",
+          "nombre": "Segunda Fundación / Second Foundation",
+          "editorial": "Debolsillo",
+          "entrega": "Mañana"
+        }
+      },
+      "pack": {
+        "link": "https://www.buscalibre.cl/libro-trilogia-fundacion-fundacion-fundacion-e-imperio-segunda-fundacion/9789877255119/p/54497460",
+        "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/97/66/9766f54b7f45c4b3c7d60c40991b9f44.jpg",
+        "precio": 12600,
+        "isbn": "9789877255119",
+        "nombre": "Trilogia Fundacion [Fundacion/Fundacion e Imperio/Segunda Fundacion]",
+        "editorial": "Debolsillo",
+        "entrega": "Mañana",
+        "cubre": 3
+      }
     },
     {
       "id": "p10",
@@ -242,7 +289,7 @@ window.DATOS = {
       "moneda": "CLP",
       "link": "",
       "tienda": "",
-      "foto": "fotos/pesa-rusa-kettlebell-mw9sgmg2.jpg"
+      "foto": "fotos/pesa-rusa-kettlebell-mw9v3nr3.jpg"
     },
     {
       "id": "p15",
@@ -387,7 +434,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-09T22:38:32.508Z",
+  "actualizado": "2026-11-09T22:57:59.755Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",

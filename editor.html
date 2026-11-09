@@ -90,8 +90,10 @@
   .lomos button.tengo { background: var(--suave); border-color: var(--suave); color: var(--gris); }
   .acciones { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
   .fila input[type=url] { flex: 1 1 260px; min-width: 0; }
-  ul.tomos { margin: 8px 0 0; padding-left: 18px; font: 12px/1.6 var(--f-dato); }
-  ul.tomos a { color: inherit; }
+  ul.tomos { margin: 8px 0 0; padding: 0; list-style: none; font: 12px/1.6 var(--f-dato); display: grid; gap: 8px; }
+  ul.tomos li { border-top: 1px dashed var(--suave); padding-top: 6px; }
+  ul.tomos a, .pack a { color: inherit; }
+  .pack { margin-top: 10px; padding: 8px 10px; border: 1.5px solid var(--tinta); font: 12px/1.6 var(--f-dato); }
 
   .panel .cuerpo-panel { padding: 6px 14px 16px; display: grid; gap: 10px; }
   .cat-fila { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(0, 2fr) auto; gap: 8px; align-items: center; }
@@ -208,14 +210,57 @@ function adivinarCategoria(texto) {
 }
 
 // ---------- fotos ----------
+// Si la foto tiene un borde de color parejo (casi siempre blanco), devuelve el rectángulo sin ese borde.
+function recorte(x, w, h) {
+  const d = x.getImageData(0, 0, w, h).data;
+  const px = (X, Y) => { const i = (Y * w + X) * 4; return [d[i], d[i + 1], d[i + 2]]; };
+  const dist = (a, b) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
+  const esquinas = [px(0, 0), px(w - 1, 0), px(0, h - 1), px(w - 1, h - 1)], fondo = esquinas[0];
+  if (esquinas.some((e) => dist(e, fondo) > 36)) return null;
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let Y = 0; Y < h; Y += 2) for (let X = 0; X < w; X += 2) {
+    if (dist(px(X, Y), fondo) > 48) { if (X < x0) x0 = X; if (X > x1) x1 = X; if (Y < y0) y0 = Y; if (Y > y1) y1 = Y; }
+  }
+  if (x1 < 0) return null;
+  const m = Math.round(Math.max(w, h) * 0.025);
+  x0 = Math.max(0, x0 - m); y0 = Math.max(0, y0 - m); x1 = Math.min(w - 1, x1 + m); y1 = Math.min(h - 1, y1 + m);
+  const rw = x1 - x0 + 1, rh = y1 - y0 + 1;
+  if ((rw > w * 0.94 && rh > h * 0.94) || rw < w * 0.2 || rh < h * 0.2) return null;
+  return { x: x0, y: y0, w: rw, h: rh };
+}
 async function achicar(blob) {
   const bmp = await createImageBitmap(blob);
   const k = Math.min(1, 1200 / Math.max(bmp.width, bmp.height));
   const c = el("canvas", { width: Math.round(bmp.width * k), height: Math.round(bmp.height * k) });
-  const x = c.getContext("2d");
+  const x = c.getContext("2d", { willReadFrequently: true });
   x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
   x.drawImage(bmp, 0, 0, c.width, c.height);
-  return new Promise((ok) => c.toBlob(ok, "image/jpeg", 0.86));
+  const r = recorte(x, c.width, c.height);
+  let salida = c;
+  if (r) {
+    salida = el("canvas", { width: r.w, height: r.h });
+    salida.getContext("2d").drawImage(c, r.x, r.y, r.w, r.h, 0, 0, r.w, r.h);
+  }
+  return new Promise((ok) => salida.toBlob(ok, "image/jpeg", 0.86));
+}
+// Vuelve a guardar las fotos que ya están en la carpeta, recortándoles el borde.
+async function recortarTodas() {
+  let n = 0;
+  for (const p of D.productos) {
+    if (!/^fotos\//.test(p.foto || "")) continue;
+    try {
+      const antes = await (await fetch("/" + p.foto)).blob();
+      const bmp = await createImageBitmap(antes);
+      const c = el("canvas", { width: bmp.width, height: bmp.height });
+      const x = c.getContext("2d", { willReadFrequently: true });
+      x.drawImage(bmp, 0, 0);
+      if (!recorte(x, c.width, c.height)) continue;
+      p.foto = await subirFoto(antes, p.nombre);
+      n++;
+    } catch (e) { /* esa foto queda como estaba */ }
+  }
+  rehacer();
+  aviso(n ? "Recorté el borde de " + n + " foto" + (n > 1 ? "s" : "") + "." : "Ninguna foto tenía borde que recortar.", "ok");
 }
 async function subirFoto(blob, nombre) {
   const j = await api("/api/foto?nombre=" + encodeURIComponent(slug(nombre)), { method: "POST", headers: { "Content-Type": "image/jpeg" }, body: await achicar(blob) });
@@ -367,15 +412,37 @@ function formProducto(p) {
         D = await api("/api/datos");
         abiertos.add(p.id);
         pintar();
-        aviso(r.tomos ? "Encontré los tomos " + r.encontrados.join(", ") + " de «" + r.saga + "»." : "No encontré otros tomos de esa línea.", r.tomos ? "ok" : "mal");
+        aviso(r.tomos ? "Encontré los tomos " + r.encontrados.join(", ") + " de «" + r.saga + "»" + (r.pack ? " y un pack: " + r.pack : "") + "."
+          : "No pude ordenar los tomos de esa edición solo. Pega el link de cada tomo en su casilla.", r.tomos ? "ok" : "mal");
       } catch (e) { aviso(e.message, "mal"); blBoton.disabled = false; blBoton.textContent = "Buscar tomos"; }
     } }, "Buscar tomos");
-    const lista = p.tomos ? el("ul", { class: "tomos" }, Object.keys(p.tomos).sort((a, b) => a - b).map((n) => {
-      const t = p.tomos[n];
-      return el("li", {}, el("b", {}, "Tomo " + n), " · ", t.precio ? CLP.format(t.precio) : "sin precio",
-        t.editorial ? " · " + t.editorial : "", t.otraEdicion ? " (otra edición)" : "", t.entrega ? " · llega " + t.entrega : "",
-        " ", el("a", { href: t.link, target: "_blank", rel: "noopener" }, "ver ↗"));
-    })) : null;
+    // Una fila por tomo: lo que encontré y una casilla para corregirlo con otro link.
+    const filaTomo = (n) => {
+      const t = (p.tomos || {})[n];
+      const inp = el("input", { type: "url", placeholder: "Link de Buscalibre del tomo " + n, value: t ? t.link : "" });
+      const b = el("button", { type: "button", class: "mini", onclick: async () => {
+        b.disabled = true;
+        try {
+          clearTimeout(temporizador);
+          await api("/api/datos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(D) });
+          await api("/api/tomo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ para: p.id, n, url: inp.value.trim() }) });
+          D = await api("/api/datos"); abiertos.add(p.id); pintar();
+          aviso("Tomo " + n + " actualizado.", "ok");
+        } catch (e) { aviso(e.message, "mal"); b.disabled = false; }
+      } }, "Cambiar");
+      return el("li", {},
+        el("div", {}, el("b", {}, "Tomo " + n), (p.serie.tengo || []).includes(n) ? " · ya lo tengo" : "",
+          t ? [" · ", t.precio ? CLP.format(t.precio) : "sin precio", t.editorial ? " · " + t.editorial : "", t.otraEdicion ? " (otra edición)" : "", t.entrega ? " · llega " + t.entrega : ""] : " · sin link"),
+        el("div", { class: "fila" }, inp, b));
+    };
+    const filas = [];
+    if (p.tomos || p.linea) for (let n = 1; n <= total; n++) filas.push(filaTomo(n));
+    const pack = p.pack ? el("div", { class: "pack" },
+      el("b", {}, "Pack: "), p.pack.nombre, " · ", CLP.format(p.pack.precio), p.pack.editorial ? " · " + p.pack.editorial : "", p.pack.entrega ? " · llega " + p.pack.entrega : "", " ",
+      el("a", { href: p.pack.link, target: "_blank", rel: "noopener" }, "ver ↗"),
+      el("label", { class: "check" }, el("input", { type: "checkbox", checked: !p.pack.oculto, onchange: (e) => { p.pack.oculto = !e.target.checked; guardar(); } }),
+        "Mostrar el pack como principal cuando conviene")) : null;
+    const lista = filas.length ? [pack, el("ul", { class: "tomos" }, filas)] : pack;
     serie = el("div", { class: "todo" },
       el("label", { class: "c" }, el("span", {}, "Libros de la saga (clic en los que ya tienes)")),
       el("div", { class: "fila" }, tot, lomos),
@@ -456,7 +523,8 @@ function pintarPortada() {
       campo(D, "temporada", "Temporada (año)"),
       campo(D, "tasaUSD", "Dólar en pesos (para filtrar precios en US$)", { tipo: "number" }),
       (() => { D.envios = D.envios || {}; return campo(D.envios, "buscalibre.cl", "Envío Buscalibre (pesos)", { tipo: "number" }); })(),
-      campo(D, "intro", "Texto de bienvenida", { area: true, clase: "todo" })));
+      campo(D, "intro", "Texto de bienvenida", { area: true, clase: "todo" })),
+    el("div", {}, el("button", { type: "button", onclick: recortarTodas }, "Recortar el borde blanco de las fotos guardadas")));
 }
 function pintarLista() {
   const lista = $("lista");

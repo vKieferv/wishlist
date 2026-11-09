@@ -79,7 +79,7 @@ async function sincronizar(d, config) {
       actualizados++;
     } else {
       d.productos.push({
-        id, fuente: "steam", categoria: catJuegos, nombre: j.nombre, descripcion: j.descripcion, nota: "Se regala desde Steam.",
+        id, fuente: "steam", categoria: catJuegos, nombre: j.nombre, descripcion: j.descripcion, nota: "",
         precio: j.precio, moneda: "CLP", link: j.link, tienda: "store.steampowered.com", foto: j.foto,
       });
       nuevos++;
