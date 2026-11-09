@@ -163,13 +163,13 @@ window.DATOS = {
         ]
       },
       "destacado": false,
-      "origen": "https://www.buscalibre.cl/libro-fundacion-foundation/9788497599245/p/1068198",
+      "origen": "https://www.buscalibre.cl/libro-estuche-la-fundacion-contiene-fundacion-fundacion-e-imperio-segunda-fundacion/9788466389242/p/64553364",
       "entrega": "Mañana",
       "linea": {
         "nombre": "Trilogía de la Fundación",
         "editorial": "Debolsillo",
-        "formato": "tapa blanda",
-        "origen": "https://www.buscalibre.cl/libro-fundacion-foundation/9788497599245/p/1068198"
+        "formato": "tapa dura",
+        "origen": "https://www.buscalibre.cl/libro-estuche-la-fundacion-contiene-fundacion-fundacion-e-imperio-segunda-fundacion/9788466389242/p/64553364"
       },
       "tomos": {
         "1": {
@@ -201,11 +201,11 @@ window.DATOS = {
         }
       },
       "pack": {
-        "link": "https://www.buscalibre.cl/libro-trilogia-fundacion-fundacion-fundacion-e-imperio-segunda-fundacion/9789877255119/p/54497460",
-        "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/97/66/9766f54b7f45c4b3c7d60c40991b9f44.jpg",
-        "precio": 12600,
-        "isbn": "9789877255119",
-        "nombre": "Trilogia Fundacion [Fundacion/Fundacion e Imperio/Segunda Fundacion]",
+        "link": "https://www.buscalibre.cl/libro-estuche-la-fundacion-contiene-fundacion-fundacion-e-imperio-segunda-fundacion/9788466389242/p/64553364",
+        "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/f8/c3/f8c3e008f7c07cc10a4c2593fc38f1c5.jpg",
+        "precio": 44700,
+        "isbn": "9788466389242",
+        "nombre": "Estuche La fundación (contiene Fundación | Fundación e Imperio | Segunda Fundación)",
         "editorial": "Debolsillo",
         "entrega": "Mañana",
         "cubre": 3
@@ -220,7 +220,7 @@ window.DATOS = {
       "precio": null,
       "moneda": "CLP",
       "link": "",
-      "tienda": "",
+      "tienda": "buscalibre.cl",
       "foto": "",
       "serie": {
         "total": 8,
@@ -229,6 +229,73 @@ window.DATOS = {
           2,
           3
         ]
+      },
+      "linea": {
+        "nombre": "Nacidos de la Bruma [Mistborn]",
+        "editorial": "B De Bolsillo",
+        "formato": "tapa blanda",
+        "origen": "https://www.buscalibre.cl/libro-aleacion-de-ley-nacidos-de-la-bruma-mistborn-4/9788413148434/p/55001788"
+      },
+      "origen": "https://www.buscalibre.cl/libro-aleacion-de-ley-nacidos-de-la-bruma-mistborn-4/9788413148434/p/55001788",
+      "tomos": {
+        "1": {
+          "link": "https://www.buscalibre.cl/libro-nacidos-de-la-bruma-nacidos-de-la-bruma-mistborn-1/9788419260246/p/55778527",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/83/8c/838cbdabf559cd3bbcb999707d3b3180.jpg",
+          "precio": 18900,
+          "isbn": "9788419260246",
+          "nombre": "Nacidos de la Bruma (Nacidos de la Bruma [Mistborn] 1)",
+          "editorial": "Nova",
+          "entrega": "Mañana",
+          "otraEdicion": true
+        },
+        "2": {
+          "link": "https://www.buscalibre.cl/libro-el-pozo-de-la-ascension-nacidos-de-la-bruma-mistborn-2/9788419260253/p/55778530",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/9f/f6/9ff6c53b10f87b40b2dd12b361c71486.jpg",
+          "precio": 31540,
+          "isbn": "9788419260253",
+          "nombre": "EL POZO DE LA ASCENSION (NACIDOS DE LA BRUMA [MISTBORN] 2)",
+          "editorial": "NOVA",
+          "entrega": "entre el 24 Nov y el 30 Nov",
+          "otraEdicion": true
+        },
+        "3": {
+          "link": "https://www.buscalibre.cl/libro-el-heroe-de-las-eras-nacidos-de-la-bruma-mistborn-3/9788419260260/p/55778533",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/d1/10/d1103b55759d65b26a6070cf99fa5b8e.jpg",
+          "precio": 31540,
+          "isbn": "9788419260260",
+          "nombre": "EL HEROE DE LAS ERAS (NACIDOS DE LA BRUMA [MISTBORN] 3)",
+          "editorial": "NOVA",
+          "entrega": "entre el 24 Nov y el 30 Nov",
+          "otraEdicion": true
+        },
+        "4": {
+          "link": "https://www.buscalibre.cl/libro-aleacion-de-ley-nacidos-de-la-bruma-mistborn-4/9788413148434/p/55001788",
+          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/89/b4/89b4c5962ce43a7034894249d4e56379.jpg",
+          "precio": 25890,
+          "isbn": "9788413148434",
+          "nombre": "Aleación de ley (Nacidos de la Bruma [Mistborn] 4)",
+          "editorial": "B De Bolsillo",
+          "entrega": "entre el 25 Nov y el 02 Dic"
+        },
+        "5": {
+          "link": "https://www.buscalibre.cl/libro-sombras-de-identidad-nacidos-de-la-bruma-mistborn-5/9788490708293/p/51474836",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/17/d7/17d7d8ce95685a83f66d307caab7ac18.jpg",
+          "precio": 32480,
+          "isbn": "9788490708293",
+          "nombre": "Sombras de Identidad (Nacidos de la Bruma [Mistborn] 5)",
+          "editorial": "B De Bolsillo",
+          "entrega": "entre el 04 Dic y el 11 Dic"
+        }
+      },
+      "pack": {
+        "link": "https://www.buscalibre.cl/libro-nacidos-de-la-bruma-trilogia-original-mistborn-1-el-imperio-final/9788413149813/p/63312456",
+        "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/dc/56/dc5608de36c3acf5188a440baebedc3c.jpg",
+        "precio": 12600,
+        "isbn": "9788413149813",
+        "nombre": "Nacidos de la Bruma (Trilogía Original Mistborn 1): El Imperio Final",
+        "editorial": "B De Bolsillo",
+        "entrega": "Mañana",
+        "cubre": null
       }
     },
     {
@@ -434,7 +501,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-09T22:57:59.755Z",
+  "actualizado": "2026-11-09T23:02:21.443Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
