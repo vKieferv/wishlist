@@ -48,6 +48,18 @@ window.DATOS = {
   ],
   "productos": [
     {
+      "id": "pmw9vovtm0uq",
+      "categoria": "gamer",
+      "nombre": "Barra de Sonido Gamer - Redragon GS570 Darknets RGB - Bluetooth/3.5mm (GS570)",
+      "descripcion": "Barra de Sonido Gamer - Redragon GS570 Darknets RGB - Bluetooth/3.5mm (GS570)",
+      "nota": "",
+      "precio": 24990,
+      "moneda": "CLP",
+      "link": "https://myshop.cl/producto/barra-de-sonido-redragon-gs570-darknets-rgb-bluetooth35mm-gs570-p11955",
+      "tienda": "myshop.cl",
+      "foto": "fotos/barra-de-sonido-gamer-redragon-gs570-dar-mw9vox2p.jpg"
+    },
+    {
       "id": "pmw9vlzdn71b",
       "categoria": "gamer",
       "nombre": "Mercado Libre",
@@ -555,29 +567,18 @@ window.DATOS = {
       "foto": "fotos/pesa-rusa-kettlebell-mw9v3nr3.jpg"
     },
     {
-      "id": "p15",
-      "categoria": "varios",
-      "nombre": "Encendedor Clipper de metal",
-      "descripcion": "De cualquier color.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": ""
-    },
-    {
       "id": "p16",
-      "categoria": "suenos",
-      "nombre": "Un auto",
+      "categoria": "varios",
+      "nombre": "Un auto ",
       "descripcion": "O, si no, el curso de manejo. Algún día hay que empezar.",
       "nota": "",
-      "precio": null,
+      "precio": 140000,
       "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": "",
-      "destacado": true
+      "link": "https://escuelapuntodepartida.cl",
+      "tienda": "escuelapuntodepartida.cl",
+      "foto": "fotos/un-auto-mw9vx5vl.jpg",
+      "destacado": true,
+      "envio": 0
     },
     {
       "id": "steam-1091500",
@@ -697,7 +698,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-09T23:12:37.537Z",
+  "actualizado": "2026-11-09T23:22:10.787Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
