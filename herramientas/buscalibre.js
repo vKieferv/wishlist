@@ -39,6 +39,15 @@ async function traer(url) {
   return { html: await r.text(), url: r.url || url };
 }
 
+// "Llega Mañana a Santiago…" -> "Mañana"; "Llega entre el 3 y el 10 de dic. a …" -> "entre el 3 y el 10 de dic."
+function leerEntrega(html) {
+  const i = html.search(/>\s*Llega\s/);
+  if (i < 0) return "";
+  const t = decodificar(html.slice(i + 1, i + 800).replace(/<[^>]+>/g, " "));
+  const m = /Llega\s+(.+?)(?:\s+a\s+[A-ZÁÉÍÓÚÑ]|\s*\.\s*Seleccionar|$)/.exec(t);
+  return m ? m[1].replace(/\s+\.$/, "").trim() : "";
+}
+
 async function leerLibro(url) {
   const { html, url: final } = await traer(url);
   const ld = [...html.matchAll(/<script[^>]*ld\+json[^>]*>([\s\S]*?)<\/script>/gi)]
@@ -56,7 +65,22 @@ async function leerLibro(url) {
     precio: oferta.price != null ? Math.round(Number(oferta.price)) : null,
     foto: String(ld.image || ""),
     descripcion: resumir(ld.description),
+    entrega: leerEntrega(html),
   };
+}
+
+// Abre la ficha de cada tomo para confirmar precio, portada y plazo de entrega.
+async function completarTomos(tomos) {
+  for (const n of Object.keys(tomos)) {
+    const t = tomos[n];
+    if (t.entrega !== undefined) continue;
+    try {
+      const f = await leerLibro(t.link);
+      t.entrega = f.entrega;
+      if (f.precio) t.precio = f.precio;
+      if (f.foto) t.foto = f.foto;
+    } catch (e) { t.entrega = ""; }
+  }
 }
 
 async function buscar(q) {
@@ -132,6 +156,7 @@ async function agregarLibro(d, url, para) {
   const catLibros = (d.categorias || []).find((c) => c.id === "libros") ? "libros" : "";
   const previa = para && d.productos.find((x) => x.id === para);
   const tomos = await tomosDeLaLinea(libro, previa && previa.serie ? previa.serie.total : 0);
+  await completarTomos(tomos);
   const numeros = Object.keys(tomos).map(Number);
 
   if (!libro.linea) {
@@ -141,7 +166,7 @@ async function agregarLibro(d, url, para) {
       p = { id: "p" + Date.now().toString(36), categoria: catLibros, nombre: libro.nombre, descripcion: libro.autor ? libro.autor + "." : "", nota: "", moneda: "CLP" };
       d.productos.unshift(p);
     }
-    Object.assign(p, { link: libro.link, origen: url, tienda: "buscalibre.cl", foto: libro.foto, precio: libro.precio, moneda: "CLP" });
+    Object.assign(p, { link: libro.link, origen: url, tienda: "buscalibre.cl", foto: libro.foto, precio: libro.precio, moneda: "CLP", entrega: libro.entrega });
     return { saga: p.nombre, tomos: 0, nueva: !para };
   }
 
@@ -164,7 +189,7 @@ async function agregarLibro(d, url, para) {
   p.tomos = {};
   for (const n of numeros.sort((a, b) => a - b)) {
     const t = tomos[n];
-    p.tomos[n] = { link: t.link, foto: t.foto, precio: t.precio, isbn: t.isbn, nombre: t.nombre, editorial: t.editorial };
+    p.tomos[n] = { link: t.link, foto: t.foto, precio: t.precio, isbn: t.isbn, nombre: t.nombre, editorial: t.editorial, entrega: t.entrega || "" };
     if (t.otraEdicion) p.tomos[n].otraEdicion = true;
   }
   p.tienda = "buscalibre.cl";

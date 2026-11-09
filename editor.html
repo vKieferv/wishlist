@@ -89,6 +89,9 @@
   .lomos button { width: 30px; height: 40px; padding: 0; font: 600 12px var(--f-dato); }
   .lomos button.tengo { background: var(--suave); border-color: var(--suave); color: var(--gris); }
   .acciones { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .fila input[type=url] { flex: 1 1 260px; min-width: 0; }
+  ul.tomos { margin: 8px 0 0; padding-left: 18px; font: 12px/1.6 var(--f-dato); }
+  ul.tomos a { color: inherit; }
 
   .panel .cuerpo-panel { padding: 6px 14px 16px; display: grid; gap: 10px; }
   .cat-fila { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(0, 2fr) auto; gap: 8px; align-items: center; }
@@ -177,8 +180,16 @@ function rehacer() { guardar(); pintar(); }
 // ---------- utilidades ----------
 const CLP = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
 function precioTxt(p) {
-  if (p.precio === null || p.precio === "" || p.precio === undefined) return "Sin precio";
-  return p.moneda === "CLP" ? CLP.format(p.precio) : (p.moneda === "USD" ? "US$ " : p.moneda + " ") + p.precio;
+  let base = p.precio, moneda = p.moneda;
+  if (p.tomos && p.serie) {
+    const tengo = p.serie.tengo || [];
+    const n = Object.keys(p.tomos).map(Number).sort((a, b) => a - b).find((x) => !tengo.includes(x));
+    if (n) { base = p.tomos[n].precio; moneda = "CLP"; }
+  }
+  if (base === null || base === "" || base === undefined) return "Sin precio";
+  const env = p.envio !== undefined && p.envio !== null && p.envio !== "" ? Number(p.envio) : (D.envios || {})[p.tienda];
+  const pesos = moneda === "USD" ? base * (Number(D.tasaUSD) || 950) : Number(base);
+  return CLP.format(Math.round((pesos + (Number(env) || 0)) / 10) * 10) + (env == null ? " + envío" : "");
 }
 function slug(s) {
   return String(s || "foto").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "foto";
@@ -343,9 +354,34 @@ function formProducto(p) {
         onclick: () => { p.serie.tengo = tiene ? p.serie.tengo.filter((x) => x !== n) : [...p.serie.tengo, n].sort((a, b) => a - b); rehacer(); } }, String(n)));
     }
     const tot = el("input", { type: "number", min: 1, value: total, onchange: () => { p.serie.total = Math.max(1, parseInt(tot.value, 10) || 1); rehacer(); } });
+    const blInput = el("input", { type: "url", placeholder: "https://www.buscalibre.cl/libro-… (un tomo de tu edición)", value: p.linea ? p.linea.origen : "" });
+    const blBoton = el("button", { type: "button", class: "lleno mini", onclick: async () => {
+      const url = blInput.value.trim();
+      if (!/buscalibre\.[a-z.]+\/libro-/i.test(url)) { aviso("Pega el link de un libro de Buscalibre.", "mal"); return; }
+      blBoton.disabled = true; blBoton.textContent = "Buscando…";
+      aviso("Buscando los demás tomos de esa edición en Buscalibre… (puede tardar un minuto)");
+      try {
+        clearTimeout(temporizador);
+        await api("/api/datos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(D) });
+        const r = await api("/api/libro", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url, para: p.id }) });
+        D = await api("/api/datos");
+        abiertos.add(p.id);
+        pintar();
+        aviso(r.tomos ? "Encontré los tomos " + r.encontrados.join(", ") + " de «" + r.saga + "»." : "No encontré otros tomos de esa línea.", r.tomos ? "ok" : "mal");
+      } catch (e) { aviso(e.message, "mal"); blBoton.disabled = false; blBoton.textContent = "Buscar tomos"; }
+    } }, "Buscar tomos");
+    const lista = p.tomos ? el("ul", { class: "tomos" }, Object.keys(p.tomos).sort((a, b) => a - b).map((n) => {
+      const t = p.tomos[n];
+      return el("li", {}, el("b", {}, "Tomo " + n), " · ", t.precio ? CLP.format(t.precio) : "sin precio",
+        t.editorial ? " · " + t.editorial : "", t.otraEdicion ? " (otra edición)" : "", t.entrega ? " · llega " + t.entrega : "",
+        " ", el("a", { href: t.link, target: "_blank", rel: "noopener" }, "ver ↗"));
+    })) : null;
     serie = el("div", { class: "todo" },
       el("label", { class: "c" }, el("span", {}, "Libros de la saga (clic en los que ya tienes)")),
-      el("div", { class: "fila" }, tot, lomos));
+      el("div", { class: "fila" }, tot, lomos),
+      el("label", { class: "c" }, el("span", {}, "Link de un tomo en Buscalibre: busco los demás de la misma edición")),
+      el("div", { class: "fila" }, blInput, blBoton),
+      lista);
   }
 
   let confirmar = false;
@@ -377,6 +413,9 @@ function formProducto(p) {
           (() => { const s = el("select", {}, D.categorias.map((c) => el("option", { value: c.id, selected: p.categoria === c.id }, c.nombre)));
             s.onchange = () => { p.categoria = s.value; rehacer(); }; return s; })()),
         campo(p, "link", "Link de compra", { tipo: "url", clase: "todo", ph: "https://…", alCambiar: () => { p.tienda = host(p.link); } }),
+        campo(p, "envio", "Envío en pesos (vacío = el de la tienda)", { tipo: "number",
+          ph: (D.envios || {})[p.tienda] != null ? "Tienda: " + CLP.format(D.envios[p.tienda]) : "No sé el envío" }),
+        campo(p, "entrega", "Cuánto se demora en llegar", { ph: (D.entregas || {})[p.tienda] || "Ej: 3 a 5 días hábiles" }),
         serie,
         el("div", { class: "todo acciones" },
           el("label", { class: "check" }, el("input", { type: "checkbox", checked: !!p.destacado, onchange: (e) => { p.destacado = e.target.checked; rehacer(); } }), "Destacada (lámina doble)"),
@@ -416,6 +455,7 @@ function pintarPortada() {
       campo(D, "numero", "Número de camiseta"),
       campo(D, "temporada", "Temporada (año)"),
       campo(D, "tasaUSD", "Dólar en pesos (para filtrar precios en US$)", { tipo: "number" }),
+      (() => { D.envios = D.envios || {}; return campo(D.envios, "buscalibre.cl", "Envío Buscalibre (pesos)", { tipo: "number" }); })(),
       campo(D, "intro", "Texto de bienvenida", { area: true, clase: "todo" })));
 }
 function pintarLista() {

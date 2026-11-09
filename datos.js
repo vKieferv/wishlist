@@ -392,5 +392,12 @@ window.DATOS = {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
     "shareToken": "13784532523920350706"
+  },
+  "envios": {
+    "buscalibre.cl": 3990,
+    "store.steampowered.com": 0
+  },
+  "entregas": {
+    "store.steampowered.com": "Al instante (regalo en Steam)"
   }
 };

@@ -254,10 +254,16 @@ const servidor = http.createServer(async (req, res) => {
   }
 });
 
+// Abre el editor en su propia ventana (Edge en modo aplicación); si no hay Edge, en el navegador normal.
+function abrirVentana() {
+  const url = `http://127.0.0.1:${PUERTO}/editor.html`;
+  exec(`start "" msedge --app=${url} --window-size=1280,900`, (err) => { if (err) exec(`start "" "${url}"`); });
+}
+
 servidor.on("error", (e) => {
   if (e.code === "EADDRINUSE") {
-    console.log("El editor ya estaba abierto. Lo abro en el navegador.");
-    if (!process.argv.includes("--sin-abrir")) exec(`start "" "http://127.0.0.1:${PUERTO}/editor.html"`);
+    console.log("El editor ya estaba abierto. Abro otra ventana.");
+    if (!process.argv.includes("--sin-abrir")) abrirVentana();
     setTimeout(() => process.exit(0), 500);
   } else throw e;
 });
@@ -265,7 +271,7 @@ if (require.main === module) {
   servidor.listen(PUERTO, "127.0.0.1", () => {
     console.log(`Editor listo en http://127.0.0.1:${PUERTO}/editor.html`);
     console.log("Deja esta ventana abierta mientras editas. Ciérrala para apagar el editor.");
-    if (!process.argv.includes("--sin-abrir")) exec(`start "" "http://127.0.0.1:${PUERTO}/editor.html"`);
+    if (!process.argv.includes("--sin-abrir")) abrirVentana();
   });
 }
 

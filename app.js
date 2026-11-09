@@ -38,10 +38,19 @@
   function efectivo(p) {
     var s = siguienteTomo(p);
     if (!s) return p;
-    return Object.assign({}, p, { foto: s.t.foto || p.foto, precio: s.t.precio, moneda: "CLP", link: s.t.link, tienda: "buscalibre.cl", _sig: s });
+    return Object.assign({}, p, { foto: s.t.foto || p.foto, precio: s.t.precio, moneda: "CLP", link: s.t.link, tienda: "buscalibre.cl",
+      entrega: s.t.entrega || p.entrega, _sig: s });
   }
   function sinPrecio(p) { p = efectivo(p); return p.precio === null || p.precio === "" || p.precio === undefined; }
-  function enPesos(p) {
+  // Envío: el de la lámina, o el de la tienda (Portada → envíos), o desconocido (null).
+  function envioDe(p) {
+    if (p.envio !== undefined && p.envio !== null && p.envio !== "") return Number(p.envio);
+    var e = (D.envios || {})[p.tienda];
+    return e === undefined || e === null || e === "" ? null : Number(e);
+  }
+  function entregaDe(p) { return p.entrega || (D.entregas || {})[p.tienda] || ""; }
+  // Precio del producto en pesos, sin envío.
+  function basePesos(p) {
     p = efectivo(p);
     if (sinPrecio(p)) return null;
     var n = Number(p.precio);
@@ -51,14 +60,26 @@
     if (m === "USD") return n * (Number(D.tasaUSD) || 950);
     return null;
   }
+  // Precio real: producto + envío. Es el que se muestra en grande y el que usan los filtros.
+  function enPesos(p) {
+    var b = basePesos(p);
+    if (b == null) return null;
+    var e = envioDe(efectivo(p));
+    return Math.round((b + (e || 0)) / 10) * 10;
+  }
   function precioHtml(p) {
     p = efectivo(p);
-    var v = enPesos(p), m = String(p.moneda || "CLP").toUpperCase();
     if (sinPrecio(p)) return '<span class="precio sin">Sin precio</span>';
-    if (m === "CLP") return '<span class="precio">' + CLP.format(Number(p.precio)) + "</span>";
-    var entero = Number(p.precio) % 1 === 0;
-    var txt = (m === "USD" ? "US$ " : m + " ") + Number(p.precio).toLocaleString("es-CL", { minimumFractionDigits: entero ? 0 : 2, maximumFractionDigits: 2 });
-    return '<span class="precio">' + esc(txt) + (v != null ? "<small>≈ " + CLP.format(Math.round(v / 100) * 100) + "</small>" : "") + "</span>";
+    var total = enPesos(p), m = String(p.moneda || "CLP").toUpperCase(), e = envioDe(p), det = [];
+    if (total == null) return '<span class="precio">' + esc(m + " " + p.precio) + "</span>";
+    if (m !== "CLP") {
+      var entero = Number(p.precio) % 1 === 0;
+      det.push((m === "USD" ? "US$ " : m + " ") + Number(p.precio).toLocaleString("es-CL", { minimumFractionDigits: entero ? 0 : 2, maximumFractionDigits: 2 }));
+    } else if (e) det.push(CLP.format(Number(p.precio)));
+    if (e === 0) det.push(p.tienda === "store.steampowered.com" ? "sin envío" : "envío gratis");
+    else if (e) det.push("+ envío " + CLP.format(e));
+    else det.push("+ envío");
+    return '<span class="precio">' + (m !== "CLP" && !e ? "≈ " : "") + CLP.format(total) + "<small>" + esc(det.join(" ")) + "</small></span>";
   }
   var RANGOS = [
     { id: "r1", nombre: "Hasta $15 mil", min: -1, max: 15000 },
@@ -150,7 +171,8 @@
       '<div class="lamina-cuerpo"><h3>' + esc(p.nombre) + "</h3>" +
       (p.descripcion ? "<p>" + esc(p.descripcion) + "</p>" : "") +
       (p.serie ? serieHtml(original) : "") +
-      (p.nota ? '<div class="nota">' + esc(p.nota) + "</div>" : "") + "</div>" +
+      (p.nota ? '<div class="nota">' + esc(p.nota) + "</div>" : "") +
+      (entregaDe(p) ? '<div class="entrega">Llega: ' + esc(entregaDe(p)) + "</div>" : "") + "</div>" +
       '<div class="lamina-pie">' + precioHtml(p) +
       (link ? '<a class="ir" href="' + esc(link) + '" target="_blank" rel="noopener" title="' + esc(p.tienda || link) + '">' + (p._sig ? "Tomo " + p._sig.n + " ↗" : "Dónde comprar ↗") + "</a>" : "") +
       "</div></article>";
