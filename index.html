@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revista Vicho</title>
+<meta name="description" content="La wishlist de cumpleaños de Vicho, en formato revista: ideas para quien no sabe qué regalar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --papel: #f4f0e8;
+    --tinta: #111111;
+    --tinta-suave: #4a4743;
+    --linea: #1111112e;
+    --acento: #c8102e;
+    --tarjeta: #fbf9f4;
+    --tapa-fondo: #111111;
+    --tapa-texto: #f4f0e8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --papel: #141414;
+      --tinta: #f1ede5;
+      --tinta-suave: #b3ada3;
+      --linea: #f1ede533;
+      --acento: #ff4d5e;
+      --tarjeta: #1c1c1c;
+      --tapa-fondo: #f1ede5;
+      --tapa-texto: #111111;
+    }
+  }
+  :root[data-theme="dark"] {
+    --papel: #141414;
+    --tinta: #f1ede5;
+    --tinta-suave: #b3ada3;
+    --linea: #f1ede533;
+    --acento: #ff4d5e;
+    --tarjeta: #1c1c1c;
+    --tapa-fondo: #f1ede5;
+    --tapa-texto: #111111;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  a { color: inherit; }
+  .hoja { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Portada ---------- */
+  .portada {
+    background: var(--tapa-fondo);
+    color: var(--tapa-texto);
+    padding: 20px 0 48px;
+    overflow: hidden;
+  }
+  .barra {
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    border-bottom: 1px solid currentColor; padding-bottom: 10px;
+  }
+  .cabecera {
+    font-family: "Anton", Impact, sans-serif;
+    font-size: clamp(88px, 24vw, 260px);
+    line-height: .82;
+    letter-spacing: -.01em;
+    margin: 18px 0 0;
+    text-transform: uppercase;
+  }
+  .cabecera span { color: var(--acento); }
+  .bajada {
+    display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 28px;
+  }
+  @media (min-width: 760px) { .bajada { grid-template-columns: 1.3fr 1fr; align-items: end; } }
+  .titular {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 900; font-size: clamp(28px, 4.6vw, 48px); line-height: 1.05; margin: 0;
+  }
+  .titular em { font-style: italic; color: var(--acento); }
+  .sumario { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+  .sumario li { display: flex; gap: 12px; padding: 7px 0; border-top: 1px solid color-mix(in srgb, currentColor 30%, transparent); }
+  .sumario b { font-family: "Anton", sans-serif; font-weight: 400; font-size: 18px; min-width: 2.2em; color: var(--acento); }
+  .sumario a { text-decoration: none; }
+  .sumario a:hover { text-decoration: underline; }
+
+  /* ---------- Editorial ---------- */
+  .editorial {
+    display: grid; grid-template-columns: 1fr; gap: 20px;
+    padding: 48px 0 8px; border-bottom: 3px double var(--tinta);
+  }
+  @media (min-width: 760px) { .editorial { grid-template-columns: 220px 1fr; } }
+  .rotulo {
+    font-size: 12px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--acento);
+  }
+  .editorial p { margin: 0 0 16px; font-family: "Playfair Display", Georgia, serif; font-size: 20px; line-height: 1.45; }
+  .editorial p:first-child::first-letter {
+    font-family: "Anton", sans-serif; float: left; font-size: 74px; line-height: .8; padding: 6px 10px 0 0; color: var(--acento);
+  }
+
+  /* ---------- Secciones ---------- */
+  .seccion { padding: 48px 0 8px; }
+  .seccion-cab {
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--tinta); padding-bottom: 8px; margin-bottom: 24px;
+  }
+  .seccion-cab .num { font-family: "Anton", sans-serif; font-size: 44px; line-height: 1; color: var(--acento); }
+  .seccion-cab h2 {
+    font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase;
+    font-size: clamp(32px, 6vw, 56px); line-height: 1; margin: 0; letter-spacing: .01em;
+  }
+  .seccion-cab .pie { margin-left: auto; font-size: 13px; color: var(--tinta-suave); font-style: italic; }
+
+  .grilla { display: grid; grid-template-columns: 1fr; gap: 0; }
+  @media (min-width: 640px) { .grilla { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 960px) { .grilla.tres { grid-template-columns: repeat(3, 1fr); } }
+
+  .item {
+    padding: 18px 18px 22px 0; border-top: 1px solid var(--linea);
+  }
+  @media (min-width: 640px) {
+    .item { padding-right: 24px; }
+  }
+  .item h3 {
+    font-family: "Playfair Display", Georgia, serif; font-weight: 700; font-size: 23px; line-height: 1.15; margin: 4px 0 6px;
+  }
+  .item p { margin: 0; color: var(--tinta-suave); font-size: 15px; }
+  .etiqueta {
+    display: inline-block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+    border: 1px solid currentColor; padding: 2px 7px; border-radius: 2px;
+  }
+  .etiqueta.roja { color: var(--acento); }
+  .enlaces { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .boton {
+    display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 700;
+    background: var(--tinta); color: var(--papel); padding: 8px 12px; border-radius: 2px;
+  }
+  .boton:hover { background: var(--acento); color: #fff; }
+  .boton:focus-visible, a:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+
+  /* Ficha técnica para la polera */
+  .ficha {
+    background: var(--tarjeta); border: 1px solid var(--linea); padding: 22px; margin-top: 8px;
+    display: grid; grid-template-columns: 1fr; gap: 20px;
+  }
+  @media (min-width: 760px) { .ficha { grid-template-columns: 200px 1fr; align-items: center; } }
+  .dorsal {
+    background: #111; color: #f4f0e8; aspect-ratio: 4/5; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; border-radius: 6px 6px 18px 18px; max-width: 200px; width: 100%; margin: 0 auto;
+    box-shadow: inset 0 0 0 4px #111, inset 0 0 0 6px #f4f0e8;
+  }
+  .dorsal .nombre { font-family: "Anton", sans-serif; letter-spacing: .12em; font-size: 22px; }
+  .dorsal .n13 { font-family: "Anton", sans-serif; font-size: 108px; line-height: .9; }
+  .ficha dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 15px; }
+  .ficha dt { font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: .1em; padding-top: 3px; }
+  .ficha dd { margin: 0; }
+
+  /* Libros */
+  .saga { padding: 18px 0; border-top: 1px solid var(--linea); display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 760px) { .saga { grid-template-columns: 1fr 1.1fr; align-items: center; gap: 24px; } }
+  .saga h3 { font-family: "Playfair Display", Georgia, serif; font-size: 23px; margin: 0; line-height: 1.15; }
+  .saga .autor { font-size: 13px; color: var(--tinta-suave); }
+  .lomos { display: flex; flex-wrap: wrap; gap: 5px; }
+  .lomo {
+    width: 30px; height: 46px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px;
+    font-family: "Anton", sans-serif; font-size: 14px; border: 1.5px solid var(--tinta); border-radius: 2px;
+  }
+  .lomo.tengo { background: var(--tinta); color: var(--papel); opacity: .35; }
+  .lomo.falta { background: transparent; color: var(--tinta); }
+  .lomo.falta:nth-child(odd) { border-color: var(--acento); color: var(--acento); }
+  .saga .nota { font-size: 13px; color: var(--tinta-suave); margin-top: 6px; }
+  .leyenda { display: flex; gap: 18px; font-size: 13px; color: var(--tinta-suave); margin-top: 18px; flex-wrap: wrap; }
+  .leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .leyenda i { width: 12px; height: 18px; border: 1.5px solid var(--tinta); display: inline-block; }
+  .leyenda i.t { background: var(--tinta); opacity: .35; }
+
+  /* Gran premio */
+  .premio {
+    margin: 56px 0 0; background: var(--acento); color: #fff; padding: 36px 24px; position: relative; overflow: hidden;
+  }
+  .premio .rotulo { color: #fff; opacity: .85; }
+  .premio h2 {
+    font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase; margin: 8px 0 6px;
+    font-size: clamp(48px, 11vw, 120px); line-height: .9;
+  }
+  .premio p { font-family: "Playfair Display", Georgia, serif; font-size: 22px; margin: 0; max-width: 34ch; }
+  .premio p em { font-style: italic; }
+
+  footer {
+    margin-top: 56px; padding: 24px 0 40px; border-top: 3px double var(--tinta); font-size: 13px; color: var(--tinta-suave);
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+
+<header class="portada">
+  <div class="hoja">
+    <div class="barra">
+      <span>Edición de cumpleaños</span>
+      <span>Nº 01 · Santiago · 2026</span>
+      <span>Precio: tu cariño</span>
+    </div>
+    <h1 class="cabecera">Vi<span>cho</span></h1>
+    <div class="bajada">
+      <p class="titular">¿No sabes qué regalarle? <em>Esta revista</em> te lo resuelve.</p>
+      <ul class="sumario" aria-label="En esta edición">
+        <li><b>01</b><a href="#cachureos">Cachureos y equipo</a></li>
+        <li><b>02</b><a href="#vestuario">Vestuario albo</a></li>
+        <li><b>03</b><a href="#biblioteca">La biblioteca</a></li>
+        <li><b>04</b><a href="#juegos">Juegos</a></li>
+        <li><b>05</b><a href="#premio">El gran premio</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main class="hoja">
+
+  <section class="editorial">
+    <div class="rotulo">Editorial</div>
+    <div>
+      <p>Durante el año voy anotando cosas que me gustaría tener. No es una lista de exigencias: son ideas, para quien quiera regalarme algo y no sepa por dónde partir.</p>
+      <p>Cualquier cosa de aquí me hace feliz. Y si traes algo que no está en la revista, también.</p>
+    </div>
+  </section>
+
+  <section class="seccion" id="cachureos">
+    <div class="seccion-cab">
+      <span class="num">01</span>
+      <h2>Cachureos y equipo</h2>
+      <span class="pie">Para la pieza, el escritorio y el gimnasio</span>
+    </div>
+    <div class="grilla tres">
+      <article class="item">
+        <span class="etiqueta">Gamer</span>
+        <h3>Control inalámbrico para el PC</h3>
+        <p>Para jugar desde el sillón sin cables de por medio.</p>
+      </article>
+      <article class="item">
+        <span class="etiqueta">Tecnología</span>
+        <h3>Raspberry Pi</h3>
+        <p>Una placa para cacharrear proyectos.</p>
+      </article>
+      <article class="item">
+        <span class="etiqueta">Gimnasio</span>
+        <h3>Pesa rusa (kettlebell)</h3>
+        <p>De más de 10 kilos.</p>
+      </article>
+      <article class="item">
+        <span class="etiqueta roja">Albo</span>
+        <h3>Tazón del Colo-Colo</h3>
+        <p>Hay unos de 1 litro o casi. Cualquiera sirve.</p>
+      </article>
+      <article class="item">
+        <span class="etiqueta">Bolsillo</span>
+        <h3>Encendedor Clipper de metal</h3>
+        <p>De cualquier color.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="seccion" id="vestuario">
+    <div class="seccion-cab">
+      <span class="num">02</span>
+      <h2>Vestuario albo</h2>
+      <span class="pie">Siempre la talla más grande</span>
+    </div>
+
+    <div class="ficha">
+      <div class="dorsal" aria-hidden="true">
+        <span class="nombre">VICHO</span>
+        <span class="n13">13</span>
+      </div>
+      <div>
+        <span class="etiqueta roja">Ficha técnica</span>
+        <h3 style="font-family:'Playfair Display',Georgia,serif;font-size:28px;margin:8px 0 14px;line-height:1.1">Camiseta negra del Colo-Colo</h3>
+        <dl>
+          <dt>Color</dt><dd>Negra</dd>
+          <dt>Talla</dt><dd>La más grande que haya</dd>
+          <dt>Número</dt><dd>13</dd>
+          <dt>Nombre</dt><dd>«VICHO» o «PINO»</dd>
+        </dl>
+        <div class="enlaces">
+          <a class="boton" href="https://factory-store8899.com/products/partido-de-visitante-del-colo-2003" target="_blank" rel="noopener">Visita 2003 ↗</a>
+          <a class="boton" href="https://factory-store8899.com/products/2026-colo-reservaprecio-fijo-con-impuestos-incluidos-1?VariantsId=17378" target="_blank" rel="noopener">Modelo 2026 ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="grilla" style="margin-top:12px">
+      <article class="item">
+        <span class="etiqueta">Abrigo</span>
+        <h3>Cortavientos</h3>
+        <p>Talla 10XL, si existe.</p>
+      </article>
+      <article class="item">
+        <span class="etiqueta">Pantalón</span>
+        <h3>Jeans cargo</h3>
+        <p>Talla 46.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="seccion" id="biblioteca">
+    <div class="seccion-cab">
+      <span class="num">03</span>
+      <h2>La biblioteca</h2>
+      <span class="pie">Fíjate en cuáles me faltan</span>
+    </div>
+
+    <div class="saga">
+      <div>
+        <h3>Trilogía de la Fundación</h3>
+        <div class="autor">Isaac Asimov · 3 libros</div>
+        <div class="nota">El 2 ya lo tengo (gracias, Anabel). Me faltan el 1 y el 3.</div>
+      </div>
+      <div class="lomos" aria-label="Tengo el 2; me faltan el 1 y el 3">
+        <span class="lomo falta">1</span><span class="lomo tengo">2</span><span class="lomo falta">3</span>
+      </div>
+    </div>
+
+    <div class="saga">
+      <div>
+        <h3>Mistborn (Nacidos de la Bruma)</h3>
+        <div class="autor">Brandon Sanderson · 8 libros</div>
+        <div class="nota">Tengo del 1 al 3. Me faltan del 4 al 8.</div>
+      </div>
+      <div class="lomos" aria-label="Tengo del 1 al 3; me faltan del 4 al 8">
+        <span class="lomo tengo">1</span><span class="lomo tengo">2</span><span class="lomo tengo">3</span><span class="lomo falta">4</span><span class="lomo falta">5</span><span class="lomo falta">6</span><span class="lomo falta">7</span><span class="lomo falta">8</span>
+      </div>
+    </div>
+
+    <div class="saga">
+      <div>
+        <h3>Escuadrón</h3>
+        <div class="autor">Brandon Sanderson · 5 libros</div>
+        <div class="nota">Tengo el 1. Me faltan del 2 al 5.</div>
+      </div>
+      <div class="lomos" aria-label="Tengo el 1; me faltan del 2 al 5">
+        <span class="lomo tengo">1</span><span class="lomo falta">2</span><span class="lomo falta">3</span><span class="lomo falta">4</span><span class="lomo falta">5</span>
+      </div>
+    </div>
+
+    <div class="saga">
+      <div>
+        <h3>El archivo de las tormentas</h3>
+        <div class="autor">Brandon Sanderson · 12 tomos</div>
+        <div class="nota">Tengo el 1. Me faltan del 2 al 12.</div>
+      </div>
+      <div class="lomos" aria-label="Tengo el 1; me faltan del 2 al 12">
+        <span class="lomo tengo">1</span><span class="lomo falta">2</span><span class="lomo falta">3</span><span class="lomo falta">4</span><span class="lomo falta">5</span><span class="lomo falta">6</span><span class="lomo falta">7</span><span class="lomo falta">8</span><span class="lomo falta">9</span><span class="lomo falta">10</span><span class="lomo falta">11</span><span class="lomo falta">12</span>
+      </div>
+    </div>
+
+    <div class="saga">
+      <div>
+        <h3>El problema de los tres cuerpos</h3>
+        <div class="autor">Liu Cixin</div>
+        <div class="nota">No tengo ninguno.</div>
+      </div>
+      <div class="lomos" aria-label="No tengo ninguno">
+        <span class="lomo falta">1</span>
+      </div>
+    </div>
+
+    <div class="leyenda">
+      <span><i class="t"></i> Ya lo tengo</span>
+      <span><i></i> Me falta, regálalo</span>
+    </div>
+  </section>
+
+  <section class="seccion" id="juegos">
+    <div class="seccion-cab">
+      <span class="num">04</span>
+      <h2>Juegos</h2>
+      <span class="pie">Steam, sin complicaciones</span>
+    </div>
+    <div class="grilla">
+      <article class="item">
+        <span class="etiqueta">PC</span>
+        <h3>Cualquier juego de mi lista de deseados de Steam</h3>
+        <p>Elige el que quieras de la lista y regálamelo directo desde Steam.</p>
+        <div class="enlaces">
+          <a class="boton" href="https://store.steampowered.com/wishlist/id/Kiefer__/" target="_blank" rel="noopener">Ver mi lista de Steam ↗</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="premio" id="premio">
+    <div class="rotulo">05 · El gran premio</div>
+    <h2>Un auto</h2>
+    <p>O, en su defecto, <em>el curso de manejo</em>. Algún día hay que empezar.</p>
+  </section>
+
+  <footer>
+    <span>Revista Vicho · Nº 01 · Edición de cumpleaños 2026</span>
+    <span>Ideas, no obligaciones.</span>
+  </footer>
+</main>
+
+</body>
+</html>
