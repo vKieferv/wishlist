@@ -48,6 +48,54 @@ window.DATOS = {
   ],
   "productos": [
     {
+      "id": "pmw9vlzdn71b",
+      "categoria": "gamer",
+      "nombre": "Mercado Libre",
+      "descripcion": "",
+      "nota": "",
+      "precio": null,
+      "moneda": "CLP",
+      "link": "https://www.mercadolibre.cl/gz/account-verification?go=https%3A%2F%2Fwww.mercadolibre.cl%2Ftira-cinta-luces-led-wifi-rgbic-5m-carga-usb-ip65-maxwell%2Fp%2FMLC78736000%3Fmatt_tool%3D16931662%26utm_source%3Dgoogle_shopping%26utm_medium%3Dorganic%26pdp_filters%3Ditem_id%253AMLC4656224694%26from%3Dgshop&tid=e4483f7c-33c3-4e5f-95ce-cb047ba9d7b1",
+      "tienda": "mercadolibre.cl",
+      "foto": "fotos/mercado-libre-mw9vm298.jpg"
+    },
+    {
+      "id": "pmw9vhy5nw2b",
+      "categoria": "gamer",
+      "nombre": "Mercado Libre",
+      "descripcion": "",
+      "nota": "",
+      "precio": null,
+      "moneda": "CLP",
+      "link": "https://www.mercadolibre.cl/gz/account-verification?go=https%3A%2F%2Farticulo.mercadolibre.cl%2FMLC-4620291634-organizador-cables-escritorio-bandeja-rejilla-68cm-negro-_JM%3Fmatt_tool%3D57157558%26matt_word%3D%26matt_source%3Dgoogle%26matt_campaign_id%3D22116391872%26matt_ad_group_id%3D172632290359%26matt_match_type%3D%26matt_network%3Dg%26matt_device%3Dc%26matt_creative%3D729648297791%26matt_keyword%3D%26matt_ad_position%3D%26matt_ad_type%3Dpla%26matt_merchant_id%3D5899432540%26matt_product_id%3DMLC4620291634%26matt_product_partition_id%3D2687568612192%26matt_target_id%3Daud-2486559225511%3Apla-2687568612192%26cq_src%3Dgoogle_ads%26cq_cmp%3D22116391872%26cq_net%3Dg%26cq_plt%3Dgp%26cq_med%3Dpla%26gad_source%3D1%26gad_campaignid%3D22116391872%26gclid%3DCj0KCQiA-8XXBhDaARIsADnEOrCGhe0cEXfUM_mnOplOQV1MXcg4-ObMKxr0vh0LVY1xcwbdvX_qPTcaApXcEALw_wcB&tid=9fb674fc-5ba3-4089-bde7-3d1efb98f386",
+      "tienda": "mercadolibre.cl",
+      "foto": "fotos/mercado-libre-mw9vi74l.jpg"
+    },
+    {
+      "id": "pmw9vhvuw56m",
+      "categoria": "gamer",
+      "nombre": "Mercado Libre",
+      "descripcion": "",
+      "nota": "",
+      "precio": null,
+      "moneda": "CLP",
+      "link": "https://www.mercadolibre.cl/gz/account-verification?go=https%3A%2F%2Fwww.mercadolibre.cl%2Fextensor-protector-de-sobrevoltaje-con-usb-a-y-c-philco-blanco%2Fp%2FMLC79112729&tid=fe444dc6-da64-448e-bfb6-0b7a8e85acbd",
+      "tienda": "mercadolibre.cl",
+      "foto": "fotos/mercado-libre-mw9vikk5.jpg"
+    },
+    {
+      "id": "pmw9vhh4foxg",
+      "categoria": "gamer",
+      "nombre": "EXTENSIÓN DE ESCRITORIO AC/USB TIPO C",
+      "descripcion": "Pensada para simplificar tu espacio y mantener todos tus dispositivos siempre conectados, esta regleta combina energía y carga en un solo punto.",
+      "nota": "",
+      "precio": 14290,
+      "moneda": "CLP",
+      "link": "https://www.sodimac.cl/sodimac-cl/articulo/142013297/extension-de-escritorio-ac-usb-tipo-c/142013298?kid=goosho_385796&shop=googleShopping&gclsrc=aw.ds&gad_source=1&gad_campaignid=22349155856&gclid=Cj0KCQiA-8XXBhDaARIsADnEOrBzel62ID3vIkYWB14hOZjw4ALjQ9NUEyOtctqNeTDbRc2k_cuH3gsaAgV9EALw_wcB",
+      "tienda": "sodimac.cl",
+      "foto": "fotos/extension-de-escritorio-ac-usb-tipo-c-mw9vhh77.jpg"
+    },
+    {
       "id": "p01",
       "categoria": "albo",
       "nombre": "Camiseta visita 2003",
@@ -155,7 +203,7 @@ window.DATOS = {
       "moneda": "CLP",
       "link": "",
       "tienda": "buscalibre.cl",
-      "foto": "",
+      "foto": "fotos/trilogia-de-la-fundacion-mw9vl5wn.jpg",
       "serie": {
         "total": 3,
         "tengo": [
@@ -221,7 +269,7 @@ window.DATOS = {
       "moneda": "CLP",
       "link": "",
       "tienda": "buscalibre.cl",
-      "foto": "",
+      "foto": "fotos/mistborn-nacidos-de-la-bruma-mw9vkvtn.jpg",
       "serie": {
         "total": 8,
         "tengo": [
@@ -231,60 +279,68 @@ window.DATOS = {
         ]
       },
       "linea": {
-        "nombre": "Nacidos de la Bruma [Mistborn]",
-        "editorial": "B De Bolsillo",
+        "nombre": "MISTBORN",
+        "editorial": "B DE BOLSILLO",
         "formato": "tapa blanda",
-        "origen": "https://www.buscalibre.cl/libro-aleacion-de-ley-nacidos-de-la-bruma-mistborn-4/9788413148434/p/55001788"
+        "origen": "https://www.buscalibre.cl/libro-metal-perdido-el-mistborn-7/9788413149554/p/56021181"
       },
-      "origen": "https://www.buscalibre.cl/libro-aleacion-de-ley-nacidos-de-la-bruma-mistborn-4/9788413148434/p/55001788",
+      "origen": "https://www.buscalibre.cl/libro-metal-perdido-el-mistborn-7/9788413149554/p/56021181",
       "tomos": {
         "1": {
-          "link": "https://www.buscalibre.cl/libro-nacidos-de-la-bruma-nacidos-de-la-bruma-mistborn-1/9788419260246/p/55778527",
-          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/83/8c/838cbdabf559cd3bbcb999707d3b3180.jpg",
-          "precio": 18900,
-          "isbn": "9788419260246",
-          "nombre": "Nacidos de la Bruma (Nacidos de la Bruma [Mistborn] 1)",
-          "editorial": "Nova",
-          "entrega": "Mañana",
+          "link": "https://www.buscalibre.cl/libro-nacidos-de-la-bruma-mistborn-1/9786073841054/p/55943105",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/ed/6e/ed6e14f5944acbdd3094234e784dc24e.jpg",
+          "precio": 36620,
+          "isbn": "9786073841054",
+          "nombre": "Nacidos de la bruma (Mistborn 1)",
+          "editorial": "NOVA",
+          "entrega": "entre el 20 Nov y el 25 Nov",
           "otraEdicion": true
         },
         "2": {
-          "link": "https://www.buscalibre.cl/libro-el-pozo-de-la-ascension-nacidos-de-la-bruma-mistborn-2/9788419260253/p/55778530",
-          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/9f/f6/9ff6c53b10f87b40b2dd12b361c71486.jpg",
-          "precio": 31540,
-          "isbn": "9788419260253",
-          "nombre": "EL POZO DE LA ASCENSION (NACIDOS DE LA BRUMA [MISTBORN] 2)",
-          "editorial": "NOVA",
-          "entrega": "entre el 24 Nov y el 30 Nov",
-          "otraEdicion": true
-        },
-        "3": {
-          "link": "https://www.buscalibre.cl/libro-el-heroe-de-las-eras-nacidos-de-la-bruma-mistborn-3/9788419260260/p/55778533",
-          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/d1/10/d1103b55759d65b26a6070cf99fa5b8e.jpg",
-          "precio": 31540,
-          "isbn": "9788419260260",
-          "nombre": "EL HEROE DE LAS ERAS (NACIDOS DE LA BRUMA [MISTBORN] 3)",
-          "editorial": "NOVA",
-          "entrega": "entre el 24 Nov y el 30 Nov",
+          "link": "https://www.buscalibre.cl/libro-pozo-de-la-ascension-el-mistborn-2/9786073841061/p/55943106",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/05/1e/051e19ff12ff9a7ede44f6405247805f.jpg",
+          "precio": 36360,
+          "isbn": "9786073841061",
+          "nombre": "Pozo de la Ascension, el (Mistborn 2)",
+          "editorial": "Nova",
+          "entrega": "entre el 03 Dic y el 10 Dic",
           "otraEdicion": true
         },
         "4": {
-          "link": "https://www.buscalibre.cl/libro-aleacion-de-ley-nacidos-de-la-bruma-mistborn-4/9788413148434/p/55001788",
-          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/89/b4/89b4c5962ce43a7034894249d4e56379.jpg",
-          "precio": 25890,
-          "isbn": "9788413148434",
-          "nombre": "Aleación de ley (Nacidos de la Bruma [Mistborn] 4)",
-          "editorial": "B De Bolsillo",
-          "entrega": "entre el 25 Nov y el 02 Dic"
+          "link": "https://www.buscalibre.cl/libro-aleacion-de-ley-mistborn-4/9788413149561/p/56021182",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/3f/54/3f54d878c0fa0ae46ed9ef14b3232e02.jpg",
+          "precio": 25570,
+          "isbn": "9788413149561",
+          "nombre": "ALEACION DE LEY (MISTBORN 4)",
+          "editorial": "B DE BOLSILLO",
+          "entrega": "entre el 24 Nov y el 30 Nov"
         },
         "5": {
-          "link": "https://www.buscalibre.cl/libro-sombras-de-identidad-nacidos-de-la-bruma-mistborn-5/9788490708293/p/51474836",
-          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/17/d7/17d7d8ce95685a83f66d307caab7ac18.jpg",
-          "precio": 32480,
-          "isbn": "9788490708293",
-          "nombre": "Sombras de Identidad (Nacidos de la Bruma [Mistborn] 5)",
-          "editorial": "B De Bolsillo",
-          "entrega": "entre el 04 Dic y el 11 Dic"
+          "link": "https://www.buscalibre.cl/libro-sombras-de-identidad-mistborn-5/9788413149578/p/56021183",
+          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/e1/94/e194b16701f9fd892b7bc356cbde163e.jpg",
+          "precio": 25570,
+          "isbn": "9788413149578",
+          "nombre": "SOMBRAS DE IDENTIDAD (MISTBORN 5)",
+          "editorial": "B DE BOLSILLO",
+          "entrega": "entre el 24 Nov y el 30 Nov"
+        },
+        "6": {
+          "link": "https://www.buscalibre.cl/libro-brazales-de-duelo-mistborn-6/9788413149585/p/56021184",
+          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/1d/b8/1db88c2b33646eef8adcb8770658dd16.jpg",
+          "precio": 25570,
+          "isbn": "9788413149585",
+          "nombre": "Brazales de duelo (Mistborn 6)",
+          "editorial": "B de Bolsillo",
+          "entrega": "entre el 24 Nov y el 30 Nov"
+        },
+        "7": {
+          "link": "https://www.buscalibre.cl/libro-metal-perdido-el-mistborn-7/9788413149554/p/56021181",
+          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/5e/15/5e15fdb4f6a555b0297ceaea83b49878.jpg",
+          "precio": 25570,
+          "isbn": "9788413149554",
+          "nombre": "METAL PERDIDO, EL (MISTBORN 7)",
+          "editorial": "B DE BOLSILLO",
+          "entrega": "entre el 24 Nov y el 30 Nov"
         }
       },
       "pack": {
@@ -307,13 +363,68 @@ window.DATOS = {
       "precio": null,
       "moneda": "CLP",
       "link": "",
-      "tienda": "",
-      "foto": "",
+      "tienda": "buscalibre.cl",
+      "foto": "fotos/escuadron-mw9vj0xm.jpg",
       "serie": {
         "total": 5,
         "tengo": [
           1
         ]
+      },
+      "linea": {
+        "nombre": "Escuadron",
+        "editorial": "B De Bolsillo",
+        "formato": "tapa blanda",
+        "origen": "https://www.buscalibre.cl/libro-estelar-escuadron-2/9788413143347/p/55778400"
+      },
+      "origen": "https://www.buscalibre.cl/libro-estelar-escuadron-2/9788413143347/p/55778400",
+      "tomos": {
+        "1": {
+          "link": "https://www.buscalibre.cl/libro-escuadron-escuadron-1/9788413148656/p/55778445",
+          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/f0/53/f05382a8786bc89d486697bee8a147a5.jpg",
+          "precio": 17160,
+          "isbn": "9788413148656",
+          "nombre": "ESCUADRON (ESCUADRON 1)",
+          "editorial": "B DE BOLSILLO",
+          "entrega": "Mañana"
+        },
+        "2": {
+          "link": "https://www.buscalibre.cl/libro-estelar-escuadron-2/9788413143347/p/55778400",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/8e/b7/8eb7edd427627098c1a5e99278256fb8.jpg",
+          "precio": 13640,
+          "isbn": "9788413143347",
+          "nombre": "Estelar (Escuadron 2)",
+          "editorial": "B De Bolsillo",
+          "entrega": "Mañana"
+        },
+        "3": {
+          "link": "https://www.buscalibre.cl/libro-citonica-escuadron-3/9788413148663/p/55778448",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/fc/7d/fc7d8ed5e2d0b4acddfc5ee12a82c303.jpg",
+          "precio": 20920,
+          "isbn": "9788413148663",
+          "nombre": "CITONICA (ESCUADRON 3)",
+          "editorial": "B DE BOLSILLO",
+          "entrega": "entre el 18 Nov y el 23 Nov"
+        },
+        "4": {
+          "link": "https://www.buscalibre.cl/libro-desafiante-escuadron-4/9788413149707/p/62035111",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/fa/d5/fad51ee2221945397981a427df24ef03.jpg",
+          "precio": 21250,
+          "isbn": "9788413149707",
+          "nombre": "Desafiante (Escuadrón 4)",
+          "editorial": "B De Bolsillo",
+          "entrega": "entre el 18 Nov y el 23 Nov"
+        }
+      },
+      "pack": {
+        "link": "https://www.buscalibre.cl/libro-estuche-escuadron-contiene-escuadron-estelar-citonica-desafiante/9788413149608/p/64217181",
+        "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/cb/00/cb001990e96bf52ad88a8bf6404aadf3.jpg",
+        "precio": 55220,
+        "isbn": "9788413149608",
+        "nombre": "Estuche Escuadrón (Contiene: Escuadrón | Estelar | Citónica | Desafiante)",
+        "editorial": "B de Bolsillo",
+        "entrega": "entre el 27 Nov y el 10 Dic",
+        "cubre": 4
       }
     },
     {
@@ -325,13 +436,77 @@ window.DATOS = {
       "precio": null,
       "moneda": "CLP",
       "link": "",
-      "tienda": "",
-      "foto": "",
+      "tienda": "buscalibre.cl",
+      "foto": "fotos/el-archivo-de-las-tormentas-mw9vlkjr.jpg",
       "serie": {
         "total": 12,
         "tengo": [
           1
         ]
+      },
+      "linea": {
+        "nombre": "El Archivo de las Tormentas",
+        "editorial": "B De Bolsillo",
+        "formato": "tapa blanda",
+        "origen": "https://www.buscalibre.cl/libro-juramentada-el-archivo-de-las-tormentas-3/9788413146591/p/54456343"
+      },
+      "origen": "https://www.buscalibre.cl/libro-juramentada-el-archivo-de-las-tormentas-3/9788413146591/p/54456343",
+      "pack": {
+        "link": "https://www.buscalibre.cl/libro-el-archivo-de-las-tormentas-estuche-con-el-camino-de-los-reyes-palabras-radiantes-juramentada/9788413149615/p/62044338",
+        "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/63/86/6386e75cfa549b5e43bf8030de60bbb8.jpg",
+        "precio": 38500,
+        "isbn": "9788413149615",
+        "nombre": "El Archivo de las Tormentas (Estuche Con: El Camino de los Reyes | Palabras Radiantes | Juramentada)",
+        "editorial": "B De Bolsillo",
+        "entrega": "Mañana",
+        "cubre": 3
+      },
+      "tomos": {
+        "1": {
+          "link": "https://www.buscalibre.cl/libro-el-camino-de-los-reyes-el-archivo-de-las-tormentas-1/9788413143941/p/54032149",
+          "foto": "https://images.cdn2.buscalibre.com/fit-in/360x360/32/48/3248ca96dfe63e890b24a6a2edc27786.jpg",
+          "precio": 14000,
+          "isbn": "9788413143941",
+          "nombre": "El Camino de los Reyes (el Archivo de las Tormentas 1)",
+          "editorial": "B De Bolsillo",
+          "entrega": "Mañana"
+        },
+        "2": {
+          "link": "https://www.buscalibre.cl/libro-palabras-radiantes-el-archivo-de-las-tormentas-2/9788413143958/p/54032150",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/71/d8/71d8470aac238c1f6d7154c608e19754.jpg",
+          "precio": 15400,
+          "isbn": "9788413143958",
+          "nombre": "Palabras radiantes (El Archivo de las Tormentas 2)",
+          "editorial": "B De Bolsillo",
+          "entrega": "Mañana"
+        },
+        "3": {
+          "link": "https://www.buscalibre.cl/libro-juramentada-el-archivo-de-las-tormentas-3/9788413146591/p/54456343",
+          "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/a8/95/a895c31936467665bdafaa710866c607.jpg",
+          "precio": 17500,
+          "isbn": "9788413146591",
+          "nombre": "Juramentada (El Archivo de las Tormentas 3)",
+          "editorial": "B De Bolsillo",
+          "entrega": "Mañana"
+        },
+        "4": {
+          "link": "https://www.buscalibre.cl/libro-el-ritmo-de-la-guerra-el-archivo-de-las-tormentas-4/9788413148649/p/62035115",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/97/f4/97f41e49a6c8cf8649ce7e18d784f236.jpg",
+          "precio": 26800,
+          "isbn": "9788413148649",
+          "nombre": "El Ritmo de la Guerra (el Archivo de las Tormentas 4)",
+          "editorial": "B De Bolsillo",
+          "entrega": "entre el 18 Nov y el 23 Nov"
+        },
+        "5": {
+          "link": "https://www.buscalibre.cl/libro-viento-y-verdad-el-archivo-de-las-tormentas-5/9791387652937/p/64712086",
+          "foto": "https://images.cdn3.buscalibre.com/fit-in/360x360/0d/68/0d6880d2901698077c1de75e0a8e8a5e.jpg",
+          "precio": 26520,
+          "isbn": "9791387652937",
+          "nombre": "Viento y verdad (El Archivo de las Tormentas 5)",
+          "editorial": "B DE BOLSILLO",
+          "entrega": "entre el 24 Nov y el 30 Nov"
+        }
       }
     },
     {
@@ -342,9 +517,30 @@ window.DATOS = {
       "nota": "",
       "precio": null,
       "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": ""
+      "link": "https://www.buscalibre.cl/libro-estuche-trilogia-de-los-tres-cuerpos-el-problema-de-los-tres-cuerpos-el-bosque-oscuro-el-fin-de-la-muerte-three-body-problem-boxed-set-the-dark/9788413146928/p/54651526",
+      "tienda": "buscalibre.cl",
+      "foto": "fotos/el-problema-de-los-tres-cuerpos-mw9visdq.jpg",
+      "serie": {
+        "total": 3,
+        "tengo": []
+      },
+      "linea": {
+        "nombre": "El problema de los tres cuerpos",
+        "editorial": "B de Bolsillo",
+        "formato": "tapa blanda",
+        "origen": "https://www.buscalibre.cl/libro-estuche-trilogia-de-los-tres-cuerpos-el-problema-de-los-tres-cuerpos-el-bosque-oscuro-el-fin-de-la-muerte-three-body-problem-boxed-set-the-dark/9788413146928/p/54651526"
+      },
+      "origen": "https://www.buscalibre.cl/libro-estuche-trilogia-de-los-tres-cuerpos-el-problema-de-los-tres-cuerpos-el-bosque-oscuro-el-fin-de-la-muerte-three-body-problem-boxed-set-the-dark/9788413146928/p/54651526",
+      "pack": {
+        "link": "https://www.buscalibre.cl/libro-estuche-trilogia-de-los-tres-cuerpos-el-problema-de-los-tres-cuerpos-el-bosque-oscuro-el-fin-de-la-muerte-three-body-problem-boxed-set-the-dark/9788413146928/p/54651526",
+        "foto": "https://images.cdn1.buscalibre.com/fit-in/360x360/c1/9c/c19ccf5c2e2c565d902500f0bc88b5b1.jpg",
+        "precio": 28000,
+        "isbn": "9788413146928",
+        "nombre": "Estuche Trilogía de Los Tres Cuerpos: El Problema de Los Tres Cuerpos; El Bosque Oscuro; El Fin de la Muerte / Three-Body Problem Boxed Set: The Dark",
+        "editorial": "B de Bolsillo",
+        "entrega": "entre el 17 Nov y el 19 Nov",
+        "cubre": null
+      }
     },
     {
       "id": "p14",
@@ -501,7 +697,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-09T23:02:21.443Z",
+  "actualizado": "2026-11-09T23:12:37.537Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
