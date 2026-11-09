@@ -258,7 +258,7 @@
   }
   function explicarError(e) {
     if (e.status === 401) return "La llave no sirve o venció. Sal del modo edición y pon una nueva.";
-    if (e.status === 403 || e.status === 404) return "La llave no tiene permiso para este repo. Revisa que tenga Contents y Actions en «Read and write».";
+    if (e.status === 403 || e.status === 404) return "La llave no tiene permiso de escritura en el repo «" + GH.repo + "». En GitHub, edita la llave: Repository access → Only select repositories → " + GH.repo + "; Permissions → Contents y Actions en «Read and write». (GitHub dijo: " + e.message + ")";
     return e.message;
   }
   function leerRemoto() {

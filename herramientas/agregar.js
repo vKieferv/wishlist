@@ -4,6 +4,7 @@
 const fs = require("fs");
 const path = require("path");
 const { extraer, traer } = require("../servidor.js");
+const steam = require("./steam.js");
 
 const RAIZ = path.join(__dirname, "..");
 const ARCHIVO = path.join(RAIZ, "datos.js");
@@ -51,9 +52,20 @@ async function bajarFoto(url, nombre) {
 
 (async () => {
   const url = String(process.argv[2] || "").trim();
-  if (!/^https?:\/\/\S+$/i.test(url)) { console.error("Link inválido:", url); process.exit(1); }
   const d = leer();
   d.productos = d.productos || [];
+
+  // Lista de deseados de Steam: un link de wishlist, o "--steam" para volver a revisar la guardada.
+  if (url === "--steam" || steam.esLinkWishlist(url)) {
+    const config = url === "--steam" ? d.steam : steam.leerLink(url);
+    if (!config || (!config.vanity && !config.steamid)) { console.log("No hay lista de Steam guardada."); return; }
+    const r = await steam.sincronizar(d, config);
+    escribir(d);
+    console.log(`Steam: ${r.total} juegos (${r.nuevos} nuevos, ${r.actualizados} actualizados, ${r.sacados} sacados).`);
+    return;
+  }
+
+  if (!/^https?:\/\/\S+$/i.test(url)) { console.error("Link inválido:", url); process.exit(1); }
   if (d.productos.some((p) => p.origen === url || p.link === url)) { console.log("Ese link ya está en el álbum."); return; }
 
   let info = {};

@@ -178,6 +178,17 @@ async function api(req, res, u) {
     try { return responder(res, 200, await extraer(String(url || "").trim())); }
     catch (e) { return responder(res, 502, { error: "No pude leer la página: " + (e.name === "TimeoutError" ? "se demoró demasiado" : e.message) }); }
   }
+  if (u.pathname === "/api/steam" && req.method === "POST") {
+    const steam = require("./herramientas/steam.js");
+    const { url } = JSON.parse((await leerCuerpo(req)).toString("utf8"));
+    if (!steam.esLinkWishlist(url)) return responder(res, 400, { error: "Ese no es un link de lista de deseados de Steam" });
+    try {
+      const d = leerDatos();
+      const r = await steam.sincronizar(d, steam.leerLink(url));
+      escribirDatos(d);
+      return responder(res, 200, r);
+    } catch (e) { return responder(res, 502, { error: "No pude leer la lista de Steam: " + e.message }); }
+  }
   if (u.pathname === "/api/imagen" && req.method === "GET") {
     const destino = u.searchParams.get("url") || "";
     if (!/^https?:\/\//i.test(destino)) return responder(res, 400, { error: "URL inválida" });

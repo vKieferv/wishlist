@@ -226,6 +226,19 @@ async function ponerFoto(p, fuente) {
 // ---------- agregar ----------
 async function agregarDesdeLink(url) {
   $("btnLink").disabled = true;
+  if (/steam(powered|community)\.com\/wishlist\//i.test(url)) {
+    aviso("Leyendo tu lista de deseados de Steam…");
+    try {
+      clearTimeout(temporizador);
+      const r = await api("/api/steam", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
+      D = await api("/api/datos");
+      pintar();
+      aviso(`Steam: ${r.total} juegos (${r.nuevos} nuevos, ${r.actualizados} actualizados, ${r.sacados} sacados).`, "ok");
+      $("link").value = "";
+    } catch (e) { aviso(e.message, "mal"); }
+    $("btnLink").disabled = false;
+    return;
+  }
   aviso("Leyendo la página…");
   let info = {};
   try { info = await api("/api/extraer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) }); }

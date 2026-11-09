@@ -31,7 +31,7 @@ jobs:
 
       - name: Leer el link y guardar la lámina
         env:
-          URL_PRODUCTO: ${{ inputs.url }}
+          URL_PRODUCTO: ${{ inputs.url || '--steam' }}
         run: |
           git config user.name "album-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -41,7 +41,7 @@ jobs:
             node herramientas/agregar.js "$URL_PRODUCTO"
             git add datos.js fotos
             if git diff --cached --quiet; then echo "Nada nuevo que guardar"; exit 0; fi
-            git commit -m "Agregar lámina desde un link"
+            git commit -m "Actualizar álbum desde un link o Steam"
             if git push origin HEAD:main; then exit 0; fi
             echo "Alguien guardó al mismo tiempo; reintento ($intento)"
             sleep 4

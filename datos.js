@@ -267,7 +267,129 @@ window.DATOS = {
       "tienda": "",
       "foto": "",
       "destacado": true
+    },
+    {
+      "id": "steam-1091500",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "Cyberpunk 2077",
+      "descripcion": "Cyberpunk 2077 es un RPG de aventura y acción de mundo abierto ambientado en el futuro sombrío de Night City, una peligrosa megalópolis obsesionada con el poder, el glamur y las incesantes…",
+      "nota": "Se regala desde Steam.",
+      "precio": 39999,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/1091500/Cyberpunk_2077",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1091500/48a93d6445a67520ea49833c93dae8f2e68fc540/header_alt_assets_9.jpg?t=1792682505"
+    },
+    {
+      "id": "steam-526870",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "Satisfactory",
+      "descripcion": "Satisfactory es un juego de creación de fábricas de mundo abierto en primera persona con toques de exploración y combate.",
+      "nota": "Se regala desde Steam.",
+      "precio": 19000,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/526870/Satisfactory",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/526870/header.jpg?t=1791192059"
+    },
+    {
+      "id": "steam-524220",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "NieR:Automata™",
+      "descripcion": "NieR: Automata narra la historia de los androides 2B, 9S y A2, que luchan para recuperar el mundo distópico dirigido por las máquinas que han invadido unas poderosas formas de vida mecánicas.",
+      "nota": "Se regala desde Steam.",
+      "precio": 29300,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/524220/NieRAutomata",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/524220/header.jpg?t=1793890935"
+    },
+    {
+      "id": "steam-4001890",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "How to Fish",
+      "descripcion": "How To Fish es un simulador de pesca basado en la física para hasta 4 jugadores. Vas navegando y bebiendo cuando, de repente, te estrellas contra una islita.",
+      "nota": "Se regala desde Steam.",
+      "precio": 4200,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/4001890/How_to_Fish",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4001890/45c4ddff4901e32c4b8b643e1b97d0d01898d299/header.jpg?t=1792508550"
+    },
+    {
+      "id": "steam-1478500",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "Big Walk",
+      "descripcion": "Pasa el rato con tus amigos y perdeos en un mundo enorme. Una caminata cooperativa en línea de los creadores de Untitled Goose Game.",
+      "nota": "Se regala desde Steam.",
+      "precio": 10500,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/1478500/Big_Walk",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1478500/62eeee1507dbac905e128a62f2ce690550238db0/header.jpg?t=1785911674"
+    },
+    {
+      "id": "steam-546560",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "Half-Life: Alyx",
+      "descripcion": "Half-Life: Alyx es el regreso de Valve en realidad virtual a la serie Half-Life. Es la historia de una lucha imposible contra una cruel raza alienígena conocida como la Alianza que se desarrolla…",
+      "nota": "Se regala desde Steam.",
+      "precio": 37499,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/546560/HalfLife_Alyx",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/546560/header.jpg?t=1790202165"
+    },
+    {
+      "id": "steam-1456760",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "ROBOBEAT",
+      "descripcion": "¡Dispara al compás! En el shooter rítmico «ROBOBEAT» serás Ace, un cazarrecompensas cuya misión es capturar a Frazzer, un robot descontrolado en una guarida camaleónica.",
+      "nota": "Se regala desde Steam.",
+      "precio": 4725,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/1456760/ROBOBEAT",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1456760/6deea24de35cafe95a4b3693ff925608b44bc4a2/header.jpg?t=1791474999"
+    },
+    {
+      "id": "steam-4163270",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "Half Grip",
+      "descripcion": "Get hooked on this brutal one-handed roguelike combat racing game where every action could end in a crash.",
+      "nota": "Se regala desde Steam.",
+      "precio": null,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/4163270/Half_Grip",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4163270/685a8d0b597f94086c47ae232ddac87e6d12d2fc/header.jpg?t=1793308839"
+    },
+    {
+      "id": "steam-4530370",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "Football Manager 27",
+      "descripcion": "Elige tu club, fija tus tácticas, despliega tu plantilla. Busca ese futuro que solo tú puedes ver. FM27 da vida a tu visión futbolística. Tú decides.",
+      "nota": "Se regala desde Steam.",
+      "precio": 40410,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/4530370/Football_Manager_27",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-09T21:55:25.006Z"
+  "actualizado": "2026-11-09T22:13:54.458Z",
+  "steam": {
+    "vanity": "Kiefer__",
+    "steamid": "76561198955067379",
+    "shareToken": "13784532523920350706"
+  }
 };
