@@ -170,6 +170,7 @@ footer .ancho { padding-block: 18px 34px; display: flex; flex-wrap: wrap; justif
 .dlg-dos label { display: block; margin: 4px 0 6px; }
 .dialogo .check { display: flex; align-items: center; gap: 8px; font: 14px var(--f-texto); color: var(--tinta); text-transform: none; letter-spacing: 0; margin-top: 6px; }
 #cajaSerie { display: grid; gap: 6px; }
+.dialogo [hidden] { display: none !important; }
 .dlg-nota { color: var(--gris); font-size: 13px; }
 .dlg-error { color: var(--tinta); font: 500 13px var(--f-dato); min-height: 1em; }
 .dlg-botones { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
