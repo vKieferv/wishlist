@@ -132,7 +132,8 @@
       <ol>
         <li>Muestra la barra de marcadores de tu navegador (Ctrl + Shift + B).</li>
         <li>Arrastra hasta la barra este botón: <a id="marcador" class="marcador" href="#" onclick="return false" title="Arrástrame a la barra de marcadores">＋ Al álbum</a></li>
-        <li>Cuando estés viendo un producto en la tienda, toca <b>＋ Al álbum</b> en la barra. Se abre el editor con el nombre, la foto y el precio.</li>
+        <li>Cuando estés viendo un producto en la tienda, toca <b>＋ Al álbum</b> en la barra. Aparece un aviso negro: "Copiado para el álbum".</li>
+        <li>Vuelve a esta ventana y pega con <b>Ctrl + V</b> en cualquier parte. Se agrega con el nombre, la foto y el precio.</li>
       </ol>
       <p>Si el producto ya estaba en el álbum, le completa la foto y el precio en vez de duplicarlo. El editor tiene que estar abierto.</p>
     </details>
@@ -354,7 +355,18 @@ const MARCADOR = "javascript:(function(){var d=document,q=function(s){var e=d.qu
   "var pr=of.price||of.lowPrice||q('meta[itemprop=\"price\"]')||q('meta[property=\"product:price:amount\"]');if(!pr){var f=d.querySelector('.ui-pdp-price__second-line .andes-money-amount__fraction,.andes-money-amount__fraction');if(f)pr=f.textContent.replace(/\\D/g,'')}" +
   "var info={nombre:ld.name||q('meta[property=\"og:title\"]')||d.title,descripcion:ld.description||q('meta[property=\"og:description\"]')||q('meta[name=\"description\"]'),precio:pr,moneda:of.priceCurrency||q('meta[itemprop=\"priceCurrency\"]')||'CLP'," +
   "link:location.origin+location.pathname,imagenes:im.filter(function(u,i,a){return u&&/^https?:/.test(u)&&a.indexOf(u)===i}).slice(0,6)};" +
-  "window.open('http://127.0.0.1:" + location.port + "/editor.html#nuevo='+encodeURIComponent(JSON.stringify(info)),'album')})();";
+  "var tx='ALBUM:'+JSON.stringify(info),ta=d.createElement('textarea');ta.value=tx;ta.style.cssText='position:fixed;top:0;left:0;opacity:0';d.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=d.execCommand('copy')}catch(e){}ta.remove();" +
+  "var av=d.createElement('div');av.style.cssText='position:fixed;z-index:2147483647;top:16px;left:0;right:0;margin:0 auto;width:fit-content;background:#111;color:#fff;font:600 16px/1.4 system-ui,sans-serif;padding:14px 18px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:90vw';" +
+  "var fin=function(b){av.textContent=b?'Copiado para el \\u00e1lbum: '+info.nombre.slice(0,60)+'. Ahora ve al editor y pega con Ctrl+V.':'No pude copiar. Haz clic en la p\\u00e1gina y toca el bot\\u00f3n otra vez.';d.body.appendChild(av);setTimeout(function(){av.remove()},6000)};" +
+  "if(ok)fin(true);else if(navigator.clipboard)navigator.clipboard.writeText(tx).then(function(){fin(true)},function(){fin(false)});else fin(false)})();";
+
+// En el editor: Ctrl+V en cualquier parte recibe lo que copió el botón.
+document.addEventListener("paste", (e) => {
+  const t = (e.clipboardData && e.clipboardData.getData("text")) || "";
+  if (!t.startsWith("ALBUM:") || !D) return;
+  e.preventDefault();
+  try { agregarDesdeNavegador(JSON.parse(t.slice(6))); } catch (x) { aviso("No entendí lo que copió el botón de marcadores.", "mal"); }
+});
 
 function numeroDe(v) {
   if (v === null || v === undefined || v === "") return null;
