@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editor de la revista</title>
+<style>
+  :root {
+    --fondo: #ecebe7; --panel: #ffffff; --texto: #1a1a1a; --suave: #6b6760; --linea: #d9d6cf;
+    --acento: #c8102e; --ok: #1f7a3a; --campo: #faf9f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fondo: #101010; --panel: #1b1b1b; --texto: #eeeae2; --suave: #a29d93; --linea: #333;
+      --acento: #ff4d5e; --ok: #4fc274; --campo: #232323;
+    }
+  }
+  :root[data-theme="dark"] {
+    --fondo: #101010; --panel: #1b1b1b; --texto: #eeeae2; --suave: #a29d93; --linea: #333;
+    --acento: #ff4d5e; --ok: #4fc274; --campo: #232323;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 14px/1.45 system-ui, "Segoe UI", sans-serif; display: flex; flex-direction: column; }
+  button {
+    font: inherit; cursor: pointer; border: 1px solid var(--linea); background: var(--panel); color: var(--texto);
+    padding: 6px 10px; border-radius: 6px;
+  }
+  button:hover { border-color: var(--texto); }
+  button.primario { background: var(--texto); color: var(--panel); border-color: var(--texto); font-weight: 600; }
+  button.primario:disabled { opacity: .4; cursor: default; }
+  button.mini { padding: 2px 8px; font-size: 13px; }
+  button.peligro:hover { border-color: var(--acento); color: var(--acento); }
+  .top {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 16px;
+    background: var(--panel); border-bottom: 1px solid var(--linea);
+  }
+  .top strong { font-size: 15px; margin-right: auto; }
+  #estado { font-size: 13px; color: var(--suave); }
+  #estado.sucio { color: var(--acento); }
+  #estado.ok { color: var(--ok); }
+  .cuerpo { flex: 1; display: grid; grid-template-columns: minmax(340px, 440px) 1fr; min-height: 0; }
+  @media (max-width: 860px) { .cuerpo { grid-template-columns: 1fr; } #vista { height: 70vh; } }
+  #form { overflow-y: auto; padding: 14px 14px 80px; border-right: 1px solid var(--linea); }
+  #vista { width: 100%; height: 100%; border: 0; background: #f4f0e8; }
+  .bienvenida { padding: 28px 20px; max-width: 520px; }
+  .bienvenida h1 { font-size: 22px; margin: 0 0 10px; }
+  .bienvenida ol { padding-left: 20px; }
+  .bienvenida li { margin-bottom: 6px; }
+  .aviso { background: #fff3cd; color: #5c4400; padding: 10px 12px; border-radius: 6px; margin-top: 12px; }
+
+  details { background: var(--panel); border: 1px solid var(--linea); border-radius: 8px; margin-bottom: 10px; }
+  details details { background: var(--campo); margin: 8px 0; }
+  summary { cursor: pointer; padding: 10px 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "▸"; color: var(--suave); }
+  details[open] > summary::before { content: "▾"; }
+  summary .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  summary .tipo { font-size: 11px; font-weight: 500; color: var(--suave); text-transform: uppercase; letter-spacing: .08em; }
+  summary .acciones { display: flex; gap: 4px; }
+  .contenido { padding: 4px 12px 12px; }
+  label.campo { display: block; margin: 8px 0; }
+  label.campo > span { display: block; font-size: 12px; color: var(--suave); margin-bottom: 3px; }
+  input[type=text], input[type=number], input[type=url], textarea {
+    width: 100%; font: inherit; color: var(--texto); background: var(--campo); border: 1px solid var(--linea);
+    border-radius: 6px; padding: 6px 8px;
+  }
+  details details input[type=text], details details input[type=number], details details input[type=url], details details textarea { background: var(--panel); }
+  textarea { min-height: 64px; resize: vertical; }
+  .ayuda { font-size: 12px; color: var(--suave); margin: 2px 0 6px; }
+  .fila { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
+  .fila input { flex: 1; min-width: 0; }
+  .bloque { border-top: 1px dashed var(--linea); margin-top: 10px; padding-top: 6px; }
+  .bloque > b { font-size: 12px; color: var(--suave); text-transform: uppercase; letter-spacing: .06em; }
+  .check { display: flex; gap: 8px; align-items: center; margin: 10px 0 4px; }
+  .foto-zona {
+    border: 1.5px dashed var(--linea); border-radius: 8px; padding: 10px; display: flex; gap: 10px; align-items: center;
+    margin: 8px 0;
+  }
+  .foto-zona.encima { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 8%, transparent); }
+  .foto-zona img { width: 72px; height: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--linea); }
+  .foto-zona .txt { flex: 1; font-size: 12px; color: var(--suave); }
+  .lomos { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
+  .lomos button { width: 30px; height: 40px; padding: 0; font-weight: 700; }
+  .lomos button.tengo { background: var(--texto); color: var(--panel); opacity: .45; }
+  .agregar { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+  .agregar button { border-style: dashed; }
+</style>
+</head>
+<body>
+<header class="top">
+  <strong>Editor de la revista</strong>
+  <span id="estado">Sin carpeta abierta</span>
+  <button id="reabrir" hidden>Reabrir la última carpeta</button>
+  <button id="abrir">Abrir carpeta…</button>
+  <button id="guardar" class="primario" disabled title="Ctrl+S">Guardar</button>
+</header>
+<div class="cuerpo">
+  <aside id="form">
+    <div class="bienvenida">
+      <h1>Hola, Vicho</h1>
+      <ol>
+        <li>Toca <b>Abrir carpeta…</b> y elige la carpeta <code>wishlist</code> (la que tiene este archivo).</li>
+        <li>Chrome te va a pedir permiso para editarla: dale <b>Editar archivos</b>.</li>
+        <li>Cambia lo que quieras. A la derecha ves cómo queda.</li>
+        <li>Toca <b>Guardar</b> (o Ctrl+S).</li>
+        <li>Para subirlo a internet, haz doble clic en <code>publicar.bat</code>.</li>
+      </ol>
+      <div class="aviso" id="sinSoporte" hidden>Este navegador no deja editar archivos. Abre <code>editor.html</code> con <b>Chrome</b> o <b>Edge</b>.</div>
+    </div>
+  </aside>
+  <iframe id="vista" title="Vista previa"></iframe>
+</div>
+
+<script src="render.js"></script>
+<script>
+"use strict";
+const FUENTES = '<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">';
+let dir = null, D = null, css = "", sucio = false, temporizador = null;
+const fotoURLs = {};
+const abiertos = new WeakSet();
+const $ = (id) => document.getElementById(id);
+
+// ---------- utilidades DOM ----------
+function el(tag, props, ...hijos) {
+  const e = document.createElement(tag);
+  for (const k in (props || {})) {
+    if (k === "class") e.className = props[k];
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), props[k]);
+    else if (k in e) e[k] = props[k];
+    else e.setAttribute(k, props[k]);
+  }
+  for (const h of hijos.flat(Infinity)) if (h != null && h !== false) e.append(h);
+  return e;
+}
+function campo(etiqueta, obj, clave, op = {}) {
+  const inp = op.area ? el("textarea") : el("input", { type: op.tipo || "text" });
+  inp.value = obj[clave] ?? "";
+  if (op.ph) inp.placeholder = op.ph;
+  if (op.min != null) inp.min = op.min;
+  inp.addEventListener("input", () => {
+    obj[clave] = op.tipo === "number" ? (parseInt(inp.value, 10) || 0) : inp.value;
+    if (op.alCambiar) op.alCambiar(inp.value);
+    cambio();
+  });
+  if (op.estructural) inp.addEventListener("change", reconstruir);
+  return el("label", { class: "campo" }, el("span", {}, etiqueta), inp, op.ayuda ? el("div", { class: "ayuda" }, op.ayuda) : null);
+}
+function mover(arr, i, d) {
+  const j = i + d;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  reconstruir();
+}
+function quitar(arr, i, que) {
+  if (!confirm("¿Borrar " + que + "?")) return;
+  arr.splice(i, 1);
+  reconstruir();
+}
+function acciones(arr, i, que) {
+  const b = (txt, tit, fn, cls) => el("button", { class: "mini " + (cls || ""), title: tit, onclick: (ev) => { ev.preventDefault(); ev.stopPropagation(); fn(); } }, txt);
+  return el("span", { class: "acciones" },
+    b("↑", "Subir", () => mover(arr, i, -1)),
+    b("↓", "Bajar", () => mover(arr, i, 1)),
+    b("✕", "Borrar", () => quitar(arr, i, que), "peligro"));
+}
+function caja(obj, titulo, tipo, accionesEl, contenido) {
+  const t = el("span", { class: "t" }, titulo || "(sin título)");
+  const d = el("details", { open: abiertos.has(obj), ontoggle: () => d.open ? abiertos.add(obj) : abiertos.delete(obj) },
+    el("summary", {}, t, tipo ? el("span", { class: "tipo" }, tipo) : null, accionesEl),
+    el("div", { class: "contenido" }, contenido(t)));
+  return d;
+}
+
+// ---------- estado y vista previa ----------
+function estado(txt, clase) {
+  const e = $("estado");
+  e.textContent = txt; e.className = clase || "";
+}
+function cambio() {
+  sucio = true;
+  $("guardar").disabled = false;
+  estado("Cambios sin guardar", "sucio");
+  clearTimeout(temporizador);
+  temporizador = setTimeout(vistaPrevia, 300);
+}
+function reconstruir() { cambio(); construirForm(); }
+
+function rutasFotos() {
+  const r = [];
+  for (const s of D.secciones || []) for (const it of s.items || []) if (it.foto) r.push(it.foto);
+  return r;
+}
+async function archivo(ruta) {
+  const partes = ruta.split("/");
+  let h = dir;
+  for (const p of partes.slice(0, -1)) h = await h.getDirectoryHandle(p);
+  return (await h.getFileHandle(partes[partes.length - 1])).getFile();
+}
+async function cargarFotos() {
+  for (const r of rutasFotos()) {
+    if (fotoURLs[r]) continue;
+    try { fotoURLs[r] = URL.createObjectURL(await archivo(r)); } catch (e) { /* foto que no está en la carpeta */ }
+  }
+}
+async function vistaPrevia() {
+  if (!D) return;
+  await cargarFotos();
+  const iframe = $("vista");
+  let y = 0;
+  try { y = iframe.contentWindow.scrollY; } catch (e) {}
+  iframe.onload = () => { try { iframe.contentWindow.scrollTo(0, y); } catch (e) {} };
+  iframe.srcdoc = '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
+    FUENTES + "<style>" + css + "</style></head><body>" + renderRevista(D, (r) => fotoURLs[r] || r) + "</body></html>";
+}
+
+// ---------- fotos ----------
+function nombreArchivo(base) {
+  const slug = String(base || "foto").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "foto";
+  return slug + "-" + Date.now().toString(36) + ".jpg";
+}
+async function achicar(file) {
+  const bmp = await createImageBitmap(file);
+  const max = 1400, k = Math.min(1, max / Math.max(bmp.width, bmp.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(bmp, 0, 0, c.width, c.height);
+  return new Promise((ok) => c.toBlob(ok, "image/jpeg", 0.85));
+}
+async function guardarFoto(item, file) {
+  if (!file || !file.type.startsWith("image/")) { alert("Eso no parece una imagen."); return; }
+  try {
+    estado("Guardando foto…");
+    const blob = await achicar(file);
+    const carpeta = await dir.getDirectoryHandle("fotos", { create: true });
+    const nombre = nombreArchivo(item.titulo);
+    const w = await (await carpeta.getFileHandle(nombre, { create: true })).createWritable();
+    await w.write(blob); await w.close();
+    const ruta = "fotos/" + nombre;
+    fotoURLs[ruta] = URL.createObjectURL(blob);
+    item.foto = ruta;
+    reconstruir();
+  } catch (e) {
+    alert("No pude guardar la foto: " + e.message);
+  }
+}
+function zonaFoto(item) {
+  const input = el("input", { type: "file", accept: "image/*", hidden: true, onchange: () => guardarFoto(item, input.files[0]) });
+  const zona = el("div", { class: "foto-zona" },
+    item.foto ? el("img", { src: fotoURLs[item.foto] || "", alt: "" }) : null,
+    el("div", { class: "txt" }, item.foto ? item.foto : "Sin foto. Arrastra una imagen aquí, pégala con Ctrl+V o súbela."),
+    el("button", { class: "mini", onclick: (e) => { e.preventDefault(); input.click(); } }, item.foto ? "Cambiar" : "Subir foto"),
+    item.foto ? el("button", { class: "mini peligro", onclick: (e) => { e.preventDefault(); item.foto = ""; reconstruir(); } }, "Quitar") : null,
+    input);
+  zona.tabIndex = 0;
+  zona.addEventListener("dragover", (e) => { e.preventDefault(); zona.classList.add("encima"); });
+  zona.addEventListener("dragleave", () => zona.classList.remove("encima"));
+  zona.addEventListener("drop", (e) => { e.preventDefault(); zona.classList.remove("encima"); guardarFoto(item, e.dataTransfer.files[0]); });
+  zona.addEventListener("paste", (e) => {
+    const f = [...e.clipboardData.files].find((x) => x.type.startsWith("image/"));
+    if (f) { e.preventDefault(); guardarFoto(item, f); }
+  });
+  return zona;
+}
+
+// ---------- bloques reutilizables ----------
+function editorLinks(obj) {
+  obj.links = obj.links || [];
+  return el("div", { class: "bloque" },
+    el("b", {}, "Links de compra"),
+    obj.links.map((l, i) => el("div", { class: "fila" },
+      (() => { const a = el("input", { type: "text", value: l.texto || "", placeholder: "Texto (ej. Falabella)" }); a.style.flex = ".7"; a.oninput = () => { l.texto = a.value; cambio(); }; return a; })(),
+      (() => { const u = el("input", { type: "url", value: l.url || "", placeholder: "https://…" }); u.oninput = () => { l.url = u.value; cambio(); }; return u; })(),
+      el("button", { class: "mini peligro", title: "Quitar link", onclick: (e) => { e.preventDefault(); obj.links.splice(i, 1); reconstruir(); } }, "✕"))),
+    el("div", { class: "agregar" }, el("button", { class: "mini", onclick: (e) => { e.preventDefault(); obj.links.push({ texto: "", url: "" }); reconstruir(); } }, "+ Agregar link")));
+}
+function editorDetalles(it) {
+  it.detalles = it.detalles || [];
+  return el("div", { class: "bloque" },
+    el("b", {}, "Detalles (talla, color…)"),
+    it.detalles.map((d, i) => el("div", { class: "fila" },
+      (() => { const a = el("input", { type: "text", value: d.clave || "", placeholder: "Talla" }); a.style.flex = ".5"; a.oninput = () => { d.clave = a.value; cambio(); }; return a; })(),
+      (() => { const b = el("input", { type: "text", value: d.valor || "", placeholder: "XL" }); b.oninput = () => { d.valor = b.value; cambio(); }; return b; })(),
+      el("button", { class: "mini peligro", onclick: (e) => { e.preventDefault(); it.detalles.splice(i, 1); reconstruir(); } }, "✕"))),
+    el("div", { class: "agregar" }, el("button", { class: "mini", onclick: (e) => { e.preventDefault(); it.detalles.push({ clave: "", valor: "" }); reconstruir(); } }, "+ Agregar detalle")));
+}
+
+// ---------- formularios por tipo ----------
+function formItem(arr, i) {
+  const it = arr[i];
+  return caja(it, it.titulo, it.destacado ? "ficha" : "", acciones(arr, i, "«" + (it.titulo || "esta cosa") + "»"), (t) => [
+    campo("Nombre", it, "titulo", { alCambiar: (v) => t.textContent = v || "(sin título)" }),
+    campo("Etiqueta", it, "etiqueta", { ph: "Gamer, Gimnasio…" }),
+    campo("Descripción", it, "descripcion", { area: true }),
+    zonaFoto(it),
+    editorLinks(it),
+    el("label", { class: "check" },
+      el("input", { type: "checkbox", checked: !!it.destacado, onchange: (e) => { it.destacado = e.target.checked; reconstruir(); } }),
+      "Destacado (ficha grande con detalles)"),
+    it.destacado ? editorDetalles(it) : null,
+    it.destacado ? el("div", { class: "bloque" },
+      el("b", {}, "Dorsal (si no hay foto)"),
+      (() => { it.dorsal = it.dorsal || { nombre: "", numero: "" }; return el("div", { class: "fila" },
+        (() => { const a = el("input", { type: "text", value: it.dorsal.nombre, placeholder: "Nombre" }); a.oninput = () => { it.dorsal.nombre = a.value; cambio(); }; return a; })(),
+        (() => { const b = el("input", { type: "text", value: it.dorsal.numero, placeholder: "Nº" }); b.style.flex = ".3"; b.oninput = () => { it.dorsal.numero = b.value; cambio(); }; return b; })()); })()) : null,
+  ]);
+}
+
+function formSaga(arr, i) {
+  const s = arr[i];
+  s.tengo = s.tengo || [];
+  const lomos = () => {
+    const total = Math.max(1, parseInt(s.total, 10) || 1);
+    const caja = el("div", { class: "lomos" });
+    for (let n = 1; n <= total; n++) {
+      const tiene = s.tengo.includes(n);
+      caja.append(el("button", {
+        class: tiene ? "tengo" : "", title: tiene ? "Lo tengo (clic: me falta)" : "Me falta (clic: lo tengo)",
+        onclick: (e) => {
+          e.preventDefault();
+          s.tengo = tiene ? s.tengo.filter((x) => x !== n) : [...s.tengo, n].sort((a, b) => a - b);
+          reconstruir();
+        } }, String(n)));
+    }
+    return caja;
+  };
+  return caja(s, s.titulo, "", acciones(arr, i, "«" + (s.titulo || "esta saga") + "»"), (t) => [
+    campo("Título", s, "titulo", { alCambiar: (v) => t.textContent = v || "(sin título)" }),
+    campo("Autor", s, "autor"),
+    campo("Cuántos libros son", s, "total", { tipo: "number", min: 1, estructural: true }),
+    el("div", { class: "bloque" }, el("b", {}, "Cuáles tengo (clic para marcar)"), lomos()),
+    campo("Nota extra", s, "nota", { ph: "Ej: el 2 me lo regaló Anabel." }),
+    editorLinks(s),
+  ]);
+}
+
+function formSeccion(i) {
+  const arr = D.secciones, s = arr[i];
+  const nombres = { items: "cosas", libros: "libros", premio: "gran premio" };
+  return caja(s, String(i + 1).padStart(2, "0") + " · " + (s.titulo || ""), nombres[s.tipo], acciones(arr, i, "toda la sección «" + (s.titulo || "") + "»"), (t) => {
+    const titulo = campo("Título de la sección", s, "titulo", { alCambiar: (v) => t.textContent = String(i + 1).padStart(2, "0") + " · " + v });
+    if (s.tipo === "premio") return [
+      titulo,
+      campo("Texto grande", s, "grande", { ph: "Un auto" }),
+      campo("Texto", s, "texto", { area: true, ayuda: "Pon *asteriscos* alrededor de palabras para destacarlas." }),
+      editorLinks(s),
+    ];
+    if (s.tipo === "libros") {
+      s.sagas = s.sagas || [];
+      return [
+        titulo, campo("Bajada", s, "pie"),
+        s.sagas.map((_, j) => formSaga(s.sagas, j)),
+        el("div", { class: "agregar" }, el("button", { onclick: (e) => { e.preventDefault(); const n = { titulo: "Nueva saga", autor: "", total: 3, tengo: [], nota: "", links: [] }; abiertos.add(n); s.sagas.push(n); reconstruir(); } }, "+ Agregar saga o libro")),
+      ];
+    }
+    s.items = s.items || [];
+    return [
+      titulo, campo("Bajada", s, "pie"),
+      s.items.map((_, j) => formItem(s.items, j)),
+      el("div", { class: "agregar" }, el("button", { onclick: (e) => { e.preventDefault(); const n = { etiqueta: "", titulo: "Algo nuevo", descripcion: "", foto: "", links: [] }; abiertos.add(n); s.items.push(n); reconstruir(); } }, "+ Agregar cosa")),
+    ];
+  });
+}
+
+function construirForm() {
+  const f = $("form");
+  const y = f.scrollTop;
+  f.replaceChildren(...[
+    caja(D, "Portada y editorial", "", null, () => [
+      campo("Nombre en la portada", D, "nombre"),
+      campo("Titular", D, "titular", { area: true, ayuda: "Pon *asteriscos* alrededor de lo que quieres en rojo y cursiva." }),
+      el("div", { class: "fila" }, campo("Edición", D, "edicion"), campo("Número", D, "numero")),
+      el("div", { class: "fila" }, campo("Lugar", D, "lugar"), campo("Año", D, "anio")),
+      campo("Precio (broma de portada)", D, "precio"),
+      campo("Editorial", D, "editorial", { area: true, ayuda: "Deja una línea en blanco para separar párrafos." }),
+      campo("Frase del pie de página", D, "pie"),
+    ]),
+    D.secciones.map((_, i) => formSeccion(i)),
+    el("div", { class: "agregar" },
+      el("button", { onclick: () => { const n = { tipo: "items", titulo: "Nueva sección", pie: "", items: [] }; abiertos.add(n); D.secciones.push(n); reconstruir(); } }, "+ Sección de cosas"),
+      el("button", { onclick: () => { const n = { tipo: "libros", titulo: "Libros", pie: "", sagas: [] }; abiertos.add(n); D.secciones.push(n); reconstruir(); } }, "+ Sección de libros"),
+      el("button", { onclick: () => { const n = { tipo: "premio", titulo: "El gran premio", grande: "", texto: "", links: [] }; abiertos.add(n); D.secciones.push(n); reconstruir(); } }, "+ Gran premio"))].flat());
+  f.scrollTop = y;
+}
+
+// ---------- abrir y guardar ----------
+const BD = "editor-revista";
+function bd(modo, fn) {
+  return new Promise((ok, mal) => {
+    const r = indexedDB.open(BD, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("k");
+    r.onsuccess = () => { const tx = r.result.transaction("k", modo); const q = fn(tx.objectStore("k")); tx.oncomplete = () => ok(q && q.result); tx.onerror = () => mal(tx.error); };
+    r.onerror = () => mal(r.error);
+  });
+}
+async function cargar(h) {
+  let texto;
+  try { texto = await (await (await h.getFileHandle("datos.js")).getFile()).text(); }
+  catch (e) { alert("Esa carpeta no tiene datos.js. Elige la carpeta «wishlist»."); return; }
+  try {
+    D = JSON.parse(texto.replace(/^[\s\S]*?=\s*/, "").replace(/;\s*$/, ""));
+  } catch (e) { alert("No pude leer datos.js: " + e.message); return; }
+  try { css = await (await (await h.getFileHandle("estilos.css")).getFile()).text(); } catch (e) { css = ""; }
+  dir = h;
+  D.secciones = D.secciones || [];
+  sucio = false;
+  $("guardar").disabled = true;
+  $("reabrir").hidden = true;
+  estado("Carpeta «" + h.name + "» abierta", "ok");
+  try { await bd("readwrite", (s) => s.put(h, "carpeta")); } catch (e) {}
+  construirForm();
+  vistaPrevia();
+}
+async function guardar() {
+  if (!dir || !D) return;
+  try {
+    const w = await (await dir.getFileHandle("datos.js", { create: true })).createWritable();
+    await w.write("window.DATOS = " + JSON.stringify(D, null, 2) + ";\n");
+    await w.close();
+    sucio = false;
+    $("guardar").disabled = true;
+    const t = new Date();
+    estado("Guardado a las " + t.getHours() + ":" + String(t.getMinutes()).padStart(2, "0") + " · para subirlo: publicar.bat", "ok");
+  } catch (e) {
+    alert("No pude guardar: " + e.message);
+  }
+}
+
+if (!window.showDirectoryPicker) {
+  $("sinSoporte").hidden = false;
+  $("abrir").disabled = true;
+} else {
+  $("abrir").onclick = async () => {
+    if (sucio && !confirm("Tienes cambios sin guardar. ¿Abrir otra carpeta igual?")) return;
+    try { await cargar(await showDirectoryPicker({ id: "revista", mode: "readwrite" })); }
+    catch (e) { if (e.name !== "AbortError") alert(e.message); }
+  };
+  bd("readonly", (s) => s.get("carpeta")).then((h) => {
+    if (!h) return;
+    const b = $("reabrir");
+    b.textContent = "Reabrir «" + h.name + "»";
+    b.hidden = false;
+    b.onclick = async () => {
+      try {
+        if ((await h.requestPermission({ mode: "readwrite" })) === "granted") await cargar(h);
+      } catch (e) { alert("No pude reabrirla: " + e.message + ". Usa «Abrir carpeta…»."); b.hidden = true; }
+    };
+  }).catch(() => {});
+}
+$("guardar").onclick = guardar;
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); guardar(); }
+});
+window.addEventListener("beforeunload", (e) => { if (sucio) { e.preventDefault(); e.returnValue = ""; } });
+</script>
+</body>
+</html>
