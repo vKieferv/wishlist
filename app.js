@@ -204,24 +204,27 @@
     var destacada = original.destacado && !plano;
     var nota = p.nota && !(tipo === "juego" && /^se regala desde steam\.?$/i.test(p.nota)) ? p.nota : "";
     var entrega = tipo === "juego" ? "" : entregaDe(p);
-    var boton = tipo === "juego" ? "Regalar en Steam" : p._pack ? "Ver el pack" : p._sig ? "Tomo " + p._sig.n : "Dónde comprar";
-    var etiqueta = estado.orden !== "categoria" ? nombreCat[catDe(original)] : tiendaCorta(p);
+    var tienda = tiendaCorta(p);
+    var boton = tipo === "juego" ? "Regalar en Steam" : p._pack ? "Ver el pack" : p._sig ? "Comprar el tomo " + p._sig.n :
+      tienda ? "Ver en " + tienda.charAt(0).toUpperCase() + tienda.slice(1) : "Dónde comprar";
+    // Sin foto, la lámina se ve como un hueco del álbum que todavía no se llena.
+    var vacia = !foto && tipo !== "libro";
     var imagen;
     if (foto) imagen = '<div class="lamina-foto"><img src="' + esc(foto) + '" alt="' + esc(p.nombre) + '" loading="lazy"></div>';
     else if (tipo === "libro") imagen = '<div class="lamina-foto"><div class="tapa-falsa" aria-hidden="true"><b>' + esc(p.nombre) + "</b><span>" + esc(String(p.descripcion || "").replace(/\.$/, "")) + "</span></div></div>";
-    else imagen = '<div class="lamina-foto sin-foto" aria-hidden="true"><span>' + num + "</span></div>";
-    return '<article class="lamina ' + tipo + (destacada ? " destacada" : "") + (foto ? "" : " sin-imagen") + '">' +
-      '<div class="lamina-num"><b>Nº ' + pad(num) + "</b>" + (destacada ? "<i>Brillante</i>" : "") +
-      (edit.activo ? '<button type="button" class="editar-lamina" data-editar="' + esc(original.id) + '">Editar</button>' : "") + "</div>" +
+    else imagen = '<div class="hueco" aria-hidden="true"><span>' + num + "</span><em>sin foto todavía</em></div>";
+    return '<article class="lamina ' + tipo + (destacada ? " brillante" : "") + (vacia ? " vacia" : "") + '">' +
+      (edit.activo ? '<button type="button" class="editar-lamina" data-editar="' + esc(original.id) + '">Editar</button>' : "") +
       imagen +
-      '<div class="lamina-cuerpo">' + (etiqueta ? '<span class="lamina-tienda">' + esc(etiqueta) + "</span>" : "") +
-      "<h3>" + esc(p.nombre) + "</h3>" +
+      '<div class="placa"><span class="num">' + num + "</span><h3>" + esc(p.nombre) + "</h3></div>" +
+      '<div class="lamina-cuerpo">' +
+      (estado.orden !== "categoria" ? '<p class="de-cat">' + esc(nombreCat[catDe(original)] || "") + "</p>" : "") +
       (p.descripcion ? '<p class="desc">' + esc(p.descripcion) + "</p>" : "") +
       (p.serie ? serieHtml(original) : "") +
-      (nota ? '<div class="nota">' + esc(nota) + "</div>" : "") +
-      (entrega ? '<div class="entrega">Llega: ' + esc(entrega) + "</div>" : "") + "</div>" +
+      (entrega ? '<p class="entrega">Llega ' + esc(entrega.charAt(0).toLowerCase() + entrega.slice(1)) + "</p>" : "") +
+      (nota ? '<p class="nota">' + esc(nota) + "</p>" : "") + "</div>" +
       '<div class="lamina-pie">' + precioHtml(p) +
-      (link ? '<a class="ir" href="' + esc(link) + '" target="_blank" rel="noopener" title="' + esc(p.tienda || link) + '">' + boton + " ↗</a>" : "") +
+      (link ? '<a class="ir" href="' + esc(link) + '" target="_blank" rel="noopener" title="' + esc(p.tienda || link) + '">' + esc(boton) + " →</a>" : "") +
       "</div></article>";
   }
 
@@ -272,7 +275,7 @@
         var carrusel = juegos && ps.length >= 4;
         var atajo = D.productos.filter(function (p) { return catDe(p) === c.id && visibles.indexOf(p) < 0; })[0];
         html += '<section class="categoria" id="cat-' + esc(c.id) + '"><div class="categoria-cab"><h2>' + esc(c.nombre) +
-          "</h2><span>" + pad(ps.length, 2) + (ps.length === 1 ? " lámina" : " láminas") + "</span>" +
+          '</h2><span class="cuantas">' + ps.length + (ps.length === 1 ? " lámina" : " láminas") + "</span>" +
           (atajo ? '<a class="cab-link" href="' + esc(urlSegura(atajo.link)) + '" target="_blank" rel="noopener">Ver mi lista completa en Steam ↗</a>' : "") +
           (carrusel ? '<span class="flechas"><button type="button" class="flecha" data-mover="-1" aria-label="Juegos anteriores">←</button>' +
             '<button type="button" class="flecha" data-mover="1" aria-label="Juegos siguientes">→</button></span>' : "") + "</div>" +
@@ -282,7 +285,7 @@
     } else {
       var ord = lista.slice().sort(porPrecio(estado.orden === "caro" ? -1 : 1));
       html = '<section class="categoria"><div class="categoria-cab"><h2>' + (estado.orden === "caro" ? "De más a menos" : "De menos a más") +
-        "</h2><span>" + pad(ord.length, 2) + " láminas · ordenadas por precio</span></div>" +
+        '</h2><span class="cuantas">' + ord.length + " láminas, ordenadas por precio</span></div>" +
         '<div class="grilla">' + ord.map(function (p) { return lamina(p, true); }).join("") + "</div></section>";
     }
     $("laminas").innerHTML = html;
@@ -314,13 +317,11 @@
     var desde = precios.length ? CLP.format(Math.min.apply(null, precios)) : "—";
     raiz.innerHTML =
       '<header class="portada"><div class="ancho">' +
-      '<div class="portada-sup"><span>Álbum de cumpleaños</span><span>Temporada ' + esc(D.temporada) + "</span></div>" +
-      '<span class="dorsal" aria-hidden="true">' + esc(D.numero) + "</span>" +
+      '<p class="portada-sup">Álbum de cumpleaños · Temporada ' + esc(D.temporada) + "</p>" +
+      '<span class="sello" aria-hidden="true"><b>' + esc(D.numero) + "</b></span>" +
       "<h1><small>El álbum de</small>" + esc(D.nombre) + "</h1>" +
-      '<div class="portada-inf"><p>' + esc(D.intro) + "</p>" +
-      '<div class="marcador"><div><b>' + pad(visibles.length, 2) + "</b><span>Láminas</span></div>" +
-      "<div><b>" + pad(cats.length, 2) + "</b><span>Categorías</span></div>" +
-      "<div><b>" + desde + "</b><span>Regalos desde</span></div></div></div>" +
+      '<div class="papelito"><p>' + esc(D.intro) + "</p>" +
+      '<p class="cuenta">' + visibles.length + " láminas · " + cats.length + " categorías · regalos desde " + desde + "</p></div>" +
       "</div></header>" +
       barraEdicion() +
       '<nav class="filtros" id="filtros" aria-label="Filtros"></nav>' +

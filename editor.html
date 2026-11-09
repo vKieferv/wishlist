@@ -51,6 +51,11 @@
   .agregar p { margin: 0 0 12px; color: var(--gris); font-size: 14px; }
   .agregar form { display: flex; gap: 8px; flex-wrap: wrap; }
   .agregar input { flex: 1 1 280px; font-size: 16px; padding: 10px 12px; }
+  .ayuda-ml { border: 0; background: none; margin: 12px 0 0; font-size: 14px; }
+  .ayuda-ml > summary { padding: 0; font-weight: 600; text-decoration: underline; display: block; }
+  .ayuda-ml p { margin: 8px 0; }
+  .ayuda-ml ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--tinta); }
+  .marcador { display: inline-block; background: var(--tinta); color: var(--panel); padding: 4px 10px; font-weight: 700; text-decoration: none; cursor: grab; }
   #aviso { margin-top: 10px; font: 500 13px var(--f-dato); }
   #aviso.mal { color: var(--mal); } #aviso.ok { color: var(--ok); }
   #publicacion { white-space: pre-wrap; font: 12px var(--f-dato); background: var(--campo); padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto; }
@@ -121,6 +126,16 @@
       <button class="lleno" id="btnLink" type="submit">Agregar</button>
       <button id="btnManual" type="button">Agregar sin link</button>
     </form>
+    <details class="ayuda-ml">
+      <summary>¿La tienda no me deja leer el link? (Mercado Libre, Falabella…)</summary>
+      <p>Algunas tiendas bloquean las lecturas automáticas. Para esas, usa este botón:</p>
+      <ol>
+        <li>Muestra la barra de marcadores de tu navegador (Ctrl + Shift + B).</li>
+        <li>Arrastra hasta la barra este botón: <a id="marcador" class="marcador" href="#" onclick="return false" title="Arrástrame a la barra de marcadores">＋ Al álbum</a></li>
+        <li>Cuando estés viendo un producto en la tienda, toca <b>＋ Al álbum</b> en la barra. Se abre el editor con el nombre, la foto y el precio.</li>
+      </ol>
+      <p>Si el producto ya estaba en el álbum, le completa la foto y el precio en vez de duplicarlo. El editor tiene que estar abierto.</p>
+    </details>
     <div id="aviso" role="status"></div>
     <div id="publicacion" hidden></div>
   </section>
@@ -330,6 +345,59 @@ async function agregarDesdeLink(url) {
   const nodo = document.querySelector('[data-id="' + p.id + '"]');
   if (nodo) nodo.scrollIntoView({ behavior: "smooth", block: "center" });
 }
+// Botón de marcadores: corre en la página del producto, en tu navegador, y le pasa al editor lo que ve.
+// Sirve para tiendas que no dejan leer sus páginas desde afuera, como Mercado Libre.
+const MARCADOR = "javascript:(function(){var d=document,q=function(s){var e=d.querySelector(s);return e&&(e.getAttribute('content')||e.textContent)||''};var ld={};" +
+  "[].slice.call(d.querySelectorAll('script[type=\"application/ld+json\"]')).forEach(function(s){try{var j=JSON.parse(s.textContent);[].concat(j['@graph']||j).forEach(function(o){if(o&&/Product/i.test([].concat(o['@type']).join()))ld=o})}catch(e){}});" +
+  "var of=[].concat(ld.offers||[])[0]||{};var im=[].concat(ld.image||[]).map(function(i){return i&&i.url||i}).concat([q('meta[property=\"og:image\"]')]);" +
+  "[].slice.call(d.querySelectorAll('.ui-pdp-gallery img,[data-zoom]')).slice(0,5).forEach(function(i){im.push(i.getAttribute('data-zoom')||i.currentSrc||i.src)});" +
+  "var pr=of.price||of.lowPrice||q('meta[itemprop=\"price\"]')||q('meta[property=\"product:price:amount\"]');if(!pr){var f=d.querySelector('.ui-pdp-price__second-line .andes-money-amount__fraction,.andes-money-amount__fraction');if(f)pr=f.textContent.replace(/\\D/g,'')}" +
+  "var info={nombre:ld.name||q('meta[property=\"og:title\"]')||d.title,descripcion:ld.description||q('meta[property=\"og:description\"]')||q('meta[name=\"description\"]'),precio:pr,moneda:of.priceCurrency||q('meta[itemprop=\"priceCurrency\"]')||'CLP'," +
+  "link:location.origin+location.pathname,imagenes:im.filter(function(u,i,a){return u&&/^https?:/.test(u)&&a.indexOf(u)===i}).slice(0,6)};" +
+  "window.open('http://127.0.0.1:" + location.port + "/editor.html#nuevo='+encodeURIComponent(JSON.stringify(info)),'album')})();";
+
+function numeroDe(v) {
+  if (v === null || v === undefined || v === "") return null;
+  const s = String(v).trim();
+  const n = /^\d+(\.\d{1,2})?$/.test(s) ? Number(s) : Number(s.replace(/\D/g, ""));
+  return isFinite(n) && n > 0 ? n : null;
+}
+async function agregarDesdeNavegador(info) {
+  const link = String(info.link || "");
+  if (!/^https?:\/\//i.test(link)) return;
+  const nombre = String(info.nombre || "").replace(/\s+[|·-]\s+(Mercado ?Libre|Falabella|Paris|Ripley)[^|]*$/i, "").trim().slice(0, 140) || "Producto nuevo";
+  const descripcion = String(info.descripcion || "").replace(/\s+/g, " ").trim().slice(0, 220);
+  const precio = numeroDe(info.precio);
+  const imagenes = (Array.isArray(info.imagenes) ? info.imagenes : []).filter((u) => /^https?:\/\//i.test(u)).slice(0, 6);
+  // Si ese link ya estaba en el álbum, completo lo que le falte en vez de duplicarlo.
+  let p = D.productos.find((x) => x.link && x.link.split("?")[0].split("#")[0] === link);
+  const nuevo = !p;
+  if (!p) {
+    p = { id: nuevoId(), categoria: "", nombre, descripcion, nota: "", precio, moneda: String(info.moneda || "CLP").toUpperCase(), link, tienda: host(link), foto: "" };
+    p.categoria = adivinarCategoria([nombre, descripcion, link].join(" "));
+    D.productos.unshift(p);
+  } else {
+    if (precio != null) { p.precio = precio; p.moneda = String(info.moneda || "CLP").toUpperCase(); }
+    if (!p.descripcion) p.descripcion = descripcion;
+  }
+  if (imagenes.length) {
+    candidatas.set(p.id, imagenes);
+    if (!p.foto) { try { p.foto = await bajarFoto(imagenes[0], p.nombre); } catch (e) { p.foto = imagenes[0]; } }
+  }
+  abiertos.add(p.id);
+  rehacer();
+  aviso((nuevo ? "Agregado desde tu navegador: " : "Actualizado desde tu navegador: ") + p.nombre + (precio == null ? ". No encontré el precio; ponlo a mano." : "."), "ok");
+  const nodo = document.querySelector('[data-id="' + p.id + '"]');
+  if (nodo) nodo.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function revisarHash() {
+  const m = /^#nuevo=(.+)$/.exec(location.hash);
+  if (!m || !D) return;
+  history.replaceState(null, "", location.pathname);
+  try { agregarDesdeNavegador(JSON.parse(decodeURIComponent(m[1]))); } catch (e) { aviso("No entendí lo que mandó el botón de marcadores.", "mal"); }
+}
+window.addEventListener("hashchange", revisarHash);
+
 async function releer(p) {
   if (!p.link) return;
   aviso("Leyendo la página otra vez…");
@@ -564,6 +632,8 @@ $("publicar").onclick = async () => {
     D.categorias = D.categorias || []; D.productos = D.productos || [];
     estado("Todo guardado");
     pintar();
+    $("marcador").href = MARCADOR;
+    revisarHash();
   } catch (e) {
     $("sinServidor").style.display = "block";
     estado("Sin conexión con el editor");
