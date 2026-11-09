@@ -2,7 +2,15 @@
 
 Mi lista de regalos de cumpleaños como álbum de láminas: https://vkieferv.github.io/wishlist/
 
-## Editar
+## Editar desde la página (cualquier equipo)
+1. Abre la página y toca **Editar**, al final de todo.
+2. La primera vez pide una llave de GitHub; el cuadro explica cómo crearla
+   (Contents y Actions en «Read and write», solo para el repo `wishlist`).
+3. Pega un link en **Agregar desde un link**. Una acción de GitHub (`.github/workflows/agregar.yml`)
+   lo lee y agrega la lámina en 1 a 2 minutos.
+4. Cada lámina tiene un botón **Editar** para cambiar nombre, precio, categoría, foto o borrarla.
+
+## Editar en este PC (editor local)
 1. Doble clic en **`abrir-editor.bat`**. Se abre una ventana negra (déjala abierta) y el editor en el navegador.
 2. Pega el link de un producto y toca **Agregar**. Saca solo el nombre, la foto, la descripción y el precio,
    y le elige una categoría según las palabras clave.
