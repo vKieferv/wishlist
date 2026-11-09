@@ -247,4 +247,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { extraer, aNumero };
+module.exports = { extraer, aNumero, traer };

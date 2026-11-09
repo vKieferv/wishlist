@@ -128,4 +128,51 @@ main { padding-block: 10px 40px; }
 footer { border-top: 1.5px solid var(--borde); }
 footer .ancho { padding-block: 18px 34px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 500 12px var(--f-dato); letter-spacing: .06em; text-transform: uppercase; color: var(--gris); }
 
+/* ---------- Modo edición ---------- */
+.entrar-edicion { font: 500 12px var(--f-dato); letter-spacing: .06em; text-transform: uppercase; background: none; border: 0; color: var(--gris); cursor: pointer; padding: 0; text-decoration: underline; }
+.edicion { background: var(--lamina); border-bottom: 1.5px solid var(--borde); }
+.edicion .ancho { padding-block: 16px; display: grid; gap: 8px; }
+.edicion-form label { display: block; font: 900 24px/1 var(--f-display); text-transform: uppercase; margin-bottom: 8px; }
+.edicion-fila { display: flex; flex-wrap: wrap; gap: 8px; }
+.edicion-fila input { flex: 1 1 260px; min-width: 0; font: 16px var(--f-texto); padding: 10px 12px; border: 1.5px solid var(--borde); background: var(--papel); color: var(--tinta); border-radius: 0; }
+.edicion button, .dialogo button, .boton-archivo {
+  font: 700 14px var(--f-texto); padding: 9px 14px; border: 1.5px solid var(--borde); background: var(--tinta); color: var(--lamina); cursor: pointer; border-radius: 0;
+}
+.edicion button.sec, .dialogo button.sec, .boton-archivo { background: var(--lamina); color: var(--tinta); }
+.dialogo button.peligro { background: var(--lamina); color: var(--tinta); border-style: dashed; }
+.edicion button:disabled, .dialogo button:disabled { opacity: .5; cursor: default; }
+#estadoEdicion { margin: 0; font: 500 13px var(--f-dato); color: var(--gris); }
+.pendientes { margin: 0; padding-left: 18px; font: 500 12px var(--f-dato); overflow-wrap: anywhere; }
+.editar-lamina { margin-left: 8px; font: 600 11px var(--f-dato); text-transform: uppercase; letter-spacing: .06em; background: var(--tinta); color: var(--lamina); border: 0; padding: 2px 7px; cursor: pointer; }
+.lamina-sup span { margin-left: auto; }
+
+.dialogo { width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1.5px solid var(--borde); background: var(--lamina); color: var(--tinta); border-radius: 0; }
+.dialogo::backdrop { background: rgba(10, 10, 11, .6); }
+.dlg-cuerpo { padding: 20px; display: grid; gap: 10px; }
+.dlg-cuerpo h2 { margin: 0; font: 900 34px/1 var(--f-display); text-transform: uppercase; }
+.dlg-cuerpo p, .dlg-cuerpo ol { margin: 0; font-size: 14px; }
+.dlg-cuerpo ol { padding-left: 20px; display: grid; gap: 4px; }
+.dlg-cuerpo label { font: 500 11px var(--f-dato); text-transform: uppercase; letter-spacing: .08em; color: var(--gris); }
+.dlg-cuerpo input[type=text], .dlg-cuerpo input[type=url], .dlg-cuerpo input[type=number], .dlg-cuerpo input[type=password], .dlg-cuerpo select, .dlg-cuerpo textarea {
+  width: 100%; font: 15px var(--f-texto); padding: 8px 10px; border: 1.5px solid var(--suave); background: var(--papel); color: var(--tinta); border-radius: 0;
+}
+.dlg-cuerpo input:focus, .dlg-cuerpo select:focus, .dlg-cuerpo textarea:focus { border-color: var(--borde); outline: none; }
+.dlg-grid { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 18px; }
+@media (max-width: 600px) { .dlg-grid { grid-template-columns: 1fr; } }
+.dlg-foto { display: flex; flex-direction: column; gap: 8px; }
+.dlg-foto img, .dlg-foto .sin { width: 100%; aspect-ratio: 1; object-fit: contain; background: var(--marco); border: 1.5px solid var(--suave); display: grid; place-items: center; color: #777; font-size: 13px; }
+.boton-archivo { text-align: center; text-transform: none; letter-spacing: 0; font: 700 14px var(--f-texto); color: var(--tinta); }
+.boton-archivo input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.boton-archivo:focus-within { outline: 3px solid var(--tinta); outline-offset: 2px; }
+.dlg-campos { display: grid; gap: 6px; min-width: 0; }
+.dlg-campos > label:not(.check) { margin-top: 4px; }
+.dlg-dos { display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 10px; }
+.dlg-dos label { display: block; margin: 4px 0 6px; }
+.dialogo .check { display: flex; align-items: center; gap: 8px; font: 14px var(--f-texto); color: var(--tinta); text-transform: none; letter-spacing: 0; margin-top: 6px; }
+#cajaSerie { display: grid; gap: 6px; }
+.dlg-nota { color: var(--gris); font-size: 13px; }
+.dlg-error { color: var(--tinta); font: 500 13px var(--f-dato); min-height: 1em; }
+.dlg-botones { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.dlg-botones .espacio { flex: 1; }
+
 @media (prefers-reduced-motion: reduce) { .lamina, .chip { transition: none; } .lamina:hover, .chip:hover { transform: none; } }

@@ -1,0 +1,54 @@
+name: Agregar producto
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: Link del producto
+        required: true
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: datos-album
+  cancel-in-progress: false
+
+jobs:
+  agregar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar el achicador de fotos
+        run: npm install --no-save --no-package-lock sharp@0.33.5
+
+      - name: Leer el link y guardar la lámina
+        env:
+          URL_PRODUCTO: ${{ inputs.url }}
+        run: |
+          git config user.name "album-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for intento in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            node herramientas/agregar.js "$URL_PRODUCTO"
+            git add datos.js fotos
+            if git diff --cached --quiet; then echo "Nada nuevo que guardar"; exit 0; fi
+            git commit -m "Agregar lámina desde un link"
+            if git push origin HEAD:main; then exit 0; fi
+            echo "Alguien guardó al mismo tiempo; reintento ($intento)"
+            sleep 4
+          done
+          exit 1
+
+      - name: Rearmar la página
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
