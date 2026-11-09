@@ -161,7 +161,8 @@ window.DATOS = {
         "tengo": [
           2
         ]
-      }
+      },
+      "destacado": false
     },
     {
       "id": "p10",
@@ -386,7 +387,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-09T22:13:54.458Z",
+  "actualizado": "2026-11-09T22:38:06.481Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
