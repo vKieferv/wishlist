@@ -2,22 +2,19 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Revista Vicho</title>
-<meta name="description" content="La wishlist de cumpleaños de Vicho, en formato revista: ideas para quien no sabe qué regalar.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El álbum de Vicho</title>
+<meta name="description" content="La lista de regalos de Vicho: ideas para su cumpleaños, con fotos, precios y dónde comprarlas.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilos.css">
+<style>.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }</style>
 </head>
 <body>
-<div id="revista"></div>
-<!-- El contenido se edita con editor.html; no hace falta tocar este archivo. -->
+<div id="album"></div>
+<!-- El contenido se edita con abrir-editor.bat; no hace falta tocar este archivo. -->
 <script src="datos.js"></script>
-<script src="render.js"></script>
-<script>
-  document.getElementById("revista").innerHTML = renderRevista(window.DATOS);
-  if (window.DATOS && window.DATOS.nombre) document.title = "Revista " + window.DATOS.nombre;
-</script>
+<script src="app.js"></script>
 </body>
 </html>

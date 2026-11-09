@@ -1,26 +1,24 @@
-# Revista Vicho
+# El álbum de Vicho
 
-Mi wishlist de cumpleaños en formato revista.
+Mi lista de regalos de cumpleaños como álbum de láminas: https://vkieferv.github.io/wishlist/
 
 ## Editar
-1. Abre `editor.html` con **Chrome** o **Edge** (doble clic).
-2. **Abrir carpeta…** → elige esta carpeta (`wishlist`) → permite **Editar archivos**.
-   La próxima vez basta con **Reabrir «wishlist»**.
-3. Cambia textos, agrega o quita cosas, sube fotos (botón, arrastrar o Ctrl+V) y pon links de compra.
-   En los libros, haz clic en los números para marcar cuáles ya tienes.
-4. **Guardar** (Ctrl+S).
+1. Doble clic en **`abrir-editor.bat`**. Se abre una ventana negra (déjala abierta) y el editor en el navegador.
+2. Pega el link de un producto y toca **Agregar**. Saca solo el nombre, la foto, la descripción y el precio,
+   y le elige una categoría según las palabras clave.
+3. Corrige lo que quieras: nombre, nota (talla, color), precio, categoría, foto (subir, arrastrar,
+   Ctrl+V o elegir otra de la página), destacada, saga de libros.
+4. Todo se guarda solo.
+5. **Publicar en internet** sube los cambios a GitHub. En uno o dos minutos se ven en la página.
 
-Las fotos quedan en `fotos/` (achicadas a 1400 px) y el contenido en `datos.js`.
+Para cerrar el editor, cierra la ventana negra.
 
-## Publicar
-Doble clic en `publicar.bat`: hace commit y sube todo a GitHub.
+## Archivos
+- `datos.js`: todo el contenido (lo escribe el editor).
+- `fotos/`: las fotos de los productos.
+- `index.html`, `app.js`, `estilos.css`: la página pública.
+- `editor.html`, `servidor.js`, `abrir-editor.bat`: el editor (necesita Node.js; solo funciona en este PC).
+- `publicar.bat`: otra forma de publicar, sin abrir el editor.
 
-### Solo la primera vez
-1. En github.com crea un repo **público** y vacío llamado `wishlist`.
-2. En una terminal, dentro de esta carpeta:
-   ```
-   "C:\Program Files\Git\cmd\git.exe" remote add origin https://github.com/vKieferv/wishlist.git
-   "C:\Program Files\Git\cmd\git.exe" push -u origin main
-   ```
-3. En el repo: **Settings → Pages → Deploy from a branch → `main` / `(root)`**.
-4. La revista queda en `https://vkieferv.github.io/wishlist/`.
+En la página, los precios en dólares se convierten a pesos para los filtros con el valor
+del dólar que pongas en **Portada → Dólar en pesos**.

@@ -3,458 +3,438 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Editor de la revista</title>
+<title>Editor del álbum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --fondo: #ecebe7; --panel: #ffffff; --texto: #1a1a1a; --suave: #6b6760; --linea: #d9d6cf;
-    --acento: #c8102e; --ok: #1f7a3a; --campo: #faf9f6;
+    --papel: #e9eaec; --panel: #ffffff; --tinta: #0a0a0b; --gris: #5b5e64; --suave: #c9cbd0; --campo: #f5f5f6;
+    --ok: #1d6b36; --mal: #a3141f;
+    --f-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+    --f-texto: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --f-dato: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --fondo: #101010; --panel: #1b1b1b; --texto: #eeeae2; --suave: #a29d93; --linea: #333;
-      --acento: #ff4d5e; --ok: #4fc274; --campo: #232323;
-    }
+    :root:not([data-theme="light"]) { --papel: #0d0d0f; --panel: #17181b; --tinta: #f2f2f0; --gris: #a3a6ad; --suave: #2d2f35; --campo: #1f2024; --ok: #5fcf83; --mal: #ff6b75; color-scheme: dark; }
   }
-  :root[data-theme="dark"] {
-    --fondo: #101010; --panel: #1b1b1b; --texto: #eeeae2; --suave: #a29d93; --linea: #333;
-    --acento: #ff4d5e; --ok: #4fc274; --campo: #232323;
-  }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body { margin: 0; background: var(--fondo); color: var(--texto); font: 14px/1.45 system-ui, "Segoe UI", sans-serif; display: flex; flex-direction: column; }
-  button {
-    font: inherit; cursor: pointer; border: 1px solid var(--linea); background: var(--panel); color: var(--texto);
-    padding: 6px 10px; border-radius: 6px;
-  }
-  button:hover { border-color: var(--texto); }
-  button.primario { background: var(--texto); color: var(--panel); border-color: var(--texto); font-weight: 600; }
-  button.primario:disabled { opacity: .4; cursor: default; }
-  button.mini { padding: 2px 8px; font-size: 13px; }
-  button.peligro:hover { border-color: var(--acento); color: var(--acento); }
-  .top {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 16px;
-    background: var(--panel); border-bottom: 1px solid var(--linea);
-  }
-  .top strong { font-size: 15px; margin-right: auto; }
-  #estado { font-size: 13px; color: var(--suave); }
-  #estado.sucio { color: var(--acento); }
-  #estado.ok { color: var(--ok); }
-  .cuerpo { flex: 1; display: grid; grid-template-columns: minmax(340px, 440px) 1fr; min-height: 0; }
-  @media (max-width: 860px) { .cuerpo { grid-template-columns: 1fr; } #vista { height: 70vh; } }
-  #form { overflow-y: auto; padding: 14px 14px 80px; border-right: 1px solid var(--linea); }
-  #vista { width: 100%; height: 100%; border: 0; background: #f4f0e8; }
-  .bienvenida { padding: 28px 20px; max-width: 520px; }
-  .bienvenida h1 { font-size: 22px; margin: 0 0 10px; }
-  .bienvenida ol { padding-left: 20px; }
-  .bienvenida li { margin-bottom: 6px; }
-  .aviso { background: #fff3cd; color: #5c4400; padding: 10px 12px; border-radius: 6px; margin-top: 12px; }
+  :root[data-theme="dark"] { --papel: #0d0d0f; --panel: #17181b; --tinta: #f2f2f0; --gris: #a3a6ad; --suave: #2d2f35; --campo: #1f2024; --ok: #5fcf83; --mal: #ff6b75; color-scheme: dark; }
 
-  details { background: var(--panel); border: 1px solid var(--linea); border-radius: 8px; margin-bottom: 10px; }
-  details details { background: var(--campo); margin: 8px 0; }
-  summary { cursor: pointer; padding: 10px 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; list-style: none; }
-  summary::-webkit-details-marker { display: none; }
-  summary::before { content: "▸"; color: var(--suave); }
-  details[open] > summary::before { content: "▾"; }
-  summary .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  summary .tipo { font-size: 11px; font-weight: 500; color: var(--suave); text-transform: uppercase; letter-spacing: .08em; }
-  summary .acciones { display: flex; gap: 4px; }
-  .contenido { padding: 4px 12px 12px; }
-  label.campo { display: block; margin: 8px 0; }
-  label.campo > span { display: block; font-size: 12px; color: var(--suave); margin-bottom: 3px; }
-  input[type=text], input[type=number], input[type=url], textarea {
-    width: 100%; font: inherit; color: var(--texto); background: var(--campo); border: 1px solid var(--linea);
-    border-radius: 6px; padding: 6px 8px;
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.45 var(--f-texto); }
+  .ancho { max-width: 980px; margin: 0 auto; padding-left: 16px; padding-right: 16px; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 1.5px solid var(--tinta); background: var(--panel); padding: 7px 12px; border-radius: 0; font-weight: 600; }
+  button:hover { background: var(--campo); }
+  button.lleno { background: var(--tinta); color: var(--panel); }
+  button.lleno:hover { opacity: .85; }
+  button:disabled { opacity: .45; cursor: default; }
+  button.mini { padding: 3px 8px; font-size: 13px; }
+  button.peligro { border-color: var(--mal); color: var(--mal); }
+  :focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
+  input[type=text], input[type=url], input[type=number], select, textarea {
+    width: 100%; background: var(--campo); border: 1.5px solid var(--suave); padding: 7px 9px; border-radius: 0;
   }
-  details details input[type=text], details details input[type=number], details details input[type=url], details details textarea { background: var(--panel); }
-  textarea { min-height: 64px; resize: vertical; }
-  .ayuda { font-size: 12px; color: var(--suave); margin: 2px 0 6px; }
-  .fila { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
-  .fila input { flex: 1; min-width: 0; }
-  .bloque { border-top: 1px dashed var(--linea); margin-top: 10px; padding-top: 6px; }
-  .bloque > b { font-size: 12px; color: var(--suave); text-transform: uppercase; letter-spacing: .06em; }
-  .check { display: flex; gap: 8px; align-items: center; margin: 10px 0 4px; }
-  .foto-zona {
-    border: 1.5px dashed var(--linea); border-radius: 8px; padding: 10px; display: flex; gap: 10px; align-items: center;
-    margin: 8px 0;
-  }
-  .foto-zona.encima { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 8%, transparent); }
-  .foto-zona img { width: 72px; height: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--linea); }
-  .foto-zona .txt { flex: 1; font-size: 12px; color: var(--suave); }
-  .lomos { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
-  .lomos button { width: 30px; height: 40px; padding: 0; font-weight: 700; }
-  .lomos button.tengo { background: var(--texto); color: var(--panel); opacity: .45; }
-  .agregar { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
-  .agregar button { border-style: dashed; }
+  input:focus, select:focus, textarea:focus { border-color: var(--tinta); outline: none; }
+  textarea { min-height: 70px; resize: vertical; }
+
+  header.barra { background: var(--tinta); color: var(--panel); }
+  header.barra .ancho { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-block: 12px; }
+  header.barra h1 { margin: 0 auto 0 0; font: 900 30px/1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
+  header.barra a, header.barra button { color: var(--panel); border-color: var(--panel); background: transparent; text-decoration: none; padding: 7px 12px; border: 1.5px solid; font-weight: 600; }
+  header.barra button.lleno { background: var(--panel); color: var(--tinta); }
+  #estado { font: 500 12px var(--f-dato); opacity: .85; }
+
+  .agregar { background: var(--panel); border: 1.5px solid var(--tinta); margin: 22px 0 8px; padding: 16px; }
+  .agregar h2 { margin: 0 0 4px; font: 900 28px/1 var(--f-display); text-transform: uppercase; }
+  .agregar p { margin: 0 0 12px; color: var(--gris); font-size: 14px; }
+  .agregar form { display: flex; gap: 8px; flex-wrap: wrap; }
+  .agregar input { flex: 1 1 280px; font-size: 16px; padding: 10px 12px; }
+  #aviso { margin-top: 10px; font: 500 13px var(--f-dato); }
+  #aviso.mal { color: var(--mal); } #aviso.ok { color: var(--ok); }
+  #publicacion { white-space: pre-wrap; font: 12px var(--f-dato); background: var(--campo); padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto; }
+
+  h2.grupo { font: 900 34px/1 var(--f-display); text-transform: uppercase; margin: 30px 0 10px; display: flex; gap: 12px; align-items: baseline; border-bottom: 1.5px solid var(--tinta); padding-bottom: 4px; }
+  h2.grupo span { font: 500 12px var(--f-dato); color: var(--gris); text-transform: uppercase; letter-spacing: .1em; }
+
+  details.prod, details.panel { background: var(--panel); border: 1.5px solid var(--suave); margin-bottom: 8px; }
+  details.prod[open], details.panel[open] { border-color: var(--tinta); }
+  details > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
+  details > summary::-webkit-details-marker { display: none; }
+  .mini-foto { width: 52px; height: 52px; flex: none; background: #fff; border: 1px solid var(--suave); object-fit: contain; display: grid; place-items: center; font: 900 20px var(--f-display); color: #999; }
+  .sum-txt { flex: 1; min-width: 0; }
+  .sum-txt b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sum-txt span { font: 12px var(--f-dato); color: var(--gris); }
+  .sum-precio { font: 500 14px var(--f-dato); white-space: nowrap; }
+  .marca { font: 500 10px var(--f-dato); text-transform: uppercase; letter-spacing: .08em; border: 1px solid var(--tinta); padding: 1px 5px; }
+
+  .cuerpo { padding: 4px 14px 16px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 18px; }
+  @media (max-width: 640px) { .cuerpo { grid-template-columns: 1fr; } }
+  .foto-col { display: flex; flex-direction: column; gap: 8px; }
+  .foto-grande { width: 100%; aspect-ratio: 1; background: #fff; border: 1.5px solid var(--suave); object-fit: contain; display: grid; place-items: center; font-size: 12px; color: #777; text-align: center; padding: 8px; }
+  .foto-col.encima .foto-grande { border-color: var(--tinta); border-style: dashed; }
+  .candidatas { display: flex; flex-wrap: wrap; gap: 4px; }
+  .candidatas img { width: 44px; height: 44px; object-fit: contain; background: #fff; border: 1.5px solid var(--suave); cursor: pointer; }
+  .candidatas img:hover { border-color: var(--tinta); }
+  .ayuda { font-size: 12px; color: var(--gris); }
+  .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; align-content: start; }
+  .campos .todo { grid-column: 1 / -1; }
+  label.c > span { display: block; font: 500 11px var(--f-dato); text-transform: uppercase; letter-spacing: .08em; color: var(--gris); margin-bottom: 3px; }
+  .fila { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .fila input[type=number] { width: 140px; }
+  .fila select { width: auto; }
+  .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+  .lomos { display: flex; flex-wrap: wrap; gap: 4px; }
+  .lomos button { width: 30px; height: 40px; padding: 0; font: 600 12px var(--f-dato); }
+  .lomos button.tengo { background: var(--suave); border-color: var(--suave); color: var(--gris); }
+  .acciones { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+  .panel .cuerpo-panel { padding: 6px 14px 16px; display: grid; gap: 10px; }
+  .cat-fila { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(0, 2fr) auto; gap: 8px; align-items: center; }
+  @media (max-width: 640px) { .cat-fila { grid-template-columns: 1fr; } }
+  .cat-fila .num { font: 500 12px var(--f-dato); color: var(--gris); }
+  .vacio { padding: 20px; color: var(--gris); font: 13px var(--f-dato); }
+  #sinServidor { display: none; background: var(--mal); color: #fff; padding: 12px 16px; font-weight: 600; }
 </style>
 </head>
 <body>
-<header class="top">
-  <strong>Editor de la revista</strong>
-  <span id="estado">Sin carpeta abierta</span>
-  <button id="reabrir" hidden>Reabrir la última carpeta</button>
-  <button id="abrir">Abrir carpeta…</button>
-  <button id="guardar" class="primario" disabled title="Ctrl+S">Guardar</button>
-</header>
-<div class="cuerpo">
-  <aside id="form">
-    <div class="bienvenida">
-      <h1>Hola, Vicho</h1>
-      <ol>
-        <li>Toca <b>Abrir carpeta…</b> y elige la carpeta <code>wishlist</code> (la que tiene este archivo).</li>
-        <li>Chrome te va a pedir permiso para editarla: dale <b>Editar archivos</b>.</li>
-        <li>Cambia lo que quieras. A la derecha ves cómo queda.</li>
-        <li>Toca <b>Guardar</b> (o Ctrl+S).</li>
-        <li>Para subirlo a internet, haz doble clic en <code>publicar.bat</code>.</li>
-      </ol>
-      <div class="aviso" id="sinSoporte" hidden>Este navegador no deja editar archivos. Abre <code>editor.html</code> con <b>Chrome</b> o <b>Edge</b>.</div>
-    </div>
-  </aside>
-  <iframe id="vista" title="Vista previa"></iframe>
-</div>
+<div id="sinServidor">El editor tiene que abrirse con <b>abrir-editor.bat</b> (doble clic en la carpeta wishlist). Así como está no puede guardar.</div>
+<header class="barra"><div class="ancho">
+  <h1>Editor del álbum</h1>
+  <span id="estado">Cargando…</span>
+  <a href="/index.html" target="_blank" rel="noopener">Ver la página ↗</a>
+  <button id="publicar" class="lleno" type="button">Publicar en internet</button>
+</div></header>
 
-<script src="render.js"></script>
+<main class="ancho">
+  <section class="agregar">
+    <h2>Agregar algo</h2>
+    <p>Pega el link del producto. Saco el nombre, la foto, el precio y la descripción; después cambias lo que quieras.</p>
+    <form id="formLink">
+      <input id="link" type="url" placeholder="https://tienda.cl/producto…" autocomplete="off" required>
+      <button class="lleno" id="btnLink" type="submit">Agregar</button>
+      <button id="btnManual" type="button">Agregar sin link</button>
+    </form>
+    <div id="aviso" role="status"></div>
+    <div id="publicacion" hidden></div>
+  </section>
+
+  <div id="lista"></div>
+
+  <details class="panel" id="panelCats">
+    <summary><b class="sum-txt">Categorías</b><span class="ayuda">Nombre y palabras clave para clasificar solo</span></summary>
+    <div class="cuerpo-panel" id="cats"></div>
+  </details>
+  <details class="panel" id="panelPortada">
+    <summary><b class="sum-txt">Portada</b><span class="ayuda">Nombre, número, texto de bienvenida y dólar</span></summary>
+    <div class="cuerpo-panel" id="portada"></div>
+  </details>
+</main>
+
 <script>
 "use strict";
-const FUENTES = '<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">';
-let dir = null, D = null, css = "", sucio = false, temporizador = null;
-const fotoURLs = {};
-const abiertos = new WeakSet();
+let D = null, temporizador = null;
+const abiertos = new Set();
+const candidatas = new Map();
 const $ = (id) => document.getElementById(id);
 
-// ---------- utilidades DOM ----------
 function el(tag, props, ...hijos) {
   const e = document.createElement(tag);
   for (const k in (props || {})) {
-    if (k === "class") e.className = props[k];
-    else if (k.startsWith("on")) e.addEventListener(k.slice(2), props[k]);
-    else if (k in e) e[k] = props[k];
-    else e.setAttribute(k, props[k]);
+    const v = props[k];
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (k in e) e[k] = v;
+    else e.setAttribute(k, v);
   }
   for (const h of hijos.flat(Infinity)) if (h != null && h !== false) e.append(h);
   return e;
 }
-function campo(etiqueta, obj, clave, op = {}) {
-  const inp = op.area ? el("textarea") : el("input", { type: op.tipo || "text" });
-  inp.value = obj[clave] ?? "";
-  if (op.ph) inp.placeholder = op.ph;
-  if (op.min != null) inp.min = op.min;
-  inp.addEventListener("input", () => {
-    obj[clave] = op.tipo === "number" ? (parseInt(inp.value, 10) || 0) : inp.value;
-    if (op.alCambiar) op.alCambiar(inp.value);
-    cambio();
-  });
-  if (op.estructural) inp.addEventListener("change", reconstruir);
-  return el("label", { class: "campo" }, el("span", {}, etiqueta), inp, op.ayuda ? el("div", { class: "ayuda" }, op.ayuda) : null);
+async function api(ruta, op) {
+  const r = await fetch(ruta, op);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || "Error " + r.status);
+  return j;
 }
-function mover(arr, i, d) {
-  const j = i + d;
-  if (j < 0 || j >= arr.length) return;
-  [arr[i], arr[j]] = [arr[j], arr[i]];
-  reconstruir();
-}
-function quitar(arr, i, que) {
-  if (!confirm("¿Borrar " + que + "?")) return;
-  arr.splice(i, 1);
-  reconstruir();
-}
-function acciones(arr, i, que) {
-  const b = (txt, tit, fn, cls) => el("button", { class: "mini " + (cls || ""), title: tit, onclick: (ev) => { ev.preventDefault(); ev.stopPropagation(); fn(); } }, txt);
-  return el("span", { class: "acciones" },
-    b("↑", "Subir", () => mover(arr, i, -1)),
-    b("↓", "Bajar", () => mover(arr, i, 1)),
-    b("✕", "Borrar", () => quitar(arr, i, que), "peligro"));
-}
-function caja(obj, titulo, tipo, accionesEl, contenido) {
-  const t = el("span", { class: "t" }, titulo || "(sin título)");
-  const d = el("details", { open: abiertos.has(obj), ontoggle: () => d.open ? abiertos.add(obj) : abiertos.delete(obj) },
-    el("summary", {}, t, tipo ? el("span", { class: "tipo" }, tipo) : null, accionesEl),
-    el("div", { class: "contenido" }, contenido(t)));
-  return d;
-}
+function estado(t) { $("estado").textContent = t; }
+function aviso(t, tipo) { const a = $("aviso"); a.textContent = t || ""; a.className = tipo || ""; }
 
-// ---------- estado y vista previa ----------
-function estado(txt, clase) {
-  const e = $("estado");
-  e.textContent = txt; e.className = clase || "";
-}
-function cambio() {
-  sucio = true;
-  $("guardar").disabled = false;
-  estado("Cambios sin guardar", "sucio");
+// ---------- guardar ----------
+function guardar() {
+  estado("Guardando…");
   clearTimeout(temporizador);
-  temporizador = setTimeout(vistaPrevia, 300);
+  temporizador = setTimeout(async () => {
+    try {
+      await api("/api/datos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(D) });
+      const t = new Date();
+      estado("Guardado " + t.getHours() + ":" + String(t.getMinutes()).padStart(2, "0"));
+    } catch (e) { estado("No se pudo guardar: " + e.message); }
+  }, 450);
 }
-function reconstruir() { cambio(); construirForm(); }
+function rehacer() { guardar(); pintar(); }
 
-function rutasFotos() {
-  const r = [];
-  for (const s of D.secciones || []) for (const it of s.items || []) if (it.foto) r.push(it.foto);
-  return r;
+// ---------- utilidades ----------
+const CLP = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
+function precioTxt(p) {
+  if (p.precio === null || p.precio === "" || p.precio === undefined) return "Sin precio";
+  return p.moneda === "CLP" ? CLP.format(p.precio) : (p.moneda === "USD" ? "US$ " : p.moneda + " ") + p.precio;
 }
-async function archivo(ruta) {
-  const partes = ruta.split("/");
-  let h = dir;
-  for (const p of partes.slice(0, -1)) h = await h.getDirectoryHandle(p);
-  return (await h.getFileHandle(partes[partes.length - 1])).getFile();
+function slug(s) {
+  return String(s || "foto").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "foto";
 }
-async function cargarFotos() {
-  for (const r of rutasFotos()) {
-    if (fotoURLs[r]) continue;
-    try { fotoURLs[r] = URL.createObjectURL(await archivo(r)); } catch (e) { /* foto que no está en la carpeta */ }
+function nuevoId() { return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+function host(u) { try { return new URL(/^https?:/i.test(u) ? u : "https://" + u).hostname.replace(/^www\./, ""); } catch (e) { return ""; } }
+function adivinarCategoria(texto) {
+  const t = " " + String(texto || "").toLowerCase() + " ";
+  let mejor = null, puntos = 0;
+  for (const c of D.categorias) {
+    const n = String(c.pistas || "").split(",").map((x) => x.trim().toLowerCase()).filter(Boolean)
+      .filter((x) => t.includes(x)).length;
+    if (n > puntos) { mejor = c.id; puntos = n; }
   }
-}
-async function vistaPrevia() {
-  if (!D) return;
-  await cargarFotos();
-  const iframe = $("vista");
-  let y = 0;
-  try { y = iframe.contentWindow.scrollY; } catch (e) {}
-  iframe.onload = () => { try { iframe.contentWindow.scrollTo(0, y); } catch (e) {} };
-  iframe.srcdoc = '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
-    FUENTES + "<style>" + css + "</style></head><body>" + renderRevista(D, (r) => fotoURLs[r] || r) + "</body></html>";
+  return mejor || (D.categorias.find((c) => c.id === "varios") || D.categorias[D.categorias.length - 1] || {}).id || "";
 }
 
 // ---------- fotos ----------
-function nombreArchivo(base) {
-  const slug = String(base || "foto").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "foto";
-  return slug + "-" + Date.now().toString(36) + ".jpg";
+async function achicar(blob) {
+  const bmp = await createImageBitmap(blob);
+  const k = Math.min(1, 1200 / Math.max(bmp.width, bmp.height));
+  const c = el("canvas", { width: Math.round(bmp.width * k), height: Math.round(bmp.height * k) });
+  const x = c.getContext("2d");
+  x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
+  x.drawImage(bmp, 0, 0, c.width, c.height);
+  return new Promise((ok) => c.toBlob(ok, "image/jpeg", 0.86));
 }
-async function achicar(file) {
-  const bmp = await createImageBitmap(file);
-  const max = 1400, k = Math.min(1, max / Math.max(bmp.width, bmp.height));
-  const c = document.createElement("canvas");
-  c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
-  ctx.drawImage(bmp, 0, 0, c.width, c.height);
-  return new Promise((ok) => c.toBlob(ok, "image/jpeg", 0.85));
+async function subirFoto(blob, nombre) {
+  const j = await api("/api/foto?nombre=" + encodeURIComponent(slug(nombre)), { method: "POST", headers: { "Content-Type": "image/jpeg" }, body: await achicar(blob) });
+  return j.ruta;
 }
-async function guardarFoto(item, file) {
-  if (!file || !file.type.startsWith("image/")) { alert("Eso no parece una imagen."); return; }
+async function bajarFoto(url, nombre) {
+  const r = await fetch("/api/imagen?url=" + encodeURIComponent(url));
+  if (!r.ok) throw new Error("no pude bajar la imagen");
+  return subirFoto(await r.blob(), nombre);
+}
+async function ponerFoto(p, fuente) {
   try {
     estado("Guardando foto…");
-    const blob = await achicar(file);
-    const carpeta = await dir.getDirectoryHandle("fotos", { create: true });
-    const nombre = nombreArchivo(item.titulo);
-    const w = await (await carpeta.getFileHandle(nombre, { create: true })).createWritable();
-    await w.write(blob); await w.close();
-    const ruta = "fotos/" + nombre;
-    fotoURLs[ruta] = URL.createObjectURL(blob);
-    item.foto = ruta;
-    reconstruir();
-  } catch (e) {
-    alert("No pude guardar la foto: " + e.message);
-  }
+    p.foto = typeof fuente === "string" ? await bajarFoto(fuente, p.nombre) : await subirFoto(fuente, p.nombre);
+    rehacer();
+  } catch (e) { aviso("No pude usar esa foto: " + e.message, "mal"); estado(""); }
 }
-function zonaFoto(item) {
-  const input = el("input", { type: "file", accept: "image/*", hidden: true, onchange: () => guardarFoto(item, input.files[0]) });
-  const zona = el("div", { class: "foto-zona" },
-    item.foto ? el("img", { src: fotoURLs[item.foto] || "", alt: "" }) : null,
-    el("div", { class: "txt" }, item.foto ? item.foto : "Sin foto. Arrastra una imagen aquí, pégala con Ctrl+V o súbela."),
-    el("button", { class: "mini", onclick: (e) => { e.preventDefault(); input.click(); } }, item.foto ? "Cambiar" : "Subir foto"),
-    item.foto ? el("button", { class: "mini peligro", onclick: (e) => { e.preventDefault(); item.foto = ""; reconstruir(); } }, "Quitar") : null,
+
+// ---------- agregar ----------
+async function agregarDesdeLink(url) {
+  $("btnLink").disabled = true;
+  aviso("Leyendo la página…");
+  let info = {};
+  try { info = await api("/api/extraer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) }); }
+  catch (e) { aviso(e.message + ". Lo agregué igual con el link; completa el resto a mano.", "mal"); }
+  const p = {
+    id: nuevoId(), categoria: "", nombre: info.nombre || "Producto nuevo", descripcion: info.descripcion || "", nota: "",
+    precio: info.precio ?? null, moneda: info.moneda || "CLP", link: info.link || url, tienda: info.tienda || host(url), foto: "",
+  };
+  p.categoria = adivinarCategoria([p.nombre, p.descripcion, p.link].join(" "));
+  if (info.imagenes && info.imagenes.length) {
+    candidatas.set(p.id, info.imagenes);
+    try { p.foto = await bajarFoto(info.imagenes[0], p.nombre); } catch (e) { p.foto = info.imagenes[0]; }
+  }
+  D.productos.unshift(p);
+  abiertos.add(p.id);
+  rehacer();
+  if (info.nombre) aviso("Agregado: " + p.nombre + ". Revisa la categoría y el precio.", "ok");
+  $("link").value = "";
+  $("btnLink").disabled = false;
+  const nodo = document.querySelector('[data-id="' + p.id + '"]');
+  if (nodo) nodo.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+async function releer(p) {
+  if (!p.link) return;
+  aviso("Leyendo la página otra vez…");
+  try {
+    const info = await api("/api/extraer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: p.link }) });
+    if (info.precio != null) { p.precio = info.precio; p.moneda = info.moneda || p.moneda; }
+    if (info.imagenes && info.imagenes.length) candidatas.set(p.id, info.imagenes);
+    aviso(info.precio != null ? "Precio actualizado: " + precioTxt(p) : "No encontré precio en la página.", info.precio != null ? "ok" : "mal");
+    rehacer();
+  } catch (e) { aviso(e.message, "mal"); }
+}
+
+// ---------- formulario de producto ----------
+function campo(obj, clave, etiqueta, op = {}) {
+  const inp = op.area ? el("textarea") : el("input", { type: op.tipo || "text" });
+  inp.value = obj[clave] ?? "";
+  if (op.ph) inp.placeholder = op.ph;
+  if (op.paso) inp.step = op.paso;
+  inp.addEventListener("input", () => {
+    obj[clave] = op.tipo === "number" ? (inp.value === "" ? null : Number(inp.value)) : inp.value;
+    if (op.alCambiar) op.alCambiar();
+    guardar();
+  });
+  return el("label", { class: "c " + (op.clase || "") }, el("span", {}, etiqueta), inp);
+}
+
+function formProducto(p) {
+  const nombreSum = el("b", {}, p.nombre || "(sin nombre)");
+  const precioSum = el("span", { class: "sum-precio" }, precioTxt(p));
+  const resumen = () => { nombreSum.textContent = p.nombre || "(sin nombre)"; precioSum.textContent = precioTxt(p); };
+
+  // foto
+  const input = el("input", { type: "file", accept: "image/*", hidden: true, onchange: () => input.files[0] && ponerFoto(p, input.files[0]) });
+  const col = el("div", { class: "foto-col", tabIndex: 0 },
+    p.foto ? el("img", { class: "foto-grande", src: p.foto, alt: "" }) : el("div", { class: "foto-grande" }, "Sin foto. Arrastra una imagen o pégala con Ctrl+V."),
+    el("div", { class: "fila" },
+      el("button", { type: "button", class: "mini", onclick: () => input.click() }, p.foto ? "Cambiar foto" : "Subir foto"),
+      p.foto ? el("button", { type: "button", class: "mini", onclick: () => { p.foto = ""; rehacer(); } }, "Quitar") : null),
+    candidatas.has(p.id) && candidatas.get(p.id).length > 1 ? [
+      el("span", { class: "ayuda" }, "Otras fotos de la página:"),
+      el("div", { class: "candidatas" }, candidatas.get(p.id).map((u) => el("img", { src: "/api/imagen?url=" + encodeURIComponent(u), alt: "Usar esta foto", title: "Usar esta foto", onclick: () => ponerFoto(p, u) }))),
+    ] : null,
     input);
-  zona.tabIndex = 0;
-  zona.addEventListener("dragover", (e) => { e.preventDefault(); zona.classList.add("encima"); });
-  zona.addEventListener("dragleave", () => zona.classList.remove("encima"));
-  zona.addEventListener("drop", (e) => { e.preventDefault(); zona.classList.remove("encima"); guardarFoto(item, e.dataTransfer.files[0]); });
-  zona.addEventListener("paste", (e) => {
+  col.addEventListener("dragover", (e) => { e.preventDefault(); col.classList.add("encima"); });
+  col.addEventListener("dragleave", () => col.classList.remove("encima"));
+  col.addEventListener("drop", (e) => {
+    e.preventDefault(); col.classList.remove("encima");
+    const f = [...e.dataTransfer.files].find((x) => x.type.startsWith("image/"));
+    if (f) return ponerFoto(p, f);
+    const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain");
+    if (/^https?:\/\//.test(u)) ponerFoto(p, u.trim());
+  });
+  col.addEventListener("paste", (e) => {
     const f = [...e.clipboardData.files].find((x) => x.type.startsWith("image/"));
-    if (f) { e.preventDefault(); guardarFoto(item, f); }
+    if (f) { e.preventDefault(); ponerFoto(p, f); }
   });
-  return zona;
-}
 
-// ---------- bloques reutilizables ----------
-function editorLinks(obj) {
-  obj.links = obj.links || [];
-  return el("div", { class: "bloque" },
-    el("b", {}, "Links de compra"),
-    obj.links.map((l, i) => el("div", { class: "fila" },
-      (() => { const a = el("input", { type: "text", value: l.texto || "", placeholder: "Texto (ej. Falabella)" }); a.style.flex = ".7"; a.oninput = () => { l.texto = a.value; cambio(); }; return a; })(),
-      (() => { const u = el("input", { type: "url", value: l.url || "", placeholder: "https://…" }); u.oninput = () => { l.url = u.value; cambio(); }; return u; })(),
-      el("button", { class: "mini peligro", title: "Quitar link", onclick: (e) => { e.preventDefault(); obj.links.splice(i, 1); reconstruir(); } }, "✕"))),
-    el("div", { class: "agregar" }, el("button", { class: "mini", onclick: (e) => { e.preventDefault(); obj.links.push({ texto: "", url: "" }); reconstruir(); } }, "+ Agregar link")));
-}
-function editorDetalles(it) {
-  it.detalles = it.detalles || [];
-  return el("div", { class: "bloque" },
-    el("b", {}, "Detalles (talla, color…)"),
-    it.detalles.map((d, i) => el("div", { class: "fila" },
-      (() => { const a = el("input", { type: "text", value: d.clave || "", placeholder: "Talla" }); a.style.flex = ".5"; a.oninput = () => { d.clave = a.value; cambio(); }; return a; })(),
-      (() => { const b = el("input", { type: "text", value: d.valor || "", placeholder: "XL" }); b.oninput = () => { d.valor = b.value; cambio(); }; return b; })(),
-      el("button", { class: "mini peligro", onclick: (e) => { e.preventDefault(); it.detalles.splice(i, 1); reconstruir(); } }, "✕"))),
-    el("div", { class: "agregar" }, el("button", { class: "mini", onclick: (e) => { e.preventDefault(); it.detalles.push({ clave: "", valor: "" }); reconstruir(); } }, "+ Agregar detalle")));
-}
-
-// ---------- formularios por tipo ----------
-function formItem(arr, i) {
-  const it = arr[i];
-  return caja(it, it.titulo, it.destacado ? "ficha" : "", acciones(arr, i, "«" + (it.titulo || "esta cosa") + "»"), (t) => [
-    campo("Nombre", it, "titulo", { alCambiar: (v) => t.textContent = v || "(sin título)" }),
-    campo("Etiqueta", it, "etiqueta", { ph: "Gamer, Gimnasio…" }),
-    campo("Descripción", it, "descripcion", { area: true }),
-    zonaFoto(it),
-    editorLinks(it),
-    el("label", { class: "check" },
-      el("input", { type: "checkbox", checked: !!it.destacado, onchange: (e) => { it.destacado = e.target.checked; reconstruir(); } }),
-      "Destacado (ficha grande con detalles)"),
-    it.destacado ? editorDetalles(it) : null,
-    it.destacado ? el("div", { class: "bloque" },
-      el("b", {}, "Dorsal (si no hay foto)"),
-      (() => { it.dorsal = it.dorsal || { nombre: "", numero: "" }; return el("div", { class: "fila" },
-        (() => { const a = el("input", { type: "text", value: it.dorsal.nombre, placeholder: "Nombre" }); a.oninput = () => { it.dorsal.nombre = a.value; cambio(); }; return a; })(),
-        (() => { const b = el("input", { type: "text", value: it.dorsal.numero, placeholder: "Nº" }); b.style.flex = ".3"; b.oninput = () => { it.dorsal.numero = b.value; cambio(); }; return b; })()); })()) : null,
-  ]);
-}
-
-function formSaga(arr, i) {
-  const s = arr[i];
-  s.tengo = s.tengo || [];
-  const lomos = () => {
-    const total = Math.max(1, parseInt(s.total, 10) || 1);
-    const caja = el("div", { class: "lomos" });
+  // serie de libros
+  let serie = null;
+  if (p.serie) {
+    const total = Math.max(1, parseInt(p.serie.total, 10) || 1);
+    p.serie.tengo = p.serie.tengo || [];
+    const lomos = el("div", { class: "lomos" });
     for (let n = 1; n <= total; n++) {
-      const tiene = s.tengo.includes(n);
-      caja.append(el("button", {
-        class: tiene ? "tengo" : "", title: tiene ? "Lo tengo (clic: me falta)" : "Me falta (clic: lo tengo)",
-        onclick: (e) => {
-          e.preventDefault();
-          s.tengo = tiene ? s.tengo.filter((x) => x !== n) : [...s.tengo, n].sort((a, b) => a - b);
-          reconstruir();
-        } }, String(n)));
+      const tiene = p.serie.tengo.includes(n);
+      lomos.append(el("button", { type: "button", class: tiene ? "tengo" : "", title: tiene ? "Lo tengo" : "Me falta",
+        onclick: () => { p.serie.tengo = tiene ? p.serie.tengo.filter((x) => x !== n) : [...p.serie.tengo, n].sort((a, b) => a - b); rehacer(); } }, String(n)));
     }
-    return caja;
-  };
-  return caja(s, s.titulo, "", acciones(arr, i, "«" + (s.titulo || "esta saga") + "»"), (t) => [
-    campo("Título", s, "titulo", { alCambiar: (v) => t.textContent = v || "(sin título)" }),
-    campo("Autor", s, "autor"),
-    campo("Cuántos libros son", s, "total", { tipo: "number", min: 1, estructural: true }),
-    el("div", { class: "bloque" }, el("b", {}, "Cuáles tengo (clic para marcar)"), lomos()),
-    campo("Nota extra", s, "nota", { ph: "Ej: el 2 me lo regaló Anabel." }),
-    editorLinks(s),
-  ]);
-}
-
-function formSeccion(i) {
-  const arr = D.secciones, s = arr[i];
-  const nombres = { items: "cosas", libros: "libros", premio: "gran premio" };
-  return caja(s, String(i + 1).padStart(2, "0") + " · " + (s.titulo || ""), nombres[s.tipo], acciones(arr, i, "toda la sección «" + (s.titulo || "") + "»"), (t) => {
-    const titulo = campo("Título de la sección", s, "titulo", { alCambiar: (v) => t.textContent = String(i + 1).padStart(2, "0") + " · " + v });
-    if (s.tipo === "premio") return [
-      titulo,
-      campo("Texto grande", s, "grande", { ph: "Un auto" }),
-      campo("Texto", s, "texto", { area: true, ayuda: "Pon *asteriscos* alrededor de palabras para destacarlas." }),
-      editorLinks(s),
-    ];
-    if (s.tipo === "libros") {
-      s.sagas = s.sagas || [];
-      return [
-        titulo, campo("Bajada", s, "pie"),
-        s.sagas.map((_, j) => formSaga(s.sagas, j)),
-        el("div", { class: "agregar" }, el("button", { onclick: (e) => { e.preventDefault(); const n = { titulo: "Nueva saga", autor: "", total: 3, tengo: [], nota: "", links: [] }; abiertos.add(n); s.sagas.push(n); reconstruir(); } }, "+ Agregar saga o libro")),
-      ];
-    }
-    s.items = s.items || [];
-    return [
-      titulo, campo("Bajada", s, "pie"),
-      s.items.map((_, j) => formItem(s.items, j)),
-      el("div", { class: "agregar" }, el("button", { onclick: (e) => { e.preventDefault(); const n = { etiqueta: "", titulo: "Algo nuevo", descripcion: "", foto: "", links: [] }; abiertos.add(n); s.items.push(n); reconstruir(); } }, "+ Agregar cosa")),
-    ];
-  });
-}
-
-function construirForm() {
-  const f = $("form");
-  const y = f.scrollTop;
-  f.replaceChildren(...[
-    caja(D, "Portada y editorial", "", null, () => [
-      campo("Nombre en la portada", D, "nombre"),
-      campo("Titular", D, "titular", { area: true, ayuda: "Pon *asteriscos* alrededor de lo que quieres en rojo y cursiva." }),
-      el("div", { class: "fila" }, campo("Edición", D, "edicion"), campo("Número", D, "numero")),
-      el("div", { class: "fila" }, campo("Lugar", D, "lugar"), campo("Año", D, "anio")),
-      campo("Precio (broma de portada)", D, "precio"),
-      campo("Editorial", D, "editorial", { area: true, ayuda: "Deja una línea en blanco para separar párrafos." }),
-      campo("Frase del pie de página", D, "pie"),
-    ]),
-    D.secciones.map((_, i) => formSeccion(i)),
-    el("div", { class: "agregar" },
-      el("button", { onclick: () => { const n = { tipo: "items", titulo: "Nueva sección", pie: "", items: [] }; abiertos.add(n); D.secciones.push(n); reconstruir(); } }, "+ Sección de cosas"),
-      el("button", { onclick: () => { const n = { tipo: "libros", titulo: "Libros", pie: "", sagas: [] }; abiertos.add(n); D.secciones.push(n); reconstruir(); } }, "+ Sección de libros"),
-      el("button", { onclick: () => { const n = { tipo: "premio", titulo: "El gran premio", grande: "", texto: "", links: [] }; abiertos.add(n); D.secciones.push(n); reconstruir(); } }, "+ Gran premio"))].flat());
-  f.scrollTop = y;
-}
-
-// ---------- abrir y guardar ----------
-const BD = "editor-revista";
-function bd(modo, fn) {
-  return new Promise((ok, mal) => {
-    const r = indexedDB.open(BD, 1);
-    r.onupgradeneeded = () => r.result.createObjectStore("k");
-    r.onsuccess = () => { const tx = r.result.transaction("k", modo); const q = fn(tx.objectStore("k")); tx.oncomplete = () => ok(q && q.result); tx.onerror = () => mal(tx.error); };
-    r.onerror = () => mal(r.error);
-  });
-}
-async function cargar(h) {
-  let texto;
-  try { texto = await (await (await h.getFileHandle("datos.js")).getFile()).text(); }
-  catch (e) { alert("Esa carpeta no tiene datos.js. Elige la carpeta «wishlist»."); return; }
-  try {
-    D = JSON.parse(texto.replace(/^[\s\S]*?=\s*/, "").replace(/;\s*$/, ""));
-  } catch (e) { alert("No pude leer datos.js: " + e.message); return; }
-  try { css = await (await (await h.getFileHandle("estilos.css")).getFile()).text(); } catch (e) { css = ""; }
-  dir = h;
-  D.secciones = D.secciones || [];
-  sucio = false;
-  $("guardar").disabled = true;
-  $("reabrir").hidden = true;
-  estado("Carpeta «" + h.name + "» abierta", "ok");
-  try { await bd("readwrite", (s) => s.put(h, "carpeta")); } catch (e) {}
-  construirForm();
-  vistaPrevia();
-}
-async function guardar() {
-  if (!dir || !D) return;
-  try {
-    const w = await (await dir.getFileHandle("datos.js", { create: true })).createWritable();
-    await w.write("window.DATOS = " + JSON.stringify(D, null, 2) + ";\n");
-    await w.close();
-    sucio = false;
-    $("guardar").disabled = true;
-    const t = new Date();
-    estado("Guardado a las " + t.getHours() + ":" + String(t.getMinutes()).padStart(2, "0") + " · para subirlo: publicar.bat", "ok");
-  } catch (e) {
-    alert("No pude guardar: " + e.message);
+    const tot = el("input", { type: "number", min: 1, value: total, onchange: () => { p.serie.total = Math.max(1, parseInt(tot.value, 10) || 1); rehacer(); } });
+    serie = el("div", { class: "todo" },
+      el("label", { class: "c" }, el("span", {}, "Libros de la saga (clic en los que ya tienes)")),
+      el("div", { class: "fila" }, tot, lomos));
   }
+
+  let confirmar = false;
+  const borrar = el("button", { type: "button", class: "mini peligro", onclick: () => {
+    if (!confirmar) { confirmar = true; borrar.textContent = "¿Seguro? Clic otra vez para borrar"; setTimeout(() => { confirmar = false; borrar.textContent = "Borrar"; }, 4000); return; }
+    D.productos = D.productos.filter((x) => x !== p); rehacer();
+  } }, "Borrar");
+
+  const d = el("details", { class: "prod", open: abiertos.has(p.id), "data-id": p.id,
+      ontoggle: () => d.open ? abiertos.add(p.id) : abiertos.delete(p.id) },
+    el("summary", {},
+      p.foto ? el("img", { class: "mini-foto", src: p.foto, alt: "" }) : el("span", { class: "mini-foto" }, "?"),
+      el("span", { class: "sum-txt" }, nombreSum, el("span", {}, p.tienda || "sin tienda")),
+      p.destacado ? el("span", { class: "marca" }, "Destacada") : null,
+      precioSum),
+    el("div", { class: "cuerpo" },
+      col,
+      el("div", { class: "campos" },
+        campo(p, "nombre", "Nombre", { clase: "todo", alCambiar: resumen }),
+        campo(p, "descripcion", "Descripción", { area: true, clase: "todo" }),
+        campo(p, "nota", "Nota para quien regala (talla, color…)", { clase: "todo", ph: "Ej: talla XL, en negro" }),
+        el("label", { class: "c" }, el("span", {}, "Precio"),
+          el("div", { class: "fila" },
+            (() => { const i = el("input", { type: "number", step: "any", min: 0, value: p.precio ?? "", placeholder: "Sin precio" });
+              i.oninput = () => { p.precio = i.value === "" ? null : Number(i.value); resumen(); guardar(); }; return i; })(),
+            (() => { const s = el("select", {}, ["CLP", "USD"].concat(["CLP", "USD"].includes(p.moneda) ? [] : [p.moneda]).map((m) => el("option", { value: m, selected: p.moneda === m }, m)));
+              s.onchange = () => { p.moneda = s.value; resumen(); guardar(); }; return s; })())),
+        el("label", { class: "c" }, el("span", {}, "Categoría"),
+          (() => { const s = el("select", {}, D.categorias.map((c) => el("option", { value: c.id, selected: p.categoria === c.id }, c.nombre)));
+            s.onchange = () => { p.categoria = s.value; rehacer(); }; return s; })()),
+        campo(p, "link", "Link de compra", { tipo: "url", clase: "todo", ph: "https://…", alCambiar: () => { p.tienda = host(p.link); } }),
+        serie,
+        el("div", { class: "todo acciones" },
+          el("label", { class: "check" }, el("input", { type: "checkbox", checked: !!p.destacado, onchange: (e) => { p.destacado = e.target.checked; rehacer(); } }), "Destacada (lámina doble)"),
+          el("label", { class: "check" }, el("input", { type: "checkbox", checked: !!p.serie, onchange: (e) => { if (e.target.checked) p.serie = { total: 3, tengo: [] }; else delete p.serie; rehacer(); } }), "Es una saga de libros")),
+        el("div", { class: "todo acciones" },
+          p.link ? el("button", { type: "button", class: "mini", onclick: () => releer(p) }, "Actualizar precio desde el link") : null,
+          p.link ? el("a", { href: p.link, target: "_blank", rel: "noopener", class: "ayuda" }, "Abrir el link ↗") : null,
+          el("span", { style: "flex:1" }),
+          borrar))));
+  return d;
 }
 
-if (!window.showDirectoryPicker) {
-  $("sinSoporte").hidden = false;
-  $("abrir").disabled = true;
-} else {
-  $("abrir").onclick = async () => {
-    if (sucio && !confirm("Tienes cambios sin guardar. ¿Abrir otra carpeta igual?")) return;
-    try { await cargar(await showDirectoryPicker({ id: "revista", mode: "readwrite" })); }
-    catch (e) { if (e.name !== "AbortError") alert(e.message); }
-  };
-  bd("readonly", (s) => s.get("carpeta")).then((h) => {
-    if (!h) return;
-    const b = $("reabrir");
-    b.textContent = "Reabrir «" + h.name + "»";
-    b.hidden = false;
-    b.onclick = async () => {
-      try {
-        if ((await h.requestPermission({ mode: "readwrite" })) === "granted") await cargar(h);
-      } catch (e) { alert("No pude reabrirla: " + e.message + ". Usa «Abrir carpeta…»."); b.hidden = true; }
-    };
-  }).catch(() => {});
+// ---------- categorías y portada ----------
+function pintarCategorias() {
+  const cont = $("cats");
+  cont.replaceChildren(
+    el("p", { class: "ayuda" }, "Cuando agregas un link, elijo la categoría con más palabras clave que aparezcan en el nombre, la descripción o el link. El orden de aquí es el orden de la página."),
+    D.categorias.map((c, i) => {
+      const n = D.productos.filter((p) => p.categoria === c.id).length;
+      const nom = el("input", { type: "text", value: c.nombre, oninput: (e) => { c.nombre = e.target.value; guardar(); }, onchange: pintarLista });
+      const pis = el("input", { type: "text", value: c.pistas || "", placeholder: "palabras, separadas, por coma", oninput: (e) => { c.pistas = e.target.value; guardar(); } });
+      return el("div", { class: "cat-fila" },
+        el("span", { class: "num" }, String(n)),
+        nom, pis,
+        el("div", { class: "fila" },
+          el("button", { type: "button", class: "mini", title: "Subir", onclick: () => { if (i > 0) { [D.categorias[i - 1], D.categorias[i]] = [D.categorias[i], D.categorias[i - 1]]; rehacer(); } } }, "↑"),
+          el("button", { type: "button", class: "mini", title: "Bajar", onclick: () => { if (i < D.categorias.length - 1) { [D.categorias[i + 1], D.categorias[i]] = [D.categorias[i], D.categorias[i + 1]]; rehacer(); } } }, "↓"),
+          el("button", { type: "button", class: "mini peligro", disabled: n > 0, title: n > 0 ? "Mueve primero sus productos a otra categoría" : "Borrar categoría",
+            onclick: () => { D.categorias.splice(i, 1); rehacer(); } }, "✕")));
+    }),
+    el("div", {}, el("button", { type: "button", onclick: () => { D.categorias.push({ id: "c" + Date.now().toString(36), nombre: "Nueva categoría", pistas: "" }); rehacer(); } }, "+ Agregar categoría")));
 }
-$("guardar").onclick = guardar;
-document.addEventListener("keydown", (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); guardar(); }
-});
-window.addEventListener("beforeunload", (e) => { if (sucio) { e.preventDefault(); e.returnValue = ""; } });
+function pintarPortada() {
+  $("portada").replaceChildren(
+    el("div", { class: "campos" },
+      campo(D, "nombre", "Nombre en la portada"),
+      campo(D, "numero", "Número de camiseta"),
+      campo(D, "temporada", "Temporada (año)"),
+      campo(D, "tasaUSD", "Dólar en pesos (para filtrar precios en US$)", { tipo: "number" }),
+      campo(D, "intro", "Texto de bienvenida", { area: true, clase: "todo" })));
+}
+function pintarLista() {
+  const lista = $("lista");
+  const grupos = D.categorias.map((c) => ({ c, ps: D.productos.filter((p) => p.categoria === c.id) }));
+  const huerfanos = D.productos.filter((p) => !D.categorias.some((c) => c.id === p.categoria));
+  if (huerfanos.length) grupos.push({ c: { nombre: "Sin categoría" }, ps: huerfanos });
+  lista.replaceChildren(...grupos.filter((g) => g.ps.length).flatMap((g) => [
+    el("h2", { class: "grupo" }, g.c.nombre, el("span", {}, g.ps.length + (g.ps.length === 1 ? " lámina" : " láminas"))),
+    ...g.ps.map(formProducto),
+  ]));
+  if (!D.productos.length) lista.append(el("p", { class: "vacio" }, "Todavía no hay nada. Pega un link arriba para agregar la primera lámina."));
+}
+function pintar() { pintarLista(); pintarCategorias(); pintarPortada(); }
+
+// ---------- inicio ----------
+$("formLink").addEventListener("submit", (e) => { e.preventDefault(); const u = $("link").value.trim(); if (u) agregarDesdeLink(u); });
+$("btnManual").onclick = () => {
+  const p = { id: nuevoId(), categoria: (D.categorias.find((c) => c.id === "varios") || D.categorias[0] || {}).id || "", nombre: "Algo nuevo", descripcion: "", nota: "", precio: null, moneda: "CLP", link: "", tienda: "", foto: "" };
+  D.productos.unshift(p); abiertos.add(p.id); rehacer();
+};
+$("publicar").onclick = async () => {
+  const b = $("publicar"), out = $("publicacion");
+  b.disabled = true; b.textContent = "Publicando…";
+  clearTimeout(temporizador);
+  try {
+    await api("/api/datos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(D) });
+    const r = await api("/api/publicar", { method: "POST" });
+    out.hidden = false; out.textContent = r.salida;
+    if (r.ok) aviso(r.nada ? "No había cambios nuevos que publicar." : "Publicado. En uno o dos minutos se ve en vkieferv.github.io/wishlist", "ok");
+    else aviso("No se pudo publicar. Mira el detalle abajo.", "mal");
+  } catch (e) { aviso("No se pudo publicar: " + e.message, "mal"); }
+  b.disabled = false; b.textContent = "Publicar en internet";
+};
+(async () => {
+  try {
+    D = await api("/api/datos");
+    D.categorias = D.categorias || []; D.productos = D.productos || [];
+    estado("Todo guardado");
+    pintar();
+  } catch (e) {
+    $("sinServidor").style.display = "block";
+    estado("Sin conexión con el editor");
+  }
+})();
 </script>
 </body>
 </html>
