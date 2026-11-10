@@ -48,6 +48,43 @@ window.DATOS = {
   ],
   "productos": [
     {
+      "id": "pmwa067ydzy9",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Cargador Inalámbrico So- porte De Teléfono Literary - Baseus 5.0 ar AAA (2)",
+      "precio": 14990,
+      "link": "",
+      "tienda": "",
+      "foto": "fotos/cargador-inalambrico-so-porte-de-telefon-mwa067yb.jpg",
+      "categoria": "gamer",
+      "entrega": "gratis mañana"
+    },
+    {
+      "id": "pmw9zw8neych",
+      "categoria": "ropa",
+      "nombre": "Bermuda Cargo con Cierre",
+      "descripcion": "Bermuda Cargo con Cierre La bermuda cargo destaca por su confección basada en una mezcla de fibras textiles que priorizan la suavidad y flexibilidad, facilitando la libertad de acción durante actividades cotidianas.",
+      "nota": "",
+      "precio": 21490,
+      "moneda": "CLP",
+      "link": "https://www.paris.cl/bermuda-cargo-con-cierre-444072.html?gclsrc=aw.ds&gad_source=1&gad_campaignid=24365556121&gclid=Cj0KCQiA-8XXBhDaARIsADnEOrBk335anMWiQ6K5jClxNDMzvZxywVA0F42BmvyolAJZztiwuIMnztoaAtCGEALw_wcB",
+      "tienda": "paris.cl",
+      "foto": "fotos/bermuda-cargo-con-cierre-mw9zw91k.jpg"
+    },
+    {
+      "id": "pmw9zuu4t6s7",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Meta quest 2 128gb",
+      "precio": 110000,
+      "link": "https://www.facebook.com/marketplace/item/2053618982022707/?ref=search&referral_code=null&referral_story_type=post&tracking=browse_serp%3A1031563a-b494-4815-b53b-e45df60a87cd&locale=es_LA",
+      "tienda": "facebook.com",
+      "foto": "fotos/meta-quest-2-128gb-mw9zuu4q.jpg",
+      "categoria": "gamer"
+    },
+    {
       "id": "pmw9zoowd5er",
       "descripcion": "",
       "nota": "",
@@ -57,7 +94,7 @@ window.DATOS = {
       "link": "https://raspberrypi.cl/products/kit-de-inicio-raspberry-pi-5-4gb-ram?variant=47160243126450",
       "tienda": "raspberrypi.cl",
       "foto": "fotos/kit-de-inicio-raspberry-pi-5-mw9zoowa.jpg",
-      "categoria": "varios"
+      "categoria": "gamer"
     },
     {
       "id": "pmw9zizwc6ad",
@@ -93,7 +130,7 @@ window.DATOS = {
       "link": "https://www.facebook.com/marketplace/item/1588402863089988/?ref=search&referral_code=null&referral_story_type=post&tracking=browse_serp%3Aae7385ca-20db-4afe-8ea7-7b051d1c1150&locale=es_LA",
       "tienda": "facebook.com",
       "foto": "fotos/nintendo-switch-mw9z6cdy.jpg",
-      "categoria": "varios"
+      "categoria": "gamer"
     },
     {
       "id": "pmw9yyprulte",
@@ -106,7 +143,8 @@ window.DATOS = {
       "tienda": "miniso.cl",
       "foto": "fotos/literalmente-cualquier-wea-de-aqui-mw9yyprr.jpg",
       "categoria": "varios",
-      "entrega": "En el mall hay uno"
+      "entrega": "En el mall hay uno",
+      "destacado": true
     },
     {
       "id": "pmw9ylssd646",
@@ -131,7 +169,7 @@ window.DATOS = {
       "link": "https://www.facebook.com/marketplace/item/1916552952659124/?ref=search&referral_code=null&referral_story_type=post&tracking=browse_serp%3A7fc1e3cb-bf10-41e5-b07f-03cd233781cd&locale=es_LA",
       "tienda": "facebook.com",
       "foto": "fotos/moto-scooter-wangye-wy150t-ano-2023-mw9y3cwt.jpg",
-      "categoria": "varios"
+      "categoria": "suenos"
     },
     {
       "id": "pmw9xyfit7ux",
@@ -167,7 +205,7 @@ window.DATOS = {
       "link": "https://www.facebook.com/marketplace/item/932778133203706?ref=search&referral_code=null&referral_story_type=post&tracking=browse_serp%3A5ab8558e-8e54-4e81-935c-002c956cbabd&locale=es_LA",
       "tienda": "facebook.com",
       "foto": "fotos/ereader-nabuk-aurora-2024-32gb-300-ppi-a-mw9xop7b.jpg",
-      "categoria": "varios"
+      "categoria": "gamer"
     },
     {
       "id": "pmw9xaqao1jg",
@@ -267,55 +305,6 @@ window.DATOS = {
       "link": "https://factory-store8899.com/products/2026-colo-reservaprecio-fijo-con-impuestos-incluidos-1?VariantsId=17378",
       "tienda": "factory-store8899.com",
       "foto": "fotos/camiseta-reserva-2026.jpg"
-    },
-    {
-      "id": "p04",
-      "categoria": "ropa",
-      "nombre": "Cortavientos",
-      "descripcion": "Talla 10XL, si existe.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": ""
-    },
-    {
-      "id": "p05",
-      "categoria": "ropa",
-      "nombre": "Jeans cargo",
-      "descripcion": "Talla 46.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": ""
-    },
-    {
-      "id": "p06",
-      "categoria": "gamer",
-      "nombre": "Control inalámbrico para el PC",
-      "descripcion": "Para jugar desde el sillón sin cables de por medio.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": ""
-    },
-    {
-      "id": "p08",
-      "categoria": "juegos",
-      "nombre": "Cualquier juego de mi lista de Steam",
-      "descripcion": "Elige el que quieras de mi lista de deseados y regálamelo directo desde Steam.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "https://store.steampowered.com/wishlist/id/Kiefer__/",
-      "tienda": "store.steampowered.com",
-      "foto": "",
-      "destacado": true
     },
     {
       "id": "p09",
@@ -668,7 +657,7 @@ window.DATOS = {
     },
     {
       "id": "p16",
-      "categoria": "varios",
+      "categoria": "suenos",
       "nombre": "Un auto ",
       "descripcion": "O, si no, el curso de manejo. Algún día hay que empezar.",
       "nota": "",
@@ -795,10 +784,11 @@ window.DATOS = {
       "moneda": "CLP",
       "link": "https://store.steampowered.com/app/4530370/Football_Manager_27",
       "tienda": "store.steampowered.com",
-      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134",
+      "destacado": true
     }
   ],
-  "actualizado": "2026-11-10T01:08:43.428Z",
+  "actualizado": "2026-11-10T01:21:21.254Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
