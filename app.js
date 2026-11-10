@@ -15,6 +15,12 @@
   function fotoSegura(f) { f = String(f || "").trim(); return /^(https?:\/\/|fotos\/)/i.test(f) ? f : ""; }
   function pad(n, k) { return String(n).padStart(k || 3, "0"); }
   function $(id) { return document.getElementById(id); }
+  // Modo claro u oscuro: el que elegiste (index.html lo aplica antes de pintar), o el de tu computador.
+  function temaActual() {
+    var t = document.documentElement.getAttribute("data-theme");
+    if (t === "dark" || t === "light") return t;
+    return window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
 
   // ---------- GitHub ----------
   var GH = (function () {
@@ -266,7 +272,6 @@
     if (!lista.length) {
       html = '<p class="vacio">No hay láminas con esos filtros. Prueba con otro precio o categoría.</p>';
     } else if (estado.orden === "categoria") {
-      var seccion = 0;
       cats.forEach(function (c) {
         var ps = deCategoria(c.id).filter(function (p) { return lista.indexOf(p) >= 0; });
         if (!ps.length) return;
@@ -274,11 +279,9 @@
         var libros = ps.every(function (p) { return tipoDe(p) === "libro"; });
         var carrusel = juegos && ps.length >= 4;
         var atajo = D.productos.filter(function (p) { return catDe(p) === c.id && visibles.indexOf(p) < 0; })[0];
-        seccion++;
-        // Cada sección se abre como una mini portada: número en contorno, nombre grande, cuántas láminas.
+        // Cada sección se abre como una mini portada: cuántas láminas y el nombre en grande.
         html += '<section class="categoria" id="cat-' + esc(c.id) + '"><div class="categoria-cab">' +
-          '<span class="cab-num" aria-hidden="true">' + pad(seccion, 2) + "</span>" +
-          '<div class="cab-txt"><span class="cab-sup">Sección ' + pad(seccion, 2) + " · " + ps.length + (ps.length === 1 ? " lámina" : " láminas") + "</span>" +
+          '<div class="cab-txt"><span class="cab-sup">' + ps.length + (ps.length === 1 ? " lámina" : " láminas") + "</span>" +
           "<h2>" + esc(c.nombre) + "</h2></div>" +
           (atajo ? '<a class="cab-link" href="' + esc(urlSegura(atajo.link)) + '" target="_blank" rel="noopener">Ver mi lista completa en Steam ↗</a>' : "") +
           (carrusel ? '<span class="flechas"><button type="button" class="flecha" data-mover="-1" aria-label="Juegos anteriores">←</button>' +
@@ -288,7 +291,7 @@
       });
     } else {
       var ord = lista.slice().sort(porPrecio(estado.orden === "caro" ? -1 : 1));
-      html = '<section class="categoria"><div class="categoria-cab"><span class="cab-num" aria-hidden="true">$</span>' +
+      html = '<section class="categoria"><div class="categoria-cab">' +
         '<div class="cab-txt"><span class="cab-sup">' + ord.length + " láminas · ordenadas por precio</span>" +
         "<h2>" + (estado.orden === "caro" ? "De más a menos" : "De menos a más") + "</h2></div></div>" +
         '<div class="grilla">' + ord.map(function (p) { return lamina(p, true); }).join("") + "</div></section>";
@@ -322,7 +325,8 @@
     var desde = precios.length ? CLP.format(Math.min.apply(null, precios)) : "—";
     raiz.innerHTML =
       '<header class="portada"><div class="ancho">' +
-      '<div class="portada-sup"><span>Álbum de cumpleaños</span><span>Temporada ' + esc(D.temporada) + "</span></div>" +
+      '<div class="portada-sup"><span>Álbum de cumpleaños</span><span>Temporada ' + esc(D.temporada) +
+      '<button type="button" id="tema" class="tema">' + (temaActual() === "dark" ? "Modo claro" : "Modo oscuro") + "</button></span></div>" +
       '<span class="dorsal" aria-hidden="true">' + esc(D.numero) + "</span>" +
       "<h1><small>El álbum de</small>" + esc(D.nombre) + "</h1>" +
       '<div class="portada-inf"><p>' + esc(D.intro) + "</p>" +
@@ -621,6 +625,11 @@
     } else if (b.classList.contains("flecha")) {
       var car = b.closest(".categoria").querySelector(".carrusel");
       if (car) car.scrollBy({ left: Number(b.getAttribute("data-mover")) * car.clientWidth * 0.85, behavior: "smooth" });
+    } else if (b.id === "tema") {
+      var nuevo = temaActual() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", nuevo);
+      try { localStorage.setItem("album-tema", nuevo); } catch (x) {}
+      b.textContent = nuevo === "dark" ? "Modo claro" : "Modo oscuro";
     } else if (b.id === "entrarEdicion") entrarEdicion();
     else if (b.id === "salirEdicion") salirEdicion();
     else if (b.id === "cambiarLlave") {
