@@ -628,9 +628,9 @@ window.DATOS = {
       "nombre": "El problema de los tres cuerpos",
       "descripcion": "Liu Cixin.",
       "nota": "",
-      "precio": null,
+      "precio": 28000,
       "moneda": "CLP",
-      "link": "https://www.buscalibre.cl/libro-estuche-trilogia-de-los-tres-cuerpos-el-problema-de-los-tres-cuerpos-el-bosque-oscuro-el-fin-de-la-muerte-three-body-problem-boxed-set-the-dark/9788413146928/p/54651526",
+      "link": "",
       "tienda": "buscalibre.cl",
       "foto": "fotos/el-problema-de-los-tres-cuerpos-mw9visdq.jpg",
       "serie": {
@@ -788,7 +788,7 @@ window.DATOS = {
       "destacado": true
     }
   ],
-  "actualizado": "2026-11-10T01:21:21.254Z",
+  "actualizado": "2026-11-10T01:22:06.514Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
