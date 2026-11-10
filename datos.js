@@ -48,6 +48,66 @@ window.DATOS = {
   ],
   "productos": [
     {
+      "id": "pmw9y36vkoff",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Moto scooter WANGYE WY150T año 2023",
+      "precio": 600000,
+      "link": "https://www.facebook.com/marketplace/item/1916552952659124/?ref=search&referral_code=null&referral_story_type=post&tracking=browse_serp%3A7fc1e3cb-bf10-41e5-b07f-03cd233781cd&locale=es_LA",
+      "tienda": "facebook.com",
+      "foto": "fotos/moto-scooter-wangye-wy150t-ano-2023-mw9y3cwt.jpg",
+      "categoria": "varios"
+    },
+    {
+      "id": "pmw9xyfit7ux",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "POLERA EQT COLO-COLO Polera",
+      "precio": 44990,
+      "link": "https://www.adidas.cl/polera-eqt-colo-colo/KZ5079.html",
+      "tienda": "adidas.cl",
+      "foto": "fotos/polera-eqt-colo-colo-polera-mw9xypc9.jpg",
+      "categoria": "albo"
+    },
+    {
+      "id": "pmw9xrf1jcv6",
+      "categoria": "ropa",
+      "nombre": "Camiseta de manga larga local del AC Milan 2009/10",
+      "descripcion": "Camiseta de manga larga local del AC Milan 2009/10",
+      "nota": "",
+      "precio": 22,
+      "moneda": "USD",
+      "link": "https://factory-store8899.com/products/camiseta-de-manga-larga-local-del-ac-milan-2009-10?VariantsId=15159",
+      "tienda": "factory-store8899.com",
+      "foto": "fotos/camiseta-de-manga-larga-local-del-ac-mil-mw9xrfxk.jpg"
+    },
+    {
+      "id": "pmw9xop7dam4",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Ereader Nabuk Aurora 2024 (32GB, 300 PPI, Android) + Funda Protectora Original",
+      "precio": 80000,
+      "link": "https://www.facebook.com/marketplace/item/932778133203706?ref=search&referral_code=null&referral_story_type=post&tracking=browse_serp%3A5ab8558e-8e54-4e81-935c-002c956cbabd&locale=es_LA",
+      "tienda": "facebook.com",
+      "foto": "fotos/ereader-nabuk-aurora-2024-32gb-300-ppi-a-mw9xop7b.jpg",
+      "categoria": "varios"
+    },
+    {
+      "id": "pmw9xaqao1jg",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Tazón Clásico Colo Colo Negro de Cerámica, 800 mL",
+      "precio": 4990,
+      "link": "https://www.mercadolibre.cl/tazon-clasico-colo-colo-negro-de-ceramica-800-ml/p/MLC35736945?pdp_filters=item_id%3AMLC1781650221&from=gshop&matt_tool=32216986&matt_word=&matt_source=google&matt_campaign_id=22116391656&matt_ad_group_id=173057385749&matt_match_type=&matt_network=g&matt_device=c&matt_creative=729566858842&matt_keyword=&matt_ad_position=&matt_ad_type=pla&matt_merchant_id=735119326&matt_product_id=MLC35736945-product&matt_product_partition_id=2494011709386&matt_target_id=aud-2486559225511%3Apla-2494011709386&cq_src=google_ads&cq_cmp=22116391656&cq_net=g&cq_plt=gp&cq_med=pla&gad_source=1&gad_campaignid=22116391656&gclid=Cj0KCQiA-8XXBhDaARIsADnEOrAXB_ZTgmG6HzsZZryGpfsd-1Qm-tS335k2_BrFhT4QQd0WzGWEuN8aAgAPEALw_wcB",
+      "tienda": "mercadolibre.cl",
+      "foto": "fotos/tazon-clasico-colo-colo-negro-de-ceramic-mw9xaqal.jpg",
+      "categoria": "albo"
+    },
+    {
       "id": "pmw9vovtm0uq",
       "categoria": "gamer",
       "nombre": "Barra de Sonido Gamer - Redragon GS570 Darknets RGB - Bluetooth/3.5mm (GS570)",
@@ -62,38 +122,40 @@ window.DATOS = {
     {
       "id": "pmw9vlzdn71b",
       "categoria": "gamer",
-      "nombre": "Mercado Libre",
+      "nombre": "Tira Cinta Luces Led Wifi RGBIC Mejor precio 5m Carga USB IP65 Maxwell 7",
       "descripcion": "",
       "nota": "",
-      "precio": null,
+      "precio": 14400,
       "moneda": "CLP",
       "link": "https://www.mercadolibre.cl/gz/account-verification?go=https%3A%2F%2Fwww.mercadolibre.cl%2Ftira-cinta-luces-led-wifi-rgbic-5m-carga-usb-ip65-maxwell%2Fp%2FMLC78736000%3Fmatt_tool%3D16931662%26utm_source%3Dgoogle_shopping%26utm_medium%3Dorganic%26pdp_filters%3Ditem_id%253AMLC4656224694%26from%3Dgshop&tid=e4483f7c-33c3-4e5f-95ce-cb047ba9d7b1",
       "tienda": "mercadolibre.cl",
-      "foto": "fotos/mercado-libre-mw9vm298.jpg"
+      "foto": "fotos/tira-cinta-luces-led-wifi-rgbic-mejor-pr-mw9xguau.jpg",
+      "entrega": "gratis mañana"
     },
     {
       "id": "pmw9vhy5nw2b",
       "categoria": "gamer",
-      "nombre": "Mercado Libre",
+      "nombre": "Organizador Cables Escrito- rio Bandeja Rejilla 68cm Negro",
       "descripcion": "",
       "nota": "",
-      "precio": null,
+      "precio": 11990,
       "moneda": "CLP",
       "link": "https://www.mercadolibre.cl/gz/account-verification?go=https%3A%2F%2Farticulo.mercadolibre.cl%2FMLC-4620291634-organizador-cables-escritorio-bandeja-rejilla-68cm-negro-_JM%3Fmatt_tool%3D57157558%26matt_word%3D%26matt_source%3Dgoogle%26matt_campaign_id%3D22116391872%26matt_ad_group_id%3D172632290359%26matt_match_type%3D%26matt_network%3Dg%26matt_device%3Dc%26matt_creative%3D729648297791%26matt_keyword%3D%26matt_ad_position%3D%26matt_ad_type%3Dpla%26matt_merchant_id%3D5899432540%26matt_product_id%3DMLC4620291634%26matt_product_partition_id%3D2687568612192%26matt_target_id%3Daud-2486559225511%3Apla-2687568612192%26cq_src%3Dgoogle_ads%26cq_cmp%3D22116391872%26cq_net%3Dg%26cq_plt%3Dgp%26cq_med%3Dpla%26gad_source%3D1%26gad_campaignid%3D22116391872%26gclid%3DCj0KCQiA-8XXBhDaARIsADnEOrCGhe0cEXfUM_mnOplOQV1MXcg4-ObMKxr0vh0LVY1xcwbdvX_qPTcaApXcEALw_wcB&tid=9fb674fc-5ba3-4089-bde7-3d1efb98f386",
       "tienda": "mercadolibre.cl",
-      "foto": "fotos/mercado-libre-mw9vi74l.jpg"
+      "foto": "fotos/organizador-cables-escrito-rio-bandeja-r-mw9xi0yl.jpg",
+      "entrega": "gratis entre el miércoles y el"
     },
     {
       "id": "pmw9vhvuw56m",
       "categoria": "gamer",
-      "nombre": "Mercado Libre",
+      "nombre": "Extensor Protector de Sobrevoltaje Con USB A y C Philco Blanco 5.0 e AAA (5)",
       "descripcion": "",
       "nota": "",
-      "precio": null,
+      "precio": 12860,
       "moneda": "CLP",
       "link": "https://www.mercadolibre.cl/gz/account-verification?go=https%3A%2F%2Fwww.mercadolibre.cl%2Fextensor-protector-de-sobrevoltaje-con-usb-a-y-c-philco-blanco%2Fp%2FMLC79112729&tid=fe444dc6-da64-448e-bfb6-0b7a8e85acbd",
       "tienda": "mercadolibre.cl",
-      "foto": "fotos/mercado-libre-mw9vikk5.jpg"
+      "foto": "fotos/extensor-protector-de-sobrevoltaje-con-u-mw9xikj6.jpg"
     },
     {
       "id": "pmw9vhh4foxg",
@@ -131,18 +193,6 @@ window.DATOS = {
       "link": "https://factory-store8899.com/products/2026-colo-reservaprecio-fijo-con-impuestos-incluidos-1?VariantsId=17378",
       "tienda": "factory-store8899.com",
       "foto": "fotos/camiseta-reserva-2026.jpg"
-    },
-    {
-      "id": "p03",
-      "categoria": "albo",
-      "nombre": "Tazón del Colo-Colo",
-      "descripcion": "Hay unos de 1 litro o casi. Cualquiera sirve.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": "fotos/tazon-del-colo-colo-mw9v3npo.jpg"
     },
     {
       "id": "p04",
@@ -698,7 +748,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-09T23:22:10.787Z",
+  "actualizado": "2026-11-10T00:22:02.774Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
