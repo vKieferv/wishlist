@@ -57,6 +57,18 @@
   .ayuda-ml ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--tinta); }
   .marcador { display: inline-block; background: var(--tinta); color: var(--panel); padding: 4px 10px; font-weight: 700; text-decoration: none; cursor: grab; }
   #aviso { margin-top: 10px; font: 500 13px var(--f-dato); }
+  .pendientes { margin-top: 14px; padding: 12px 14px; background: #fff3c4; color: #3d2f00; border: 1.5px solid #3d2f00; font-size: 14px; }
+  .pendientes > b { font-size: 15px; }
+  .agregar .pendientes p { margin: 4px 0 8px; color: #3d2f00; }
+  .pendientes ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .pendientes li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding-top: 6px; border-top: 1px dashed #b39a4d; }
+  .pendientes li.activa { font-weight: 700; }
+  .pend-nombre { flex: 1 1 220px; min-width: 0; }
+  .pend-falta { font: 500 12px var(--f-dato); }
+  .pendientes a { color: inherit; }
+  .pendientes button { color: #3d2f00; border-color: #3d2f00; background: #fff8dc; }
+  .pendientes button.lleno { background: #3d2f00; color: #fff3c4; }
+  .marca.falta { border-color: #b8860b; background: #fff3c4; color: #3d2f00; }
   .zona-captura { margin-top: 14px; padding: 14px 16px; border: 2px dashed var(--tinta); font-size: 14px; display: block; }
   .zona-captura b:first-child { display: block; margin-bottom: 4px; }
   .zona-captura.encima, .zona-captura:focus { background: var(--campo); outline: none; }
@@ -156,6 +168,7 @@
       <p>Si el producto ya estaba en el álbum, le completa la foto y el precio en vez de duplicarlo. El editor tiene que estar abierto.</p>
     </details>
     <div id="aviso" role="status"></div>
+    <div id="pendientes" class="pendientes" role="region" aria-label="Láminas incompletas" hidden></div>
     <div id="publicacion" hidden></div>
   </section>
 
@@ -647,11 +660,58 @@ function dibujarCaptura() {
   recortar(lienzo, rect).toBlob((b) => { if (b) { const vista = $("cVista"); if (vista.src) URL.revokeObjectURL(vista.src); vista.src = URL.createObjectURL(b); } }, "image/png");
 }
 
+// ---------- láminas de Mercado Libre a medio llenar ----------
+// Mercado Libre no deja leer sus páginas, así que una lámina con ese link puede quedar sin foto o sin precio.
+let completando = null;   // id de la lámina que se va a completar con el próximo pantallazo
+const esML = (p) => /mercadoli[bv]re\./i.test(p.link || "") || /mercadoli[bv]re/i.test(p.tienda || "");
+function faltaDe(p) {
+  if (!esML(p)) return [];
+  const f = [];
+  if (!p.foto) f.push("foto");
+  if (p.precio === null || p.precio === undefined || p.precio === "") f.push("precio");
+  return f;
+}
+function completarCon(p) {
+  completando = p.id;
+  pintarPendientes();
+  const z = $("zonaCaptura");
+  z.scrollIntoView({ behavior: "smooth", block: "center" });
+  z.focus();
+  aviso("Ahora pega el pantallazo de «" + p.nombre + "» con Ctrl + V (o usa «O elige una imagen»).", "ok");
+}
+function pintarPendientes() {
+  const caja = $("pendientes");
+  const lista = D.productos.filter((p) => faltaDe(p).length);
+  document.title = lista.length ? "(" + lista.length + ") Editor del álbum" : "Editor del álbum";
+  if (!lista.length) { caja.hidden = true; caja.replaceChildren(); return; }
+  caja.hidden = false;
+  caja.replaceChildren(
+    el("b", {}, lista.length === 1 ? "1 lámina de Mercado Libre está incompleta" : lista.length + " láminas de Mercado Libre están incompletas"),
+    el("p", {}, "Mercado Libre no deja leer sus páginas. Ábrelas, saca un pantallazo y completa la foto y el precio desde ahí."),
+    el("ul", {}, lista.map((p) => el("li", { class: completando === p.id ? "activa" : "" },
+      el("span", { class: "pend-nombre" }, p.nombre || "(sin nombre)"),
+      el("span", { class: "pend-falta" }, "Falta " + faltaDe(p).join(" y ")),
+      p.link ? el("a", { href: p.link, target: "_blank", rel: "noopener" }, "Abrir ↗") : null,
+      el("button", { type: "button", class: completando === p.id ? "lleno mini" : "mini", onclick: () => completarCon(p) },
+        completando === p.id ? "Esperando pantallazo…" : "Completar con pantallazo")))));
+}
+
 async function escanear(archivo) {
   if (!archivo || !archivo.type.startsWith("image/")) return;
   const dlg = $("dlgCaptura");
+  const objetivo = completando && D.productos.find((x) => x.id === completando);
   $("cNombre").value = ""; $("cPrecio").value = ""; $("cEntrega").value = ""; $("cLink").value = "";
   $("cCat").replaceChildren(...D.categorias.map((c) => el("option", { value: c.id }, c.nombre)));
+  dlg.querySelector("h2").textContent = objetivo ? "Completar: " + objetivo.nombre : "Desde un pantallazo";
+  $("cAgregar").textContent = objetivo ? "Guardar en esta lámina" : "Agregar al álbum";
+  if (objetivo) {
+    // Un nombre genérico (lo que deja Mercado Libre cuando bloquea) se reemplaza por el del pantallazo.
+    const generico = /^\s*(mercado ?libre[^a-z]*|producto nuevo|algo nuevo|sin nombre)?\s*$/i.test(objetivo.nombre || "");
+    $("cNombre").value = generico ? "" : objetivo.nombre; $("cLink").value = objetivo.link || "";
+    if (objetivo.precio != null && objetivo.precio !== "") $("cPrecio").value = objetivo.precio;
+    $("cEntrega").value = objetivo.entrega || "";
+    $("cCat").value = objetivo.categoria || "";
+  }
   $("cAgregar").disabled = true;
   $("estadoCaptura").textContent = "Leyendo el pantallazo… (la primera vez tarda un poco más)";
   const bmp = await createImageBitmap(archivo);
@@ -701,11 +761,12 @@ async function escanear(archivo) {
     }
     captura.rect = buscarFoto(lienzo, data.words || [], info.zonaTexto, hoja);
     dibujarCaptura();
-    $("cNombre").value = info.nombre;
-    if (info.precio) $("cPrecio").value = info.precio;
-    $("cEntrega").value = info.entrega;
-    $("cLink").value = info.link;
-    $("cCat").value = adivinarCategoria([info.nombre, info.link].join(" "));
+    // Si estoy completando una lámina, respeto su nombre, link y categoría; solo relleno lo que falte.
+    if (!objetivo || !$("cNombre").value) $("cNombre").value = info.nombre;
+    if (info.precio && (!objetivo || $("cPrecio").value === "")) $("cPrecio").value = info.precio;
+    if (info.entrega && (!objetivo || !$("cEntrega").value)) $("cEntrega").value = info.entrega;
+    if (info.link && !$("cLink").value) $("cLink").value = info.link;
+    if (!objetivo) $("cCat").value = adivinarCategoria([info.nombre, info.link].join(" "));
     $("estadoCaptura").textContent = "Revisa lo que leí y corrige lo que esté mal." + (info.precio ? "" : " No encontré el precio.") + (info.link ? "" : " El link no se veía en el pantallazo: pégalo si lo tienes.");
   } catch (e) {
     $("estadoCaptura").textContent = e.message + ". Completa los datos a mano y marca la foto con el mouse.";
@@ -733,6 +794,7 @@ async function escanear(archivo) {
 })();
 
 $("cCancelar").onclick = () => $("dlgCaptura").close();
+$("dlgCaptura").addEventListener("close", () => { completando = null; pintarPendientes(); });
 $("formCaptura").addEventListener("submit", async (e) => {
   e.preventDefault();
   const b = $("cAgregar"); b.disabled = true; b.textContent = "Agregando…";
@@ -742,7 +804,8 @@ $("formCaptura").addEventListener("submit", async (e) => {
     const precio = $("cPrecio").value === "" ? null : Number($("cPrecio").value);
     const blob = await new Promise((ok) => recortar(captura.lienzo, captura.rect).toBlob(ok, "image/png"));
     const foto = await subirFoto(blob, nombre);
-    let p = link && D.productos.find((x) => x.link && x.link.split("?")[0] === link.split("?")[0]);
+    let p = (completando && D.productos.find((x) => x.id === completando)) ||
+      (link && D.productos.find((x) => x.link && x.link.split("?")[0] === link.split("?")[0]));
     const nuevo = !p;
     if (!p) { p = { id: nuevoId(), descripcion: "", nota: "", moneda: "CLP" }; D.productos.unshift(p); }
     Object.assign(p, { nombre, precio, moneda: "CLP", link, tienda: link ? host(link) : "mercadolibre.cl", foto, categoria: $("cCat").value });
@@ -754,7 +817,7 @@ $("formCaptura").addEventListener("submit", async (e) => {
     const nodo = document.querySelector('[data-id="' + p.id + '"]');
     if (nodo) nodo.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (x) { aviso("No pude agregarlo: " + x.message, "mal"); }
-  b.disabled = false; b.textContent = "Agregar al álbum";
+  b.disabled = false; b.textContent = completando ? "Guardar en esta lámina" : "Agregar al álbum";
 });
 
 (() => {
@@ -944,6 +1007,7 @@ function formProducto(p) {
       p.foto ? el("img", { class: "mini-foto", src: p.foto, alt: "" }) : el("span", { class: "mini-foto" }, "?"),
       el("span", { class: "sum-txt" }, nombreSum, el("span", {}, p.tienda || "sin tienda")),
       p.destacado ? el("span", { class: "marca" }, "Destacada") : null,
+      faltaDe(p).length ? el("span", { class: "marca falta" }, "Falta " + faltaDe(p).join(" y ")) : null,
       precioSum),
     el("div", { class: "cuerpo" },
       col,
@@ -1018,7 +1082,7 @@ function pintarLista() {
   ]));
   if (!D.productos.length) lista.append(el("p", { class: "vacio" }, "Todavía no hay nada. Pega un link arriba para agregar la primera lámina."));
 }
-function pintar() { pintarLista(); pintarCategorias(); pintarPortada(); }
+function pintar() { pintarPendientes(); pintarLista(); pintarCategorias(); pintarPortada(); }
 
 // ---------- inicio ----------
 $("formLink").addEventListener("submit", (e) => { e.preventDefault(); const u = $("link").value.trim(); if (u) agregarDesdeLink(u); });
