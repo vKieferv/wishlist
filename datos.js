@@ -48,6 +48,18 @@ window.DATOS = {
   ],
   "productos": [
     {
+      "id": "pmw9zoowd5er",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Kit de Inicio Raspberry Pi 5",
+      "precio": 179990,
+      "link": "https://raspberrypi.cl/products/kit-de-inicio-raspberry-pi-5-4gb-ram?variant=47160243126450",
+      "tienda": "raspberrypi.cl",
+      "foto": "fotos/kit-de-inicio-raspberry-pi-5-mw9zoowa.jpg",
+      "categoria": "varios"
+    },
+    {
       "id": "pmw9zizwc6ad",
       "descripcion": "",
       "nota": "",
@@ -285,18 +297,6 @@ window.DATOS = {
       "categoria": "gamer",
       "nombre": "Control inalámbrico para el PC",
       "descripcion": "Para jugar desde el sillón sin cables de por medio.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": ""
-    },
-    {
-      "id": "p07",
-      "categoria": "gamer",
-      "nombre": "Raspberry Pi",
-      "descripcion": "Una placa para cacharrear proyectos.",
       "nota": "",
       "precio": null,
       "moneda": "CLP",
@@ -798,7 +798,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-10T01:04:31.811Z",
+  "actualizado": "2026-11-10T01:08:43.428Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
