@@ -8,18 +8,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* Mismo papel, letras y franjas que el álbum; sigue el modo claro u oscuro que elijas ahí o aquí. */
   :root {
-    --papel: #e9eaec; --panel: #ffffff; --tinta: #0a0a0b; --gris: #5b5e64; --suave: #c9cbd0; --campo: #f5f5f6;
-    --ok: #1d6b36; --mal: #a3141f;
+    --papel: #e8e8e5; --panel: #f4f4f1; --tinta: #0a0a0b; --gris: #5b5e64; --suave: #c9cbd0; --campo: #ffffff;
+    --trama: rgba(10, 10, 11, .16); --ok: #1d6b36; --mal: #a3141f;
     --f-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
     --f-texto: "Archivo", "Segoe UI", system-ui, sans-serif;
     --f-dato: "IBM Plex Mono", ui-monospace, Consolas, monospace;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --papel: #0d0d0f; --panel: #17181b; --tinta: #f2f2f0; --gris: #a3a6ad; --suave: #2d2f35; --campo: #1f2024; --ok: #5fcf83; --mal: #ff6b75; color-scheme: dark; }
+    :root:not([data-theme="light"]) { --papel: #121212; --panel: #1a1a19; --tinta: #f2f2ef; --gris: #a6a5a0; --suave: #3a3a37; --campo: #1d1d1c; --trama: rgba(242, 242, 239, .13); --ok: #5fcf83; --mal: #ff6b75; color-scheme: dark; }
   }
-  :root[data-theme="dark"] { --papel: #0d0d0f; --panel: #17181b; --tinta: #f2f2f0; --gris: #a3a6ad; --suave: #2d2f35; --campo: #1f2024; --ok: #5fcf83; --mal: #ff6b75; color-scheme: dark; }
+  :root[data-theme="dark"] { --papel: #121212; --panel: #1a1a19; --tinta: #f2f2ef; --gris: #a6a5a0; --suave: #3a3a37; --campo: #1d1d1c; --trama: rgba(242, 242, 239, .13); --ok: #5fcf83; --mal: #ff6b75; color-scheme: dark; }
 
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.45 var(--f-texto); }
@@ -39,14 +40,23 @@
   input:focus, select:focus, textarea:focus { border-color: var(--tinta); outline: none; }
   textarea { min-height: 70px; resize: vertical; }
 
-  header.barra { background: var(--tinta); color: var(--panel); }
-  header.barra .ancho { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-block: 12px; }
-  header.barra h1 { margin: 0 auto 0 0; font: 900 30px/1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
-  header.barra a, header.barra button { color: var(--panel); border-color: var(--panel); background: transparent; text-decoration: none; padding: 7px 12px; border: 1.5px solid; font-weight: 600; }
-  header.barra button.lleno { background: var(--panel); color: var(--tinta); }
-  #estado { font: 500 12px var(--f-dato); opacity: .85; }
+  /* Barra de arriba: el papel de la portada, con su trama de puntos y la franja abajo. */
+  header.barra { background: var(--panel); color: var(--tinta); position: relative; position: sticky; top: 0; z-index: 5; }
+  header.barra::before {
+    content: ""; position: absolute; inset: 0 0 0 45%; pointer-events: none;
+    background: radial-gradient(circle, var(--trama) 1.3px, transparent 1.7px) 0 0 / 14px 14px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 70%); mask-image: linear-gradient(90deg, transparent, #000 70%);
+  }
+  header.barra::after { content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px; background: repeating-linear-gradient(90deg, var(--tinta) 0 16px, transparent 16px 32px); }
+  header.barra .ancho { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-block: 14px; position: relative; }
+  header.barra h1 { margin: 0 auto 0 0; font: 900 32px/1 var(--f-display); text-transform: uppercase; letter-spacing: .01em; }
+  header.barra a, header.barra button { color: var(--tinta); border-color: var(--tinta); background: var(--panel); text-decoration: none; padding: 7px 12px; border: 1.5px solid; font-weight: 600; }
+  header.barra button.lleno { background: var(--tinta); color: var(--panel); }
+  header.barra button.tema { font: 600 11px var(--f-dato); letter-spacing: .1em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 7px; }
+  header.barra button.tema::before { content: ""; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid currentColor; background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+  #estado { font: 500 12px var(--f-dato); color: var(--gris); }
 
-  .agregar { background: var(--panel); border: 1.5px solid var(--tinta); margin: 22px 0 8px; padding: 16px; }
+  .agregar { background: var(--panel); border: 1.5px solid var(--tinta); box-shadow: 4px 4px 0 var(--tinta); margin: 30px 0 8px; padding: 16px; }
   .agregar h2 { margin: 0 0 4px; font: 900 28px/1 var(--f-display); text-transform: uppercase; }
   .agregar p { margin: 0 0 12px; color: var(--gris); font-size: 14px; }
   .agregar form { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -81,11 +91,14 @@
   #aviso.mal { color: var(--mal); } #aviso.ok { color: var(--ok); }
   #publicacion { white-space: pre-wrap; font: 12px var(--f-dato); background: var(--campo); padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto; }
 
-  h2.grupo { font: 900 34px/1 var(--f-display); text-transform: uppercase; margin: 30px 0 10px; display: flex; gap: 12px; align-items: baseline; border-bottom: 1.5px solid var(--tinta); padding-bottom: 4px; }
+  /* Cada grupo abre como las secciones del álbum: franja arriba, nombre grande, línea abajo. */
+  h2.grupo { font: 900 38px/1 var(--f-display); text-transform: uppercase; margin: 38px 0 12px; display: flex; gap: 12px; align-items: baseline;
+    border-bottom: 1.5px solid var(--tinta); padding: 18px 0 6px; position: relative; }
+  h2.grupo::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: repeating-linear-gradient(90deg, var(--tinta) 0 12px, transparent 12px 24px); }
   h2.grupo span { font: 500 12px var(--f-dato); color: var(--gris); text-transform: uppercase; letter-spacing: .1em; }
 
   details.prod, details.panel { background: var(--panel); border: 1.5px solid var(--suave); margin-bottom: 8px; }
-  details.prod[open], details.panel[open] { border-color: var(--tinta); }
+  details.prod[open], details.panel[open] { border-color: var(--tinta); box-shadow: 4px 4px 0 var(--tinta); }
   details > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
   details > summary::-webkit-details-marker { display: none; }
   .mini-foto { width: 52px; height: 52px; flex: none; background: #fff; border: 1px solid var(--suave); object-fit: contain; display: grid; place-items: center; font: 900 20px var(--f-display); color: #999; }
@@ -128,6 +141,7 @@
   .vacio { padding: 20px; color: var(--gris); font: 13px var(--f-dato); }
   #sinServidor { display: none; background: var(--mal); color: #fff; padding: 12px 16px; font-weight: 600; }
 </style>
+<script>try { var t = localStorage.getItem("album-tema"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 </head>
 <body>
 <div id="sinServidor">El editor tiene que abrirse con <b>abrir-editor.bat</b> (doble clic en la carpeta wishlist). Así como está no puede guardar.</div>
@@ -135,6 +149,7 @@
   <h1>Editor del álbum</h1>
   <span id="estado">Cargando…</span>
   <a href="/index.html" target="_blank" rel="noopener">Ver la página ↗</a>
+  <button id="tema" class="tema" type="button">Modo oscuro</button>
   <button id="publicar" class="lleno" type="button">Publicar en internet</button>
 </div></header>
 
@@ -967,7 +982,7 @@ function formProducto(p) {
         campo(p, "entrega", "Cuánto se demora en llegar", { ph: (D.entregas || {})[p.tienda] || "Ej: 3 a 5 días hábiles" }),
         serie,
         el("div", { class: "todo acciones" },
-          el("label", { class: "check" }, el("input", { type: "checkbox", checked: !!p.destacado, onchange: (e) => { p.destacado = e.target.checked; rehacer(); } }), "Destacada (lámina doble)"),
+          el("label", { class: "check" }, el("input", { type: "checkbox", checked: !!p.destacado, onchange: (e) => { p.destacado = e.target.checked; rehacer(); } }), "Brillante (marco plateado)"),
           el("label", { class: "check" }, el("input", { type: "checkbox", checked: !!p.serie, onchange: (e) => { if (e.target.checked) p.serie = { total: 3, tengo: [] }; else delete p.serie; rehacer(); } }), "Es una saga de libros")),
         el("div", { class: "todo acciones" },
           p.link ? el("button", { type: "button", class: "mini", onclick: () => releer(p) }, "Actualizar precio desde el link") : null,
@@ -1033,6 +1048,20 @@ $("btnManual").onclick = () => {
   const p = { id: nuevoId(), categoria: (D.categorias.find((c) => c.id === "varios") || D.categorias[0] || {}).id || "", nombre: "Algo nuevo", descripcion: "", nota: "", precio: null, moneda: "CLP", link: "", tienda: "", foto: "" };
   D.productos.unshift(p); abiertos.add(p.id); rehacer();
 };
+// Modo claro u oscuro: el mismo que elegiste en el álbum (se guarda en este navegador).
+function temaActual() {
+  const t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+$("tema").textContent = temaActual() === "dark" ? "Modo claro" : "Modo oscuro";
+$("tema").onclick = () => {
+  const nuevo = temaActual() === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", nuevo);
+  try { localStorage.setItem("album-tema", nuevo); } catch (e) {}
+  $("tema").textContent = nuevo === "dark" ? "Modo claro" : "Modo oscuro";
+};
+
 $("publicar").onclick = async () => {
   const b = $("publicar"), out = $("publicacion");
   b.disabled = true; b.textContent = "Publicando…";

@@ -217,7 +217,7 @@
     var imagen;
     if (foto) imagen = '<div class="lamina-foto"><img src="' + esc(foto) + '" alt="' + esc(p.nombre) + '" loading="lazy"></div>';
     else if (tipo === "libro") imagen = '<div class="lamina-foto"><div class="tapa-falsa" aria-hidden="true"><b>' + esc(p.nombre) + "</b><span>" + esc(String(p.descripcion || "").replace(/\.$/, "")) + "</span></div></div>";
-    else imagen = '<div class="lamina-foto sin-foto" aria-hidden="true"><span>' + num + "</span></div>";
+    else imagen = '<div class="lamina-foto sin-foto" aria-hidden="true"><span>Sin foto todavía</span></div>';
     return '<article class="lamina ' + tipo + (destacada ? " destacada" : "") + (foto ? "" : " sin-imagen") + '">' +
       '<div class="lamina-num"><b>Nº ' + pad(num) + "</b>" + (destacada ? "<i>Brillante</i>" : "") +
       (edit.activo ? '<button type="button" class="editar-lamina" data-editar="' + esc(original.id) + '">Editar</button>' : "") + "</div>" +
@@ -536,7 +536,7 @@
       '<label for="fCat">Categoría</label><select id="fCat">' + opcionesCat + "</select>" +
       '<input id="fCatNueva" type="text" placeholder="Nombre de la nueva categoría" hidden>' +
       '<label for="fLink">Link de compra</label><input id="fLink" type="url" placeholder="https://…" value="' + esc(p.link) + '">' +
-      '<label class="check"><input id="fDest" type="checkbox"' + (p.destacado ? " checked" : "") + "> Destacada (lámina doble)</label>" +
+      '<label class="check"><input id="fDest" type="checkbox"' + (p.destacado ? " checked" : "") + "> Brillante (marco plateado)</label>" +
       '<label class="check"><input id="fSerie" type="checkbox"' + (p.serie ? " checked" : "") + "> Es una saga de libros</label>" +
       '<div id="cajaSerie"' + (p.serie ? "" : " hidden") + '><label for="fTotal">Cuántos libros son</label><input id="fTotal" type="number" min="1" value="' + esc(serie.total) + '">' +
       '<label for="fTengo">Cuáles tengo (números separados por coma)</label><input id="fTengo" type="text" value="' + esc((serie.tengo || []).join(", ")) + '">' +
