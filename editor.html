@@ -51,11 +51,6 @@
   .agregar p { margin: 0 0 12px; color: var(--gris); font-size: 14px; }
   .agregar form { display: flex; gap: 8px; flex-wrap: wrap; }
   .agregar input { flex: 1 1 280px; font-size: 16px; padding: 10px 12px; }
-  .ayuda-ml { border: 0; background: none; margin: 12px 0 0; font-size: 14px; }
-  .ayuda-ml > summary { padding: 0; font-weight: 600; text-decoration: underline; display: block; }
-  .ayuda-ml p { margin: 8px 0; }
-  .ayuda-ml ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--tinta); }
-  .marcador { display: inline-block; background: var(--tinta); color: var(--panel); padding: 4px 10px; font-weight: 700; text-decoration: none; cursor: grab; }
   #aviso { margin-top: 10px; font: 500 13px var(--f-dato); }
   .pendientes { margin-top: 14px; padding: 12px 14px; background: #fff3c4; color: #3d2f00; border: 1.5px solid #3d2f00; font-size: 14px; }
   .pendientes > b { font-size: 15px; }
@@ -69,10 +64,12 @@
   .pendientes button { color: #3d2f00; border-color: #3d2f00; background: #fff8dc; }
   .pendientes button.lleno { background: #3d2f00; color: #fff3c4; }
   .marca.falta { border-color: #b8860b; background: #fff3c4; color: #3d2f00; }
-  .zona-captura { margin-top: 14px; padding: 14px 16px; border: 2px dashed var(--tinta); font-size: 14px; display: block; }
-  .zona-captura b:first-child { display: block; margin-bottom: 4px; }
-  .zona-captura.encima, .zona-captura:focus { background: var(--campo); outline: none; }
-  .boton-chico { display: inline-block; margin-top: 8px; border: 1.5px solid var(--tinta); padding: 4px 10px; font-weight: 600; cursor: pointer; }
+  .agregar.encima { background: var(--campo); outline: 2px dashed var(--tinta); outline-offset: -8px; }
+  .agregar:focus { outline: none; }
+  .agregar form { margin-top: 8px; }
+  .agregar p.ayuda-corta { margin: 10px 0 0; font-size: 13px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+  .enlace { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--tinta); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+  .enlace:hover { background: none; opacity: .75; }
   .dlg-captura { width: min(1100px, calc(100vw - 24px)); max-height: calc(100vh - 24px); border: 1.5px solid var(--tinta); background: var(--panel); color: var(--tinta); padding: 18px; }
   .dlg-captura::backdrop { background: rgba(0, 0, 0, .6); }
   .dlg-captura h2 { margin: 0 0 4px; font: 900 30px/1 var(--f-display); text-transform: uppercase; }
@@ -142,31 +139,15 @@
 </div></header>
 
 <main class="ancho">
-  <section class="agregar">
+  <section class="agregar" id="zonaCaptura" tabindex="-1">
     <h2>Agregar algo</h2>
-    <p>Pega el link del producto. Saco el nombre, la foto, el precio y la descripción; después cambias lo que quieras.</p>
     <form id="formLink">
-      <input id="link" type="url" placeholder="https://tienda.cl/producto…" autocomplete="off" required>
+      <input id="link" type="text" placeholder="Pega un link o un pantallazo (Ctrl + V)" autocomplete="off" aria-label="Link o pantallazo del producto">
       <button class="lleno" id="btnLink" type="submit">Agregar</button>
-      <button id="btnManual" type="button">Agregar sin link</button>
     </form>
-    <div class="zona-captura" id="zonaCaptura" tabindex="0">
-      <b>¿Mercado Libre u otra tienda que no deja leer el link?</b>
-      Saca un pantallazo de la página del producto (tecla <b>Impr Pant</b> o <b>Win + Shift + S</b>) y pégalo aquí con <b>Ctrl + V</b>.
-      Leo el nombre, el precio y cuándo llega, y recorto la foto.
-      <label class="boton-chico">O elige una imagen<input id="archivoCaptura" type="file" accept="image/*" hidden></label>
-    </div>
-    <details class="ayuda-ml">
-      <summary>Otra forma: botón de marcadores</summary>
-      <p>Algunas tiendas bloquean las lecturas automáticas. Para esas, usa este botón:</p>
-      <ol>
-        <li>Muestra la barra de marcadores de tu navegador (Ctrl + Shift + B).</li>
-        <li>Arrastra hasta la barra este botón: <a id="marcador" class="marcador" href="#" onclick="return false" title="Arrástrame a la barra de marcadores">＋ Al álbum</a></li>
-        <li>Cuando estés viendo un producto en la tienda, toca <b>＋ Al álbum</b> en la barra. Aparece un aviso negro: "Copiado para el álbum".</li>
-        <li>Vuelve a esta ventana y pega con <b>Ctrl + V</b> en cualquier parte. Se agrega con el nombre, la foto y el precio.</li>
-      </ol>
-      <p>Si el producto ya estaba en el álbum, le completa la foto y el precio en vez de duplicarlo. El editor tiene que estar abierto.</p>
-    </details>
+    <p class="ayuda-corta"><span>Si la tienda no deja leer el link (como Mercado Libre), pega un pantallazo de la página: <b>Win + Shift + S</b>.</span>
+      <label class="enlace">Elegir imagen<input id="archivoCaptura" type="file" accept="image/*" hidden></label>
+      <button type="button" id="btnManual" class="enlace">Agregar a mano</button></p>
     <div id="aviso" role="status"></div>
     <div id="pendientes" class="pendientes" role="region" aria-label="Láminas incompletas" hidden></div>
     <div id="publicacion" hidden></div>
@@ -195,7 +176,9 @@
       </div>
       <div class="captura-campos">
         <label class="c"><span>Nombre</span><input id="cNombre" type="text" required></label>
-        <label class="c"><span>Precio en pesos</span><input id="cPrecio" type="number" min="0" placeholder="Sin precio"></label>
+        <label class="c"><span>Precio</span>
+          <span class="fila"><input id="cPrecio" type="number" min="0" step="any" placeholder="Sin precio">
+          <select id="cMoneda" aria-label="Moneda"><option value="CLP">Pesos</option><option value="USD">Dólares</option><option value="EUR">Euros</option></select></span></label>
         <label class="c"><span>Cuándo llega</span><input id="cEntrega" type="text" placeholder="Ej: entre el miércoles y el jueves"></label>
         <label class="c"><span>Link (si no lo encontré, pégalo)</span><input id="cLink" type="url" placeholder="https://articulo.mercadolibre.cl/…"></label>
         <label class="c"><span>Categoría</span><select id="cCat"></select></label>
@@ -403,30 +386,11 @@ async function agregarDesdeLink(url) {
   const nodo = document.querySelector('[data-id="' + p.id + '"]');
   if (nodo) nodo.scrollIntoView({ behavior: "smooth", block: "center" });
 }
-// Botón de marcadores: corre en la página del producto, en tu navegador, y le pasa al editor lo que ve.
-// Sirve para tiendas que no dejan leer sus páginas desde afuera, como Mercado Libre.
-const MARCADOR = "javascript:(function(){var d=document,q=function(s){var e=d.querySelector(s);return e&&(e.getAttribute('content')||e.textContent)||''};var ld={};" +
-  "[].slice.call(d.querySelectorAll('script[type=\"application/ld+json\"]')).forEach(function(s){try{var j=JSON.parse(s.textContent);[].concat(j['@graph']||j).forEach(function(o){if(o&&/Product/i.test([].concat(o['@type']).join()))ld=o})}catch(e){}});" +
-  "var of=[].concat(ld.offers||[])[0]||{};var im=[].concat(ld.image||[]).map(function(i){return i&&i.url||i}).concat([q('meta[property=\"og:image\"]')]);" +
-  "[].slice.call(d.querySelectorAll('.ui-pdp-gallery img,[data-zoom]')).slice(0,5).forEach(function(i){im.push(i.getAttribute('data-zoom')||i.currentSrc||i.src)});" +
-  "var pr=of.price||of.lowPrice||q('meta[itemprop=\"price\"]')||q('meta[property=\"product:price:amount\"]');if(!pr){var f=d.querySelector('.ui-pdp-price__second-line .andes-money-amount__fraction,.andes-money-amount__fraction');if(f)pr=f.textContent.replace(/\\D/g,'')}" +
-  "var info={nombre:ld.name||q('meta[property=\"og:title\"]')||d.title,descripcion:ld.description||q('meta[property=\"og:description\"]')||q('meta[name=\"description\"]'),precio:pr,moneda:of.priceCurrency||q('meta[itemprop=\"priceCurrency\"]')||'CLP'," +
-  "link:location.origin+location.pathname,imagenes:im.filter(function(u,i,a){return u&&/^https?:/.test(u)&&a.indexOf(u)===i}).slice(0,6)};" +
-  "var tx='ALBUM:'+JSON.stringify(info),ta=d.createElement('textarea');ta.value=tx;ta.style.cssText='position:fixed;top:0;left:0;opacity:0';d.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=d.execCommand('copy')}catch(e){}ta.remove();" +
-  "var av=d.createElement('div');av.style.cssText='position:fixed;z-index:2147483647;top:16px;left:0;right:0;margin:0 auto;width:fit-content;background:#111;color:#fff;font:600 16px/1.4 system-ui,sans-serif;padding:14px 18px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:90vw';" +
-  "var fin=function(b){av.textContent=b?'Copiado para el \\u00e1lbum: '+info.nombre.slice(0,60)+'. Ahora ve al editor y pega con Ctrl+V.':'No pude copiar. Haz clic en la p\\u00e1gina y toca el bot\\u00f3n otra vez.';d.body.appendChild(av);setTimeout(function(){av.remove()},6000)};" +
-  "if(ok)fin(true);else if(navigator.clipboard)navigator.clipboard.writeText(tx).then(function(){fin(true)},function(){fin(false)});else fin(false)})();";
-
-// En el editor: Ctrl+V en cualquier parte recibe lo que copió el botón.
+// Ctrl+V de una imagen en cualquier parte (menos en la foto de una lámina): la escaneo como pantallazo.
 document.addEventListener("paste", (e) => {
   if (e.defaultPrevented || !D) return;
-  // Un pantallazo pegado fuera de la foto de una lámina: lo escaneo.
   const img = [...((e.clipboardData && e.clipboardData.files) || [])].find((f) => f.type.startsWith("image/"));
-  if (img && !e.target.closest(".foto-col")) { e.preventDefault(); escanear(img); return; }
-  const t = (e.clipboardData && e.clipboardData.getData("text")) || "";
-  if (!t.startsWith("ALBUM:")) return;
-  e.preventDefault();
-  try { agregarDesdeNavegador(JSON.parse(t.slice(6))); } catch (x) { aviso("No entendí lo que copió el botón de marcadores.", "mal"); }
+  if (img && !e.target.closest(".foto-col")) { e.preventDefault(); escanear(img); }
 });
 
 // ---------- pantallazos ----------
@@ -443,10 +407,22 @@ function cargarScript(src) {
   });
 }
 
-function leerPrecio(t) {
-  const m = /(?:^|[\s(])[$S5]\s?(\d{1,3}(?:[.,]\d{3})+|\d{3,7})(?![\d.,]*%)/.exec(t);
-  return m ? Number(m[1].replace(/[.,]/g, "")) : null;
+// "$ 9.980" -> 9980 pesos; "$22.00" o "US$ 22" -> 22 dólares; "€ 19,99" -> 19.99 euros.
+// Un "$" con centavos casi siempre es dólar: las tiendas chilenas no muestran centavos.
+function leerMoneda(t) {
+  const m = /(?:^|[\s(:])(US\s?\$|U\$S|USD|CLP|€|EUR|[$S5])\s?(\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{1,2})?|\d{1,7}(?:[.,]\d{1,2})?)(?![\d%])/i.exec(t);
+  if (!m) return null;
+  let num = m[2], decimales = false;
+  const d = /[.,](\d{1,2})$/.exec(num);
+  if (d) { decimales = true; num = num.slice(0, -d[0].length).replace(/[.,]/g, "") + "." + d[1]; }
+  else num = num.replace(/[.,]/g, "");
+  const v = Number(num);
+  if (!isFinite(v) || v <= 0) return null;
+  const s = m[1].toUpperCase().replace(/\s/g, "");
+  const moneda = /US|U\$S/.test(s) ? "USD" : /€|EUR/.test(s) ? "EUR" : s === "CLP" ? "CLP" : decimales ? "USD" : "CLP";
+  return { v, moneda };
 }
+function leerPrecio(t) { const r = leerMoneda(t); return r ? r.v : null; }
 const RUIDO = /vendid|nuevo\s*\||envío|envio|llega|retira|color|stock|cantidad|comprar|agregar|cashback|medios de pago|mercado|opciones|interesar|favoritos|cupones|ofertas|categor|vender|ayuda|calificaci|opiniones|devoluci|garant|vendido por|\bmeli\b|ver m[aá]s|suscriptores|exclusivo|sumá|super\b/i;
 
 // La hoja de la página: la zona clara más grande del pantallazo. Así no confundo el fondo de pantalla
@@ -532,8 +508,10 @@ function armarLineas(palabras) {
 function buscarPrecio(lineas) {
   let precio = null;
   for (const l of lineas) {
-    const t = l.text.replace(/\s+/g, " ").trim(), h = l.hm || l.bbox.y1 - l.bbox.y0, v = leerPrecio(t);
-    if (v && v >= 100 && !/cashback|hasta|cuotas|antes|ahorr|%/i.test(t) && (!precio || h > precio.h)) precio = { v, h, b: l.bbox, cy: l.cy || (l.bbox.y0 + l.bbox.y1) / 2 };
+    const t = l.text.replace(/\s+/g, " ").trim(), h = l.hm || l.bbox.y1 - l.bbox.y0, r = leerMoneda(t);
+    if (!r || (r.moneda === "CLP" && r.v < 100)) continue;
+    if (/cashback|hasta|cuotas|antes|ahorr|extra|total|env[ií]o|despacho|%|\+\s*\$/i.test(t)) continue;
+    if (!precio || h > precio.h) precio = { v: r.v, moneda: r.moneda, h, b: l.bbox, cy: l.cy || (l.bbox.y0 + l.bbox.y1) / 2 };
   }
   return precio;
 }
@@ -576,6 +554,7 @@ function analizarTexto(lineas, hoja, precio) {
   return {
     nombre: nombre.replace(/[|_~]+/g, " ").replace(/\s+/g, " ").trim(),
     precio: precio ? precio.v : null,
+    moneda: precio ? precio.moneda : "CLP",
     entrega: llega ? llega.t.replace(/^.{0,2}ega\s+/i, "").replace(/\s*(más detalles|mas detalles).*$/i, "").trim() : "",
     link,
     zonaTexto: titulo && precio ? { x0: Math.min(titulo.b.x0, precio.b.x0), y0: titulo.b.y0, x1: Math.max(titulo.b.x1, precio.b.x1), y1: precio.b.y1 } : null,
@@ -677,7 +656,7 @@ function completarCon(p) {
   const z = $("zonaCaptura");
   z.scrollIntoView({ behavior: "smooth", block: "center" });
   z.focus();
-  aviso("Ahora pega el pantallazo de «" + p.nombre + "» con Ctrl + V (o usa «O elige una imagen»).", "ok");
+  aviso("Ahora pega el pantallazo de «" + p.nombre + "» con Ctrl + V (o usa «Elegir imagen»).", "ok");
 }
 function pintarPendientes() {
   const caja = $("pendientes");
@@ -700,7 +679,7 @@ async function escanear(archivo) {
   if (!archivo || !archivo.type.startsWith("image/")) return;
   const dlg = $("dlgCaptura");
   const objetivo = completando && D.productos.find((x) => x.id === completando);
-  $("cNombre").value = ""; $("cPrecio").value = ""; $("cEntrega").value = ""; $("cLink").value = "";
+  $("cNombre").value = ""; $("cPrecio").value = ""; $("cEntrega").value = ""; $("cLink").value = ""; $("cMoneda").value = "CLP";
   $("cCat").replaceChildren(...D.categorias.map((c) => el("option", { value: c.id }, c.nombre)));
   dlg.querySelector("h2").textContent = objetivo ? "Completar: " + objetivo.nombre : "Desde un pantallazo";
   $("cAgregar").textContent = objetivo ? "Guardar en esta lámina" : "Agregar al álbum";
@@ -708,7 +687,7 @@ async function escanear(archivo) {
     // Un nombre genérico (lo que deja Mercado Libre cuando bloquea) se reemplaza por el del pantallazo.
     const generico = /^\s*(mercado ?libre[^a-z]*|producto nuevo|algo nuevo|sin nombre)?\s*$/i.test(objetivo.nombre || "");
     $("cNombre").value = generico ? "" : objetivo.nombre; $("cLink").value = objetivo.link || "";
-    if (objetivo.precio != null && objetivo.precio !== "") $("cPrecio").value = objetivo.precio;
+    if (objetivo.precio != null && objetivo.precio !== "") { $("cPrecio").value = objetivo.precio; $("cMoneda").value = objetivo.moneda || "CLP"; }
     $("cEntrega").value = objetivo.entrega || "";
     $("cCat").value = objetivo.categoria || "";
   }
@@ -763,7 +742,7 @@ async function escanear(archivo) {
     dibujarCaptura();
     // Si estoy completando una lámina, respeto su nombre, link y categoría; solo relleno lo que falte.
     if (!objetivo || !$("cNombre").value) $("cNombre").value = info.nombre;
-    if (info.precio && (!objetivo || $("cPrecio").value === "")) $("cPrecio").value = info.precio;
+    if (info.precio && (!objetivo || $("cPrecio").value === "")) { $("cPrecio").value = info.precio; $("cMoneda").value = info.moneda; }
     if (info.entrega && (!objetivo || !$("cEntrega").value)) $("cEntrega").value = info.entrega;
     if (info.link && !$("cLink").value) $("cLink").value = info.link;
     if (!objetivo) $("cCat").value = adivinarCategoria([info.nombre, info.link].join(" "));
@@ -808,7 +787,7 @@ $("formCaptura").addEventListener("submit", async (e) => {
       (link && D.productos.find((x) => x.link && x.link.split("?")[0] === link.split("?")[0]));
     const nuevo = !p;
     if (!p) { p = { id: nuevoId(), descripcion: "", nota: "", moneda: "CLP" }; D.productos.unshift(p); }
-    Object.assign(p, { nombre, precio, moneda: "CLP", link, tienda: link ? host(link) : "mercadolibre.cl", foto, categoria: $("cCat").value });
+    Object.assign(p, { nombre, precio, moneda: $("cMoneda").value, link, tienda: link ? host(link) : (p.tienda || ""), foto, categoria: $("cCat").value });
     if ($("cEntrega").value.trim()) p.entrega = $("cEntrega").value.trim();
     abiertos.add(p.id);
     rehacer();
@@ -831,48 +810,6 @@ $("formCaptura").addEventListener("submit", async (e) => {
     if (f) escanear(f);
   });
 })();
-
-function numeroDe(v) {
-  if (v === null || v === undefined || v === "") return null;
-  const s = String(v).trim();
-  const n = /^\d+(\.\d{1,2})?$/.test(s) ? Number(s) : Number(s.replace(/\D/g, ""));
-  return isFinite(n) && n > 0 ? n : null;
-}
-async function agregarDesdeNavegador(info) {
-  const link = String(info.link || "");
-  if (!/^https?:\/\//i.test(link)) return;
-  const nombre = String(info.nombre || "").replace(/\s+[|·-]\s+(Mercado ?Libre|Falabella|Paris|Ripley)[^|]*$/i, "").trim().slice(0, 140) || "Producto nuevo";
-  const descripcion = String(info.descripcion || "").replace(/\s+/g, " ").trim().slice(0, 220);
-  const precio = numeroDe(info.precio);
-  const imagenes = (Array.isArray(info.imagenes) ? info.imagenes : []).filter((u) => /^https?:\/\//i.test(u)).slice(0, 6);
-  // Si ese link ya estaba en el álbum, completo lo que le falte en vez de duplicarlo.
-  let p = D.productos.find((x) => x.link && x.link.split("?")[0].split("#")[0] === link);
-  const nuevo = !p;
-  if (!p) {
-    p = { id: nuevoId(), categoria: "", nombre, descripcion, nota: "", precio, moneda: String(info.moneda || "CLP").toUpperCase(), link, tienda: host(link), foto: "" };
-    p.categoria = adivinarCategoria([nombre, descripcion, link].join(" "));
-    D.productos.unshift(p);
-  } else {
-    if (precio != null) { p.precio = precio; p.moneda = String(info.moneda || "CLP").toUpperCase(); }
-    if (!p.descripcion) p.descripcion = descripcion;
-  }
-  if (imagenes.length) {
-    candidatas.set(p.id, imagenes);
-    if (!p.foto) { try { p.foto = await bajarFoto(imagenes[0], p.nombre); } catch (e) { p.foto = imagenes[0]; } }
-  }
-  abiertos.add(p.id);
-  rehacer();
-  aviso((nuevo ? "Agregado desde tu navegador: " : "Actualizado desde tu navegador: ") + p.nombre + (precio == null ? ". No encontré el precio; ponlo a mano." : "."), "ok");
-  const nodo = document.querySelector('[data-id="' + p.id + '"]');
-  if (nodo) nodo.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-function revisarHash() {
-  const m = /^#nuevo=(.+)$/.exec(location.hash);
-  if (!m || !D) return;
-  history.replaceState(null, "", location.pathname);
-  try { agregarDesdeNavegador(JSON.parse(decodeURIComponent(m[1]))); } catch (e) { aviso("No entendí lo que mandó el botón de marcadores.", "mal"); }
-}
-window.addEventListener("hashchange", revisarHash);
 
 async function releer(p) {
   if (!p.link) return;
@@ -1085,7 +1022,13 @@ function pintarLista() {
 function pintar() { pintarPendientes(); pintarLista(); pintarCategorias(); pintarPortada(); }
 
 // ---------- inicio ----------
-$("formLink").addEventListener("submit", (e) => { e.preventDefault(); const u = $("link").value.trim(); if (u) agregarDesdeLink(u); });
+$("formLink").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const u = $("link").value.trim();
+  if (!u) { aviso("Pega un link de la tienda, o un pantallazo de la página con Ctrl + V.", "mal"); return; }
+  if (!/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(u)) { aviso("Eso no parece un link. Cópialo desde la barra de direcciones de la tienda.", "mal"); return; }
+  agregarDesdeLink(/^https?:\/\//i.test(u) ? u : "https://" + u);
+});
 $("btnManual").onclick = () => {
   const p = { id: nuevoId(), categoria: (D.categorias.find((c) => c.id === "varios") || D.categorias[0] || {}).id || "", nombre: "Algo nuevo", descripcion: "", nota: "", precio: null, moneda: "CLP", link: "", tienda: "", foto: "" };
   D.productos.unshift(p); abiertos.add(p.id); rehacer();
@@ -1109,8 +1052,6 @@ $("publicar").onclick = async () => {
     D.categorias = D.categorias || []; D.productos = D.productos || [];
     estado("Todo guardado");
     pintar();
-    $("marcador").href = MARCADOR;
-    revisarHash();
   } catch (e) {
     $("sinServidor").style.display = "block";
     estado("Sin conexión con el editor");
