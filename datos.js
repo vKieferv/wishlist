@@ -48,6 +48,68 @@ window.DATOS = {
   ],
   "productos": [
     {
+      "id": "pmw9zizwc6ad",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Clóset 4 puertas Bagua blanco Cic",
+      "precio": 89990,
+      "link": "",
+      "tienda": "",
+      "foto": "fotos/closet-4-puertas-bagua-blanco-cic-mw9zizw9.jpg",
+      "categoria": "varios"
+    },
+    {
+      "id": "pmw9zafzuksb",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Audifonos Inalámbricos Anker",
+      "precio": 38900,
+      "link": "https://www.falabella.com/falabella-cl/product/156451996/audifonos-inalambricos-bluetooth-tws-in-ear-30h-ipx5/156451999?kid=shopp489fc&gclsrc=aw.ds&gad_source=1&gad_campaignid=24299977410&gclid=Cj0KCQiA-8XXBhDaARIsADnEOrBYuL72gzESS81CxhgiqlrHfP5v4XekLvUs8YHGAk0e1NICCesVNr0aAgf1EALw_wcB",
+      "tienda": "falabella.com",
+      "foto": "fotos/audifonos-inalambricos-anker-mw9zafzq.jpg",
+      "categoria": "gamer"
+    },
+    {
+      "id": "pmw9z6ce1osk",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Nintendo Switch",
+      "precio": 169000,
+      "link": "https://www.facebook.com/marketplace/item/1588402863089988/?ref=search&referral_code=null&referral_story_type=post&tracking=browse_serp%3Aae7385ca-20db-4afe-8ea7-7b051d1c1150&locale=es_LA",
+      "tienda": "facebook.com",
+      "foto": "fotos/nintendo-switch-mw9z6cdy.jpg",
+      "categoria": "varios"
+    },
+    {
+      "id": "pmw9yyprulte",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Literalmente cualquier wea de aqui",
+      "precio": null,
+      "link": "https://www.miniso.cl/?srsltid=AYCX9vIygB-tbirx8ZGFR7SPvY0H4oHr0d_r2Shl5mVB_aS3pNppGNM0",
+      "tienda": "miniso.cl",
+      "foto": "fotos/literalmente-cualquier-wea-de-aqui-mw9yyprr.jpg",
+      "categoria": "varios",
+      "entrega": "En el mall hay uno"
+    },
+    {
+      "id": "pmw9ylssd646",
+      "descripcion": "",
+      "nota": "",
+      "moneda": "CLP",
+      "nombre": "Pesa Rusa Kettlebell 15kg",
+      "precio": 18990,
+      "link": "https://www.mercadolibre.cl/pesa-rusa-kettlebell-15kg-entrenamiento-crossfit-fitness/up/MLCU355287509?pdp_filters=item_id%3AMLC1477267421&from=gshop&matt_tool=13162058&matt_word=&matt_source=google&matt_campaign_id=23496417529&matt_ad_group_id=191387045185&matt_match_type=&matt_network=g&matt_device=c&matt_creative=794255797127&matt_keyword=&matt_ad_position=&matt_ad_type=pla&matt_merchant_id=114561576&matt_product_id=MLCU355287509&matt_product_partition_id=2496740893911&matt_target_id=aud-2486559225511:pla-2496740893911&cq_src=google_ads&cq_cmp=23496417529&cq_net=g&cq_plt=gp&cq_med=pla&gad_source=1&gad_campaignid=23496417529&gclid=Cj0KCQiA-8XXBhDaARIsADnEOrDtxnGtmURcV8dKt2mIsDUYEE7L6a74hbmrWbd8XMRz16bViecDCrkaAg8aEALw_wcB",
+      "tienda": "mercadolibre.cl",
+      "foto": "fotos/pesa-rusa-kettlebell-15kg-mw9ylssa.jpg",
+      "categoria": "gimnasio",
+      "entrega": "gratis mañana"
+    },
+    {
       "id": "pmw9y36vkoff",
       "descripcion": "",
       "nota": "",
@@ -494,7 +556,7 @@ window.DATOS = {
       "categoria": "libros",
       "nombre": "El archivo de las tormentas",
       "descripcion": "Brandon Sanderson.",
-      "nota": "",
+      "nota": "Es caro pero cuando lo vean en persona van a entender porque ;P",
       "precio": null,
       "moneda": "CLP",
       "link": "",
@@ -603,18 +665,6 @@ window.DATOS = {
         "entrega": "entre el 17 Nov y el 19 Nov",
         "cubre": null
       }
-    },
-    {
-      "id": "p14",
-      "categoria": "gimnasio",
-      "nombre": "Pesa rusa (kettlebell)",
-      "descripcion": "De más de 10 kilos.",
-      "nota": "",
-      "precio": null,
-      "moneda": "CLP",
-      "link": "",
-      "tienda": "",
-      "foto": "fotos/pesa-rusa-kettlebell-mw9v3nr3.jpg"
     },
     {
       "id": "p16",
@@ -748,7 +798,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134"
     }
   ],
-  "actualizado": "2026-11-10T00:32:00.112Z",
+  "actualizado": "2026-11-10T01:04:31.811Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
