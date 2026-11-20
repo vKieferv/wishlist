@@ -680,7 +680,7 @@ window.DATOS = {
       "moneda": "CLP",
       "link": "https://store.steampowered.com/app/1091500/Cyberpunk_2077",
       "tienda": "store.steampowered.com",
-      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1091500/48a93d6445a67520ea49833c93dae8f2e68fc540/header_alt_assets_9.jpg?t=1792682505"
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1091500/48a93d6445a67520ea49833c93dae8f2e68fc540/header_alt_assets_9.jpg?t=1794474878"
     },
     {
       "id": "steam-526870",
@@ -702,24 +702,11 @@ window.DATOS = {
       "nombre": "NieR:Automata™",
       "descripcion": "NieR: Automata narra la historia de los androides 2B, 9S y A2, que luchan para recuperar el mundo distópico dirigido por las máquinas que han invadido unas poderosas formas de vida mecánicas.",
       "nota": "Se regala desde Steam.",
-      "precio": 29300,
+      "precio": 11720,
       "moneda": "CLP",
       "link": "https://store.steampowered.com/app/524220/NieRAutomata",
       "tienda": "store.steampowered.com",
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/524220/header.jpg?t=1793890935"
-    },
-    {
-      "id": "steam-4001890",
-      "fuente": "steam",
-      "categoria": "juegos",
-      "nombre": "How to Fish",
-      "descripcion": "How To Fish es un simulador de pesca basado en la física para hasta 4 jugadores. Vas navegando y bebiendo cuando, de repente, te estrellas contra una islita.",
-      "nota": "Se regala desde Steam.",
-      "precio": 4200,
-      "moneda": "CLP",
-      "link": "https://store.steampowered.com/app/4001890/How_to_Fish",
-      "tienda": "store.steampowered.com",
-      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4001890/45c4ddff4901e32c4b8b643e1b97d0d01898d299/header.jpg?t=1792508550"
     },
     {
       "id": "steam-1478500",
@@ -754,7 +741,7 @@ window.DATOS = {
       "nombre": "ROBOBEAT",
       "descripcion": "¡Dispara al compás! En el shooter rítmico «ROBOBEAT» serás Ace, un cazarrecompensas cuya misión es capturar a Frazzer, un robot descontrolado en una guarida camaleónica.",
       "nota": "Se regala desde Steam.",
-      "precio": 4725,
+      "precio": 10500,
       "moneda": "CLP",
       "link": "https://store.steampowered.com/app/1456760/ROBOBEAT",
       "tienda": "store.steampowered.com",
@@ -780,15 +767,15 @@ window.DATOS = {
       "nombre": "Football Manager 27",
       "descripcion": "Elige tu club, fija tus tácticas, despliega tu plantilla. Busca ese futuro que solo tú puedes ver. FM27 da vida a tu visión futbolística. Tú decides.",
       "nota": "Se regala desde Steam.",
-      "precio": 40410,
+      "precio": 44900,
       "moneda": "CLP",
       "link": "https://store.steampowered.com/app/4530370/Football_Manager_27",
       "tienda": "store.steampowered.com",
-      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/4bddfef11f8626c8dbb44322b11bd99b9b9e4931/header_alt_assets_0_spanish.jpg?t=1793982134",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/32b41d18ffaac3d2e1dc1a9c3915538db0ba3fca/header.jpg?t=1794915487",
       "destacado": true
     }
   ],
-  "actualizado": "2026-11-10T01:26:46.602Z",
+  "actualizado": "2026-11-20T19:19:25.714Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
