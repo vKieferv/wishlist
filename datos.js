@@ -775,7 +775,7 @@ window.DATOS = {
       "destacado": true
     }
   ],
-  "actualizado": "2026-11-20T19:19:25.714Z",
+  "actualizado": "2026-11-21T18:21:22.067Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
