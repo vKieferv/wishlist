@@ -773,9 +773,22 @@ window.DATOS = {
       "tienda": "store.steampowered.com",
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/32b41d18ffaac3d2e1dc1a9c3915538db0ba3fca/header.jpg?t=1794915487",
       "destacado": true
+    },
+    {
+      "id": "steam-1422450",
+      "fuente": "steam",
+      "categoria": "juegos",
+      "nombre": "Deadlock",
+      "descripcion": "Deadlock es un juego multijugador en fase temprana de desarrollo.",
+      "nota": "",
+      "precio": null,
+      "moneda": "CLP",
+      "link": "https://store.steampowered.com/app/1422450/Deadlock",
+      "tienda": "store.steampowered.com",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1422450/aa249c5e8cc8f90941bd1dbdc311773cd1afe065/header.jpg?t=1790716179"
     }
   ],
-  "actualizado": "2026-11-21T18:21:22.067Z",
+  "actualizado": "2026-11-22T18:44:59.265Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
