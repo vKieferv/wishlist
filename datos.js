@@ -788,7 +788,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1422450/aa249c5e8cc8f90941bd1dbdc311773cd1afe065/header.jpg?t=1790716179"
     }
   ],
-  "actualizado": "2026-11-22T18:44:59.265Z",
+  "actualizado": "2026-11-23T22:58:28.348Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
