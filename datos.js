@@ -771,7 +771,7 @@ window.DATOS = {
       "moneda": "CLP",
       "link": "https://store.steampowered.com/app/4530370/Football_Manager_27",
       "tienda": "store.steampowered.com",
-      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/32b41d18ffaac3d2e1dc1a9c3915538db0ba3fca/header.jpg?t=1794915487",
+      "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4530370/32b41d18ffaac3d2e1dc1a9c3915538db0ba3fca/header.jpg?t=1795493367",
       "destacado": true
     },
     {
@@ -788,7 +788,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1422450/aa249c5e8cc8f90941bd1dbdc311773cd1afe065/header.jpg?t=1790716179"
     }
   ],
-  "actualizado": "2026-11-23T22:58:28.348Z",
+  "actualizado": "2026-11-24T21:37:49.337Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
