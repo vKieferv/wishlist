@@ -676,7 +676,7 @@ window.DATOS = {
       "nombre": "Cyberpunk 2077",
       "descripcion": "Cyberpunk 2077 es un RPG de aventura y acción de mundo abierto ambientado en el futuro sombrío de Night City, una peligrosa megalópolis obsesionada con el poder, el glamur y las incesantes…",
       "nota": "Se regala desde Steam.",
-      "precio": 39999,
+      "precio": 11999,
       "moneda": "CLP",
       "link": "https://store.steampowered.com/app/1091500/Cyberpunk_2077",
       "tienda": "store.steampowered.com",
@@ -788,7 +788,7 @@ window.DATOS = {
       "foto": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1422450/aa249c5e8cc8f90941bd1dbdc311773cd1afe065/header.jpg?t=1790716179"
     }
   ],
-  "actualizado": "2026-11-26T20:37:27.259Z",
+  "actualizado": "2026-11-27T20:24:10.539Z",
   "steam": {
     "vanity": "Kiefer__",
     "steamid": "76561198955067379",
